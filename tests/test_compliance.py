@@ -1,6 +1,7 @@
-from pathlib import Path
 import importlib
 import sys
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -66,19 +67,14 @@ REQUIRED_CWES = {
         ("CWE-918", "A10:2021"),
     ],
 )
-def test_key_cwes_include_required_framework_mappings(
-    cwe_id: str, owasp_control: str
-) -> None:
+def test_key_cwes_include_required_framework_mappings(cwe_id: str, owasp_control: str) -> None:
     mappings = get_compliance_mappings(cwe_id)
     frameworks = {mapping.framework for mapping in mappings}
 
     assert "PCI-DSS" in frameworks
     assert "SOC2" in frameworks
     assert "OWASP" in frameworks
-    assert any(
-        mapping.framework == "OWASP" and mapping.control_id == owasp_control
-        for mapping in mappings
-    )
+    assert any(mapping.framework == "OWASP" and mapping.control_id == owasp_control for mapping in mappings)
 
 
 def test_all_required_cwes_are_mapped() -> None:
@@ -118,13 +114,51 @@ def test_get_compliance_gaps_aggregates_count_and_max_severity() -> None:
     ]
 
     gaps = get_compliance_gaps(findings)
-    pci_injection = [
-        gap
-        for gap in gaps
-        if gap.framework == "PCI-DSS" and gap.control_id == "Req 6.2.4"
-    ]
+    pci_injection = [gap for gap in gaps if gap.framework == "PCI-DSS" and gap.control_id == "Req 6.2.4"]
 
     assert len(pci_injection) == 1
     assert pci_injection[0].finding_count == 2
     assert pci_injection[0].max_severity == "critical"
     assert set(pci_injection[0].cwe_ids) == {"CWE-79", "CWE-89"}
+
+
+def test_get_compliance_mappings_returns_empty_for_unmapped_cwe() -> None:
+    assert get_compliance_mappings("CWE-9999") == []
+
+
+def test_get_compliance_mappings_returns_deep_copies() -> None:
+    first = get_compliance_mappings("CWE-89")
+    second = get_compliance_mappings("CWE-89")
+
+    first[0].control_name = "mutated"
+
+    assert second[0].control_name != "mutated"
+
+
+def test_get_compliance_mappings_framework_filter_with_unknown_framework() -> None:
+    filtered = get_compliance_mappings("CWE-89", frameworks=["owasp", "does-not-exist"])
+    assert {mapping.framework for mapping in filtered} == {"OWASP"}
+
+
+def test_get_compliance_gaps_accepts_object_findings_and_normalizes_cwe() -> None:
+    findings = [
+        SimpleNamespace(cwe_id="89", severity="high"),
+        SimpleNamespace(cwe_id="cwe89", severity="critical"),
+    ]
+
+    gaps = get_compliance_gaps(findings)
+    owasp_gap = next(gap for gap in gaps if gap.framework == "OWASP" and gap.control_id == "A03:2021")
+
+    assert owasp_gap.finding_count == 2
+    assert owasp_gap.max_severity == "critical"
+    assert owasp_gap.cwe_ids == ["CWE-89"]
+
+
+def test_get_compliance_gaps_ignores_entries_without_valid_cwe() -> None:
+    findings = [
+        {"severity": "critical"},
+        {"cwe_id": None, "severity": "high"},
+        {"cwe_id": "CWE-9999", "severity": "critical"},
+    ]
+
+    assert get_compliance_gaps(findings) == []
