@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import os
-from typing import Any
 
 from agentfield import Agent, AgentRouter
+
+from .orchestrator import AuditOrchestrator
+from .schemas.input import AuditInput  # noqa: TC001
 
 app = Agent(
     node_id="sec-af",
@@ -19,10 +21,10 @@ router = AgentRouter(tags=["security", "audit", "red-team"])
 
 
 @router.reasoner()
-async def audit(input: dict[str, Any]) -> dict[str, str]:
-    """Run a security audit (DESIGN.md §3 input route)."""
-    _ = input
-    return {"status": "not_implemented"}
+async def audit(input: AuditInput) -> dict[str, object]:
+    orchestrator = AuditOrchestrator(app=app, input=input)
+    result = await orchestrator.run()
+    return result.model_dump()
 
 
 app.include_router(router)
