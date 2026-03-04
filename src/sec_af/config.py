@@ -3,6 +3,7 @@
 See DESIGN.md §9 for depth profiles and budget controls.
 """
 
+import os
 from enum import Enum
 
 from pydantic import BaseModel, Field
@@ -32,12 +33,10 @@ class BudgetConfig(BaseModel):
 class AuditConfig(BaseModel):
     """DESIGN.md §3 and §9 runtime config consumed by orchestrator phases."""
 
-    repo_path: str
+    repo_path: str = Field(...)
     depth: DepthProfile = DepthProfile.STANDARD
     severity_threshold: str = "low"
-    scan_types: list[str] = Field(
-        default_factory=lambda: ["sast", "sca", "secrets", "config"]
-    )
+    scan_types: list[str] = Field(default_factory=lambda: ["sast", "sca", "secrets", "config"])
     output_formats: list[str] = Field(default_factory=lambda: ["json"])
     compliance_frameworks: list[str] = Field(default_factory=list)
     include_paths: list[str] | None = None
@@ -67,3 +66,43 @@ class AuditConfig(BaseModel):
                 max_duration_seconds=audit_input.max_duration_seconds,
             ),
         )
+
+
+class AIIntegrationConfig(BaseModel):
+    provider: str = Field(
+        default_factory=lambda: os.getenv("SEC_AF_PROVIDER", os.getenv("HARNESS_PROVIDER", "opencode"))
+    )
+    harness_model: str = Field(
+        default_factory=lambda: os.getenv(
+            "SEC_AF_MODEL",
+            os.getenv("HARNESS_MODEL", "minimax/minimax-m2.5"),
+        )
+    )
+    ai_model: str = Field(
+        default_factory=lambda: os.getenv(
+            "SEC_AF_AI_MODEL",
+            os.getenv("AI_MODEL", os.getenv("SEC_AF_MODEL", "minimax/minimax-m2.5")),
+        )
+    )
+    max_turns: int = Field(default_factory=lambda: int(os.getenv("SEC_AF_MAX_TURNS", "50")))
+    max_retries: int = Field(default_factory=lambda: int(os.getenv("SEC_AF_AI_MAX_RETRIES", "3")))
+    initial_backoff_seconds: float = Field(
+        default_factory=lambda: float(os.getenv("SEC_AF_AI_INITIAL_BACKOFF_SECONDS", "2.0"))
+    )
+    max_backoff_seconds: float = Field(default_factory=lambda: float(os.getenv("SEC_AF_AI_MAX_BACKOFF_SECONDS", "8.0")))
+    opencode_bin: str = Field(default_factory=lambda: os.getenv("SEC_AF_OPENCODE_BIN", "opencode"))
+
+    @classmethod
+    def from_env(cls) -> "AIIntegrationConfig":
+        return cls()
+
+    def provider_env(self) -> dict[str, str]:
+        env_keys = (
+            "OPENROUTER_API_KEY",
+            "ANTHROPIC_API_KEY",
+            "OPENAI_API_KEY",
+            "GOOGLE_API_KEY",
+            "GITHUB_TOKEN",
+            "GH_TOKEN",
+        )
+        return {key: value for key in env_keys if (value := os.getenv(key))}
