@@ -10,26 +10,40 @@ from typing import Any, TypeVar, cast
 from agentfield import Agent  # noqa: TC001
 from pydantic import BaseModel
 
+from .agents.hunt import run_hunt
+from .agents.prove import run_prove
+from .agents.recon import run_recon
+from .compliance.mapping import get_compliance_gaps, get_compliance_mappings
 from .config import DepthProfile
-from .schemas.gates import StrategySelection
+from .output.json_output import generate_json
+from .output.report import generate_report
+from .output.sarif import generate_sarif
 from .schemas.hunt import Confidence, HuntResult, HuntStrategy, RawFinding, Severity
 from .schemas.input import AuditInput  # noqa: TC001
 from .schemas.output import AttackChain, AuditProgress, SecurityAuditResult
 from .schemas.prove import EvidenceLevel, Location, Verdict, VerifiedFinding
-from .schemas.recon import (
-    ArchitectureMap,
-    ConfigReport,
-    DataFlowMap,
-    DependencyReport,
-    ReconResult,
-    SecurityContext,
-)
+from .schemas.recon import ReconResult
+from .scoring import compute_exploitability_score
 
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
 
 
 class BudgetExhausted(RuntimeError):  # noqa: N818
     pass
+
+
+class _PhaseHarnessProxy:
+    def __init__(self, orchestrator: AuditOrchestrator, phase: str):
+        self._orchestrator = orchestrator
+        self._phase = phase
+
+    async def harness(self, prompt: str, *, schema: object = None, cwd: str | None = None, **kwargs: object) -> object:
+        if self._orchestrator._budget_or_timeout_exhausted(self._phase):
+            raise BudgetExhausted(f"{self._phase} budget exhausted")
+        result = await self._orchestrator.app.harness(prompt, schema=schema, cwd=cwd, **kwargs)
+        self._orchestrator.agent_invocations += 1
+        self._orchestrator._register_cost(self._phase, getattr(result, "cost_usd", None))
+        return result
 
 
 class AuditOrchestrator:
@@ -95,161 +109,47 @@ class AuditOrchestrator:
 
     async def _run_recon(self) -> ReconResult:
         self.app.note("Phase: RECON", tags=["audit", "recon"])
-        started = time.monotonic()
-        depth = self._depth_profile()
-
-        jobs: list[tuple[str, str, type[BaseModel]]] = [
-            (
-                "architecture",
-                "Map architecture, entry points, trust boundaries, and API surface.",
-                ArchitectureMap,
-            ),
-            (
-                "dependencies",
-                "Audit dependencies, build SBOM, and enumerate CVEs.",
-                DependencyReport,
-            ),
-            (
-                "config",
-                "Scan configuration and secrets for security issues.",
-                ConfigReport,
-            ),
-        ]
-        if depth != DepthProfile.QUICK:
-            jobs.extend(
-                [
-                    (
-                        "data_flows",
-                        "Trace user-controlled data from source to sink.",
-                        DataFlowMap,
-                    ),
-                    (
-                        "security_context",
-                        "Profile auth model, crypto usage, and framework security features.",
-                        SecurityContext,
-                    ),
-                ]
-            )
-
-        results: dict[str, BaseModel] = {}
-        for index, (name, task, schema) in enumerate(jobs, start=1):
-            if self._budget_or_timeout_exhausted("recon"):
-                break
-            prompt = (
-                "ROLE: SEC-AF RECON analyst\n"
-                f"TARGET: {self.input.repo_url}@{self.input.branch}\n"
-                f"TASK: {task}\n"
-                "OUTPUT: Return valid JSON matching the provided schema."
-            )
-            parsed = await self._run_harness(prompt=prompt, schema=schema, phase="recon")
-            if parsed is not None:
-                results[name] = parsed
-            self._emit_progress(
-                phase="recon",
-                agents_total=len(jobs),
-                agents_completed=index,
-                findings_so_far=0,
-            )
-
-        architecture = cast("ArchitectureMap", results.get("architecture") or ArchitectureMap())
-        dependencies = cast(
-            "DependencyReport",
-            results.get("dependencies") or DependencyReport(direct_count=0, transitive_count=0),
+        recon = await run_recon(
+            app=_PhaseHarnessProxy(self, "recon"),
+            repo_path=str(self.repo_path),
+            depth=self.input.depth,
         )
-        config = cast("ConfigReport", results.get("config") or ConfigReport())
-        data_flows = cast("DataFlowMap", results.get("data_flows") or DataFlowMap())
-        security_context = cast(
-            "SecurityContext",
-            results.get("security_context") or SecurityContext(auth_model="unknown", auth_details="unknown"),
-        )
-
-        recon = ReconResult(
-            architecture=architecture,
-            data_flows=data_flows,
-            dependencies=dependencies,
-            config=config,
-            security_context=security_context,
-            recon_duration_seconds=time.monotonic() - started,
-        )
-        recon.languages = sorted({module.language.lower() for module in recon.architecture.modules if module.language})
-        recon.frameworks = sorted({framework for framework in recon.security_context.framework_security if framework})
+        self._emit_progress(phase="recon", agents_total=1, agents_completed=1, findings_so_far=0)
         return recon
 
     async def _run_hunt(self, recon: ReconResult) -> HuntResult:
         self.app.note("Phase: HUNT", tags=["audit", "hunt"])
-        started = time.monotonic()
-        selection = await self._select_strategies(recon)
-        strategy_names = [name for name in selection.strategies if name]
-        if not strategy_names:
-            strategy_names = [strategy.value for strategy in self._default_strategies(recon)]
-
-        collected: list[RawFinding] = []
-        for index, strategy_name in enumerate(strategy_names, start=1):
-            if self._budget_or_timeout_exhausted("hunt"):
-                break
-            prompt = (
-                "ROLE: SEC-AF HUNT specialist\n"
-                f"TARGET: {self.input.repo_url}@{self.input.branch}\n"
-                f"STRATEGY: {strategy_name}\n"
-                "TASK: Discover potential vulnerabilities for this strategy.\n"
-                f"RECON: {recon.model_dump_json()}"
-            )
-            hunt_result = await self._run_harness(prompt=prompt, schema=HuntResult, phase="hunt")
-            if hunt_result is not None:
-                collected.extend(hunt_result.findings)
-            self._emit_progress(
-                phase="hunt",
-                agents_total=len(strategy_names),
-                agents_completed=index,
-                findings_so_far=len(collected),
-            )
-
-        deduped = HuntResult(findings=collected)
-        if not self._budget_or_timeout_exhausted("hunt"):
-            dedup_prompt = (
-                "ROLE: SEC-AF dedup/correlation analyst\n"
-                "TASK: Deduplicate findings and correlate attack chains.\n"
-                f"RAW_FINDINGS: {json.dumps([finding.model_dump() for finding in collected])}"
-            )
-            dedup_result = await self._run_harness(prompt=dedup_prompt, schema=HuntResult, phase="hunt")
-            if dedup_result is not None:
-                deduped = dedup_result
-
-        deduped.total_raw = len(collected)
-        deduped.deduplicated_count = len(deduped.findings)
-        deduped.chain_count = len(deduped.chains)
-        deduped.strategies_run = strategy_names
-        deduped.hunt_duration_seconds = time.monotonic() - started
-        return deduped
+        hunt = await run_hunt(
+            app=_PhaseHarnessProxy(self, "hunt"),
+            repo_path=str(self.repo_path),
+            recon_result=recon,
+            depth=self.input.depth,
+        )
+        self._emit_progress(phase="hunt", agents_total=1, agents_completed=1, findings_so_far=len(hunt.findings))
+        return hunt
 
     async def _run_prove(self, recon: ReconResult, hunt: HuntResult) -> list[VerifiedFinding]:
+        _ = recon
         self.app.note("Phase: PROVE", tags=["audit", "prove"])
         prioritized = self._prioritize_findings(hunt.findings)
         prover_cap = self._prover_cap()
-        targets = prioritized[:prover_cap]
-        self.findings_not_verified = max(0, len(hunt.findings) - len(targets))
-
-        verified: list[VerifiedFinding] = []
-        total_agents = max(1, len(targets))
-        for index, finding in enumerate(targets, start=1):
-            if self._budget_or_timeout_exhausted("prove"):
-                self.findings_not_verified += len(targets) - (index - 1)
-                break
-            prompt = (
-                "ROLE: SEC-AF adversarial prover\n"
-                "TASK: determine exploitability and return a VerifiedFinding.\n"
-                f"RECON: {recon.model_dump_json()}\n"
-                f"FINDING: {finding.model_dump_json()}"
-            )
-            proved = await self._run_harness(prompt=prompt, schema=VerifiedFinding, phase="prove")
-            verified.append(proved if proved is not None else _verified_finding_fallback(finding))
-            self._emit_progress(
-                phase="prove",
-                agents_total=total_agents,
-                agents_completed=index,
-                findings_so_far=len(verified),
-            )
-
+        limited_hunt = HuntResult(
+            findings=prioritized[:prover_cap],
+            chains=hunt.chains,
+            total_raw=hunt.total_raw,
+            deduplicated_count=hunt.deduplicated_count,
+            chain_count=hunt.chain_count,
+            strategies_run=hunt.strategies_run,
+            hunt_duration_seconds=hunt.hunt_duration_seconds,
+        )
+        self.findings_not_verified = max(0, len(hunt.findings) - len(limited_hunt.findings))
+        verified = await run_prove(
+            app=_PhaseHarnessProxy(self, "prove"),
+            repo_path=str(self.repo_path),
+            hunt_result=limited_hunt,
+            depth=self.input.depth,
+        )
+        self._emit_progress(phase="prove", agents_total=1, agents_completed=1, findings_so_far=len(verified))
         return verified
 
     def _generate_output(
@@ -260,6 +160,14 @@ class AuditOrchestrator:
         verified: list[VerifiedFinding],
     ) -> SecurityAuditResult:
         _ = recon
+        for finding in verified:
+            finding.exploitability_score = compute_exploitability_score(finding)
+            finding.sarif_security_severity = finding.exploitability_score
+            finding.compliance = get_compliance_mappings(
+                finding.cwe_id,
+                frameworks=self.input.compliance_frameworks or None,
+            )
+
         verdict_counts: dict[Verdict, int] = {
             Verdict.CONFIRMED: 0,
             Verdict.LIKELY: 0,
@@ -293,7 +201,8 @@ class AuditOrchestrator:
                 tags=["audit", "budget", "exhausted"],
             )
 
-        return SecurityAuditResult(
+        compliance_gaps = get_compliance_gaps(verified)
+        result = SecurityAuditResult(
             repository=self.input.repo_url,
             commit_sha=self.input.commit_sha or "HEAD",
             branch=self.input.branch,
@@ -310,79 +219,18 @@ class AuditOrchestrator:
             not_exploitable=not_exploitable,
             noise_reduction_pct=round(noise_reduction, 2),
             by_severity=severity_counts,
-            compliance_gaps=[],
+            compliance_gaps=compliance_gaps,
             duration_seconds=time.monotonic() - self.started_at,
             agent_invocations=self.agent_invocations,
             cost_usd=round(self.total_cost_usd, 4),
             cost_breakdown={phase: round(cost, 4) for phase, cost in self.cost_breakdown.items()},
-            sarif=self._render_sarif(verified),
+            sarif="",
         )
 
-    async def _select_strategies(self, recon: ReconResult) -> StrategySelection:
-        defaults = [strategy.value for strategy in self._default_strategies(recon)]
-        prompt = (
-            "Select SEC-AF hunt strategies from recon context.\n"
-            "Return StrategySelection with flat fields only.\n"
-            f"Depth: {self.input.depth}\n"
-            f"Default candidates: {defaults}\n"
-            f"Recon summary: {recon.model_dump_json()}"
-        )
-        try:
-            result = await self.app.ai(user=prompt, schema=StrategySelection)
-        except Exception as exc:
-            self.app.note(f"Strategy selection fallback: {exc}", tags=["audit", "hunt", "ai", "fallback"])
-            return StrategySelection(strategies=defaults, rationale="fallback")
-
-        if isinstance(result, StrategySelection):
-            parsed = result
-        elif isinstance(result, dict):
-            parsed = StrategySelection(**result)
-        else:
-            parsed = StrategySelection(strategies=defaults, rationale="fallback")
-
-        selected = [name for name in parsed.strategies if name]
-        return StrategySelection(strategies=selected or defaults, rationale=parsed.rationale)
-
-    async def _run_harness(
-        self,
-        *,
-        prompt: str,
-        schema: type[SchemaT],
-        phase: str,
-    ) -> SchemaT | None:
-        try:
-            result = await self.app.harness(
-                prompt,
-                schema=schema,
-                cwd=str(self.repo_path),
-                max_budget_usd=self._phase_budget_limit(phase),
-            )
-        except Exception as exc:
-            self.app.note(f"Harness call failed: {exc}", tags=["audit", phase, "harness", "error"])
-            return None
-
-        self.agent_invocations += 1
-        self._register_cost(phase, getattr(result, "cost_usd", None))
-
-        if getattr(result, "is_error", False):
-            message = getattr(result, "error_message", "unknown")
-            self.app.note(
-                f"Harness returned error for {schema.__name__}: {message}",
-                tags=["audit", phase, "harness", "error"],
-            )
-            return None
-
-        parsed = getattr(result, "parsed", None)
-        if isinstance(parsed, schema):
-            return parsed
-        if isinstance(parsed, dict):
-            try:
-                return schema(**parsed)
-            except Exception:
-                return None
-        if isinstance(result, schema):
-            return result
-        return None
+        result.sarif = generate_sarif(result)
+        _ = generate_json(result, pretty=True)
+        _ = generate_report(result)
+        return result
 
     def _write_checkpoint(self, phase: str, payload: BaseModel | list[VerifiedFinding]) -> None:
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -528,70 +376,6 @@ class AuditOrchestrator:
             cost_so_far_usd=round(self.total_cost_usd, 4),
         )
         self.app.note(progress.model_dump_json(), tags=["audit", "progress", phase])
-
-    def _render_sarif(self, findings: list[VerifiedFinding]) -> str:
-        rules: dict[str, dict[str, Any]] = {}
-        results: list[dict[str, Any]] = []
-
-        for finding in findings:
-            if finding.sarif_rule_id not in rules:
-                rules[finding.sarif_rule_id] = {
-                    "id": finding.sarif_rule_id,
-                    "name": finding.title,
-                    "shortDescription": {"text": finding.title},
-                    "fullDescription": {"text": finding.description},
-                    "properties": {
-                        "security-severity": str(finding.sarif_security_severity),
-                        "tags": [finding.cwe_id],
-                    },
-                }
-
-            location = finding.location
-            results.append(
-                {
-                    "ruleId": finding.sarif_rule_id,
-                    "level": self._sarif_level(finding.severity),
-                    "message": {
-                        "text": f"[{finding.verdict.value.upper()}] {finding.title}: {finding.rationale}",
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "artifactLocation": {"uri": location.file_path},
-                                "region": {
-                                    "startLine": location.start_line,
-                                    "endLine": location.end_line,
-                                },
-                            }
-                        }
-                    ],
-                }
-            )
-
-        payload = {
-            "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
-            "version": "2.1.0",
-            "runs": [
-                {
-                    "tool": {
-                        "driver": {
-                            "name": "SEC-AF",
-                            "semanticVersion": "0.1.0",
-                            "rules": list(rules.values()),
-                        }
-                    },
-                    "results": results,
-                }
-            ],
-        }
-        return json.dumps(payload)
-
-    def _sarif_level(self, severity: Severity) -> str:
-        if severity in {Severity.CRITICAL, Severity.HIGH}:
-            return "error"
-        if severity == Severity.MEDIUM:
-            return "warning"
-        return "note"
 
 
 def _verified_finding_fallback(finding: RawFinding) -> VerifiedFinding:
