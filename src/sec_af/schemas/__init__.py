@@ -54,7 +54,6 @@ from .recon import (
     CryptoUsage,
     DataFlow,
     DataFlowMap,
-    DataFlowStep as ReconDataFlowStep,
     Dependency,
     DependencyReport,
     EntryPoint,
@@ -69,6 +68,9 @@ from .recon import (
     Service,
     Sink,
     TrustBoundary,
+)
+from .recon import (
+    DataFlowStep as ReconDataFlowStep,
 )
 
 __all__ = [
