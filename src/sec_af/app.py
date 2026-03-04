@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import os
+from typing import Any, cast
+
+from fastapi import HTTPException
 
 from agentfield import Agent, AgentRouter
 
@@ -23,8 +26,26 @@ router = AgentRouter(tags=["security", "audit", "red-team"])
 @router.reasoner()
 async def audit(input: AuditInput) -> dict[str, object]:
     orchestrator = AuditOrchestrator(app=app, input=input)
-    result = await orchestrator.run()
+    resume_phase = getattr(input, "resume_from_checkpoint", None)
+    try:
+        if isinstance(resume_phase, str) and resume_phase.strip():
+            result = await orchestrator.run_from_checkpoint(resume_phase)
+        else:
+            result = await orchestrator.run()
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail={"error": str(exc)}) from exc
+    except Exception as exc:
+        cast("Any", app).note(f"Audit pipeline failed: {exc}", tags=["audit", "error"])
+        raise HTTPException(status_code=500, detail={"error": "audit execution failed"}) from exc
+
     return result.model_dump()
+
+
+async def health() -> dict[str, str]:
+    return {"status": "healthy", "version": "0.1.0"}
+
+
+cast("Any", app).add_api_route("/health", health, methods=["GET"])
 
 
 app.include_router(router)
