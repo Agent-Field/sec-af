@@ -1,13 +1,187 @@
-"""PROVE schema scaffold from DESIGN.md §6."""
+"""PROVE phase schemas.
 
-from __future__ import annotations
+These are complex `.harness()` schemas from DESIGN.md §6.3-§6.4 and §7.1.
+"""
 
-from pydantic import BaseModel
+from enum import Enum, IntEnum
+from uuid import uuid4
+
+from pydantic import BaseModel, Field
+
+from .compliance import ComplianceMapping
+from .hunt import FindingType, Severity
+
+
+class Verdict(str, Enum):
+    """DESIGN.md §6.3 exploitability verdict semantics."""
+
+    CONFIRMED = "confirmed"
+    LIKELY = "likely"
+    INCONCLUSIVE = "inconclusive"
+    NOT_EXPLOITABLE = "not_exploitable"
+
+
+class EvidenceLevel(IntEnum):
+    """DESIGN.md §6.3 six-level evidence strength hierarchy."""
+
+    STATIC_MATCH = 1
+    FLOW_IDENTIFIED = 2
+    REACHABILITY_CONFIRMED = 3
+    SANITIZATION_BYPASSABLE = 4
+    EXPLOIT_SCENARIO_VALIDATED = 5
+    FULL_EXPLOIT = 6
+
+
+class DataFlowStep(BaseModel):
+    """DESIGN.md §6.4 one step in source-to-sink proof trace."""
+
+    file: str
+    line: int
+    description: str
+    tainted: bool
+
+
+class DataFlowEvidence(BaseModel):
+    """DESIGN.md §6.4 grouped data flow evidence artifact."""
+
+    steps: list[DataFlowStep] = Field(default_factory=list)
+    source: str | None = None
+    sink: str | None = None
+    sink_reached: bool = False
+
+
+class SanitizationAnalysis(BaseModel):
+    """DESIGN.md §6.4 sanitization effectiveness analysis."""
+
+    sanitization_found: bool
+    sanitization_type: str | None = None
+    sanitization_sufficient: bool | None = None
+    bypass_possible: bool | None = None
+    bypass_method: str | None = None
+
+
+class HttpEvidence(BaseModel):
+    """DESIGN.md §6.4 HTTP request/response evidence artifact."""
+
+    method: str | None = None
+    url: str | None = None
+    headers: dict[str, str] | None = None
+    body: str | None = None
+    highlighted_segment: str | None = None
+
+
+class ReachabilityEvidence(BaseModel):
+    """DESIGN.md §6.4 reachability evidence for dependency findings."""
+
+    vulnerable_function: str
+    call_chain: list[str] = Field(default_factory=list)
+    reachable: bool
+    direct_dependency: bool
+
+
+class ChainStep(BaseModel):
+    """DESIGN.md §6.4 chain evidence link across findings."""
+
+    step_number: int
+    finding_id: str
+    description: str
+    enables: str
 
 
 class Proof(BaseModel):
-    """Evidence container stub from DESIGN.md §6.4."""
+    """DESIGN.md §6.4 evidence artifact supporting final verdict."""
 
-    exploit_hypothesis: str = "not_implemented"
-    verification_method: str = "not_implemented"
-    evidence_level: int = 0
+    exploit_hypothesis: str
+    verification_method: str
+    evidence_level: EvidenceLevel
+    data_flow_trace: list[DataFlowStep] | None = None
+    data_flow_evidence: DataFlowEvidence | None = None
+    sanitization_analysis: SanitizationAnalysis | None = None
+    vulnerable_code: str | None = None
+    exploit_payload: str | None = None
+    expected_outcome: str | None = None
+    poc_code: str | None = None
+    poc_execution_output: str | None = None
+    http_request: HttpEvidence | None = None
+    http_response: HttpEvidence | None = None
+    reachability: ReachabilityEvidence | None = None
+    chain_steps: list[ChainStep] | None = None
+
+
+class ProverSignal(BaseModel):
+    """DESIGN.md §6.6 depth-first expansion signal from a prover."""
+
+    expand: bool = False
+    expansion_reason: str | None = None
+    expansion_strategy: str | None = None
+    expansion_target: str | None = None
+
+
+class Location(BaseModel):
+    """DESIGN.md §7.1 source location metadata for verified findings."""
+
+    file_path: str
+    start_line: int
+    end_line: int
+    start_column: int | None = None
+    end_column: int | None = None
+    function_name: str | None = None
+    code_snippet: str | None = None
+
+
+class CvssV4Score(BaseModel):
+    """DESIGN.md §7.1 CVSS v4 scoring details."""
+
+    vector: str
+    base_score: float
+    severity: str
+    automatable: bool
+    subsequent_impact: bool
+
+
+class EpssScore(BaseModel):
+    """DESIGN.md §7.1 EPSS probability details."""
+
+    score: float
+    percentile: float
+    date: str
+
+
+class ReproductionStep(BaseModel):
+    """DESIGN.md §7.1 reproduction instructions for analysts."""
+
+    step: int
+    description: str
+    command: str | None = None
+    expected_output: str | None = None
+
+
+class VerifiedFinding(BaseModel):
+    """DESIGN.md §7.1 finding fully assessed by PROVE phase."""
+
+    id: str = Field(default_factory=lambda: str(uuid4()))
+    fingerprint: str
+    title: str
+    description: str
+    finding_type: FindingType
+    cwe_id: str
+    cwe_name: str
+    owasp_category: str | None = None
+    tags: set[str] = Field(default_factory=set)
+    verdict: Verdict
+    evidence_level: EvidenceLevel
+    rationale: str
+    severity: Severity
+    cvss_v4: CvssV4Score | None = None
+    epss: EpssScore | None = None
+    exploitability_score: float
+    proof: Proof | None = None
+    location: Location
+    related_locations: list[Location] = Field(default_factory=list)
+    chain_id: str | None = None
+    chain_step: int | None = None
+    enables: list[str] | None = None
+    compliance: list[ComplianceMapping] = Field(default_factory=list)
+    reproduction_steps: list[ReproductionStep] = Field(default_factory=list)
+    sarif_rule_id: str
+    sarif_security_severity: float

@@ -1,20 +1,45 @@
-"""Flat gate schemas scaffold from DESIGN.md §2.4 and §2.5."""
+"""Flat schemas for .ai() gate calls.
 
-from __future__ import annotations
+See DESIGN.md §2.4 and §2.5 for .ai() vs .harness() routing constraints.
+"""
 
 from pydantic import BaseModel, Field
 
 
-class SeverityGate(BaseModel):
-    """Simple `.ai()` severity gate schema from DESIGN.md §2.4."""
+class SeverityClassification(BaseModel):
+    """DESIGN.md §2.4: quick severity classification gate used in scoring."""
 
-    severity: str = Field(default="medium")
-    confidence: float = Field(default=0.0)
-    rationale: str = Field(default="not_implemented")
+    severity: str = Field(description='One of: "critical", "high", "medium", "low".')
+    confidence: float
+    rationale: str
+
+
+class DuplicateCheck(BaseModel):
+    """DESIGN.md §5.5: quick duplicate check gate for dedup decisions."""
+
+    is_duplicate: bool
+    duplicate_of: str | None = None
+    reason: str
 
 
 class StrategySelection(BaseModel):
-    """Simple strategy selection schema from DESIGN.md §5.6."""
+    """DESIGN.md §5.3: strategy selection gate for HUNT routing."""
 
-    strategies: list[str] = Field(default_factory=list)
-    rationale: str = Field(default="not_implemented")
+    strategies: list[str]
+    rationale: str
+
+
+class RelevanceGate(BaseModel):
+    """DESIGN.md §2.4: relevance/noise filter gate for candidate findings."""
+
+    is_relevant: bool
+    confidence: float
+    reason: str
+
+
+class VerdictGate(BaseModel):
+    """DESIGN.md §2.4 and §6.3: binary verdict gate for simple cases."""
+
+    confirmed: bool
+    confidence: float
+    reason: str

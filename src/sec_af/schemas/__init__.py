@@ -1,22 +1,132 @@
-"""Schema exports scaffold from DESIGN.md §4-§7."""
+"""Schema exports for SEC-AF.
 
-from .compliance import ComplianceMapping
-from .gates import SeverityGate, StrategySelection
-from .hunt import HuntResult, RawFinding
+All models are derived from DESIGN.md for RECON, HUNT, PROVE, output, gates,
+config, and compliance mapping flows.
+"""
+
+from .compliance import ComplianceGap, ComplianceMapping
+from .gates import (
+    DuplicateCheck,
+    RelevanceGate,
+    SeverityClassification,
+    StrategySelection,
+    VerdictGate,
+)
+from .hunt import (
+    Confidence,
+    DeduplicatedResult,
+    FindingType,
+    HuntResult,
+    HuntStrategy,
+    PotentialChain,
+    RawFinding,
+    Severity,
+)
 from .input import AuditInput
-from .output import SecurityAuditResult, VerifiedFinding
-from .prove import Proof
-from .recon import ReconResult
+from .output import (
+    AttackChain,
+    AuditMetrics,
+    AuditProgress,
+    CvssV4Score,
+    EpssScore,
+    Location,
+    MitreMapping,
+    ReproductionStep,
+    SecurityAuditResult,
+)
+from .prove import (
+    ChainStep,
+    DataFlowEvidence,
+    DataFlowStep,
+    EvidenceLevel,
+    HttpEvidence,
+    Proof,
+    ProverSignal,
+    ReachabilityEvidence,
+    SanitizationAnalysis,
+    Verdict,
+    VerifiedFinding,
+)
+from .recon import (
+    APIEndpoint,
+    ArchitectureMap,
+    ConfigReport,
+    CryptoUsage,
+    DataFlow,
+    DataFlowMap,
+    DataFlowStep as ReconDataFlowStep,
+    Dependency,
+    DependencyReport,
+    EntryPoint,
+    KnownCVE,
+    MisconfigFinding,
+    Module,
+    OutdatedDep,
+    ReconResult,
+    SanitizationPoint,
+    SecretFinding,
+    SecurityContext,
+    Service,
+    Sink,
+    TrustBoundary,
+)
 
 __all__ = [
+    "APIEndpoint",
+    "ArchitectureMap",
+    "AttackChain",
     "AuditInput",
+    "AuditMetrics",
+    "AuditProgress",
+    "ChainStep",
+    "ComplianceGap",
     "ComplianceMapping",
+    "Confidence",
+    "ConfigReport",
+    "CryptoUsage",
+    "CvssV4Score",
+    "DataFlow",
+    "DataFlowEvidence",
+    "DataFlowMap",
+    "DataFlowStep",
+    "DeduplicatedResult",
+    "Dependency",
+    "DependencyReport",
+    "DuplicateCheck",
+    "EntryPoint",
+    "EpssScore",
+    "EvidenceLevel",
+    "FindingType",
+    "HttpEvidence",
     "HuntResult",
+    "HuntStrategy",
+    "KnownCVE",
+    "Location",
+    "MisconfigFinding",
+    "MitreMapping",
+    "Module",
+    "OutdatedDep",
+    "PotentialChain",
     "Proof",
+    "ProverSignal",
     "RawFinding",
+    "ReachabilityEvidence",
+    "ReconDataFlowStep",
     "ReconResult",
+    "RelevanceGate",
+    "ReproductionStep",
+    "SanitizationAnalysis",
+    "SanitizationPoint",
+    "SecretFinding",
     "SecurityAuditResult",
-    "SeverityGate",
+    "SecurityContext",
+    "Service",
+    "Severity",
+    "SeverityClassification",
+    "Sink",
     "StrategySelection",
+    "TrustBoundary",
+    "Verdict",
+    "VerdictGate",
     "VerifiedFinding",
 ]

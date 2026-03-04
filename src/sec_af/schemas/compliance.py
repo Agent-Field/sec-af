@@ -1,13 +1,26 @@
-"""Compliance schema scaffold from DESIGN.md §7.1 and §7.3."""
+"""Compliance schemas.
 
-from __future__ import annotations
+See DESIGN.md §7.1, §7.3, and §10 for compliance mapping output.
+"""
 
 from pydantic import BaseModel
 
+from .hunt import Severity
+
 
 class ComplianceMapping(BaseModel):
-    """Compliance mapping stub from DESIGN.md §7.1."""
+    """DESIGN.md §7.1 framework control mapping for a finding."""
 
-    framework: str = ""
-    control_id: str = ""
-    control_name: str = ""
+    framework: str
+    control_id: str
+    control_name: str
+
+
+class ComplianceGap(BaseModel):
+    """DESIGN.md §7.3 and §10.2 summarized control-level gap."""
+
+    framework: str
+    control_id: str
+    control_name: str
+    finding_count: int
+    severity: Severity
