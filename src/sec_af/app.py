@@ -5,6 +5,7 @@ from __future__ import annotations
 # pyright: reportMissingImports=false
 
 import os
+import subprocess
 import time
 from pathlib import Path
 from typing import Any, cast
@@ -72,6 +73,44 @@ def _as_dict(payload: object, name: str) -> dict[str, Any]:
     return payload
 
 
+def _resolve_repo(repo_url: str) -> str:
+    """Resolve repo_url to a local path, cloning from URL if needed."""
+    # Local path — return as-is
+    if os.path.isdir(repo_url):
+        return str(Path(repo_url).resolve())
+
+    # GitHub/HTTP URL — clone to /workspaces/
+    if repo_url.startswith(("https://", "http://", "git@")):
+        repo_name = repo_url.rstrip("/").split("/")[-1].replace(".git", "")
+        target_dir = f"/workspaces/{repo_name}"
+        os.makedirs("/workspaces", exist_ok=True)
+
+        if os.path.isdir(target_dir):
+            # Already cloned — pull latest
+            subprocess.run(
+                ["git", "pull", "--ff-only"],
+                cwd=target_dir,
+                env={**os.environ, "GIT_TERMINAL_PROMPT": "0", "GIT_ASKPASS": "echo"},
+                timeout=60,
+                capture_output=True,
+            )
+            return target_dir
+
+        result = subprocess.run(
+            ["git", "clone", "--depth", "1", repo_url, target_dir],
+            env={**os.environ, "GIT_TERMINAL_PROMPT": "0", "GIT_ASKPASS": "echo"},
+            timeout=120,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise ValueError(f"git clone failed: {result.stderr.strip()}")
+        return target_dir
+
+    # Fallback: treat as local path
+    return str(Path(os.getenv("SEC_AF_REPO_PATH", os.getcwd())).resolve())
+
+
 @app.reasoner()
 async def audit(
     repo_url: str,
@@ -115,11 +154,7 @@ async def audit(
         fail_on_findings=fail_on_findings,
     )
     orchestrator = AuditOrchestrator(app=app, input=audit_input)
-    repo_path = (
-        str(Path(repo_url).resolve())
-        if os.path.isdir(repo_url)
-        else str(Path(os.getenv("SEC_AF_REPO_PATH", os.getcwd())).resolve())
-    )
+    repo_path = _resolve_repo(repo_url)
     orchestrator.repo_path = Path(repo_path)
     orchestrator.checkpoint_dir = orchestrator.repo_path / ".sec-af"
     try:
