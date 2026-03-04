@@ -1,0 +1,26 @@
+services:
+  sec-af:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - AGENTFIELD_SERVER=http://host.docker.internal:8080
+      - AGENTFIELD_API_KEY=${AGENTFIELD_API_KEY:-}
+      - AGENT_CALLBACK_URL=http://localhost:8003
+      - HARNESS_PROVIDER=opencode
+      - HARNESS_MODEL=${HARNESS_MODEL:-moonshotai/kimi-k2.5}
+      - AI_MODEL=${AI_MODEL:-moonshotai/kimi-k2.5}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    ports:
+      - "8003:8003"
+    volumes:
+      - ${SCAN_REPOS_PATH:-./workspaces}:/workspaces
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
