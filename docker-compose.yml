@@ -5,21 +5,44 @@ services:
       - "8080:8080"
     environment:
       - AF_MODE=dev
+      - AGENTFIELD_HTTP_ADDR=0.0.0.0:8080
+      - AGENTFIELD_STORAGE_MODE=local
+    volumes:
+      - agentfield-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
 
   sec-af:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8003:8003"
     environment:
       - AGENTFIELD_SERVER=http://agentfield:8080
+      - AGENTFIELD_API_KEY=${AGENTFIELD_API_KEY:-}
+      - AGENT_CALLBACK_URL=http://sec-af:8003
       - HARNESS_PROVIDER=opencode
-      - HARNESS_MODEL=moonshotai/kimi-k2.5
-      - AI_MODEL=moonshotai/kimi-k2.5
+      - HARNESS_MODEL=${HARNESS_MODEL:-moonshotai/kimi-k2.5}
+      - AI_MODEL=${AI_MODEL:-moonshotai/kimi-k2.5}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    volumes:
+      - ${SCAN_REPOS_PATH:-./workspaces}:/workspaces
     depends_on:
-      - agentfield
+      agentfield:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
       interval: 30s
       timeout: 5s
       retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+volumes:
+  agentfield-data:
