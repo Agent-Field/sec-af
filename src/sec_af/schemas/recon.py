@@ -158,8 +158,8 @@ class DependencyReport(BaseModel):
     sbom: list[Dependency] = Field(default_factory=list)
     known_cves: list[KnownCVE] = Field(default_factory=list)
     outdated: list[OutdatedDep] = Field(default_factory=list)
-    direct_count: int
-    transitive_count: int
+    direct_count: int = 0
+    transitive_count: int = 0
 
 
 class SecretFinding(BaseModel):

@@ -1,18 +1,16 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol, cast, runtime_checkable
+from typing import TYPE_CHECKING, Protocol
+from sec_af.agents._utils import extract_harness_result
 
 from sec_af.schemas.hunt import HuntResult
 
 if TYPE_CHECKING:
     from sec_af.schemas.recon import ReconResult
-
-
-@runtime_checkable
-class HarnessResultLike(Protocol):
-    parsed: object | None
 
 
 class HarnessCapable(Protocol):
@@ -22,18 +20,6 @@ class HarnessCapable(Protocol):
 
 
 PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "supply_chain.txt"
-
-
-def _extract_parsed(result: object, schema: type[HuntResult]) -> HuntResult:
-    if isinstance(result, HarnessResultLike):
-        parsed = result.parsed
-        if isinstance(parsed, schema):
-            return parsed
-        if isinstance(parsed, dict):
-            return schema(**cast("dict[str, object]", parsed))
-    if isinstance(result, schema):
-        return result
-    raise TypeError("Supply Chain Hunter did not return a valid HuntResult")
 
 
 def should_run_supply_chain_hunter(recon: ReconResult) -> bool:
@@ -61,15 +47,20 @@ async def run_supply_chain_hunter(app: HarnessCapable, repo_path: str, recon: Re
         + "then produce final structured findings.\n"
         + "- Write final JSON only when analysis is complete.\n"
     )
-    result = await app.harness(prompt=prompt, schema=HuntResult, cwd=repo_path)
-    hunt_result = _extract_parsed(result, HuntResult)
+    agent_name = "hunt-supply-chain"
+    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
+    try:
+        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd)
+        hunt_result = extract_harness_result(result, HuntResult, "Supply Chain Hunter")
 
-    if not hunt_result.strategies_run:
-        hunt_result.strategies_run = ["supply_chain"]
-    if hunt_result.total_raw <= 0:
-        hunt_result.total_raw = len(hunt_result.findings)
-    if hunt_result.deduplicated_count <= 0:
-        hunt_result.deduplicated_count = len(hunt_result.findings)
-    hunt_result.chain_count = len(hunt_result.chains)
+        if not hunt_result.strategies_run:
+            hunt_result.strategies_run = ["supply_chain"]
+        if hunt_result.total_raw <= 0:
+            hunt_result.total_raw = len(hunt_result.findings)
+        if hunt_result.deduplicated_count <= 0:
+            hunt_result.deduplicated_count = len(hunt_result.findings)
+        hunt_result.chain_count = len(hunt_result.chains)
 
-    return hunt_result
+        return hunt_result
+    finally:
+        shutil.rmtree(harness_cwd, ignore_errors=True)

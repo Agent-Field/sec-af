@@ -75,7 +75,7 @@ class RawFinding(BaseModel):
     confidence: Confidence
     data_flow: list[DataFlowStep] | None = None
     related_files: list[str] = Field(default_factory=list)
-    fingerprint: str
+    fingerprint: str = Field(default_factory=lambda: str(uuid4()))
 
 
 class PotentialChain(BaseModel):

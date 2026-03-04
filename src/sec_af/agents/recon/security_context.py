@@ -1,16 +1,14 @@
 from __future__ import annotations
 
+import shutil
+import tempfile
 from pathlib import Path
-from typing import Protocol, cast, runtime_checkable
+from typing import Protocol
+from sec_af.agents._utils import extract_harness_result
 
 from sec_af.schemas.recon import ArchitectureMap, SecurityContext
 
 from .architecture import architecture_context_block
-
-
-@runtime_checkable
-class HarnessResultLike(Protocol):
-    parsed: object | None
 
 
 class HarnessCapable(Protocol):
@@ -20,18 +18,6 @@ class HarnessCapable(Protocol):
 
 
 PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "recon" / "security_context.txt"
-
-
-def _extract_parsed(result: object, schema: type[SecurityContext]) -> SecurityContext:
-    if isinstance(result, HarnessResultLike):
-        parsed = result.parsed
-        if isinstance(parsed, schema):
-            return parsed
-        if isinstance(parsed, dict):
-            return schema(**cast("dict[str, object]", parsed))
-    if isinstance(result, schema):
-        return result
-    raise TypeError("Security context profiler did not return a valid SecurityContext")
 
 
 async def run_security_context_profiler(
@@ -47,5 +33,10 @@ async def run_security_context_profiler(
         + "- Take multiple turns to explore the codebase first, then build your analysis.\n"
         + "- Write final JSON only when analysis is complete."
     )
-    result = await app.harness(prompt=prompt, schema=SecurityContext, cwd=repo_path)
-    return _extract_parsed(result, SecurityContext)
+    agent_name = "recon-security-context"
+    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
+    try:
+        result = await app.harness(prompt=prompt, schema=SecurityContext, cwd=harness_cwd)
+        return extract_harness_result(result, SecurityContext, "Security context profiler")
+    finally:
+        shutil.rmtree(harness_cwd, ignore_errors=True)

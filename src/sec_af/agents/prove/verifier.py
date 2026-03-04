@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol, cast, runtime_checkable
+from typing import TYPE_CHECKING, Protocol
+from sec_af.agents._utils import extract_harness_result
 
 from sec_af.schemas.prove import EvidenceLevel, Location, ReproductionStep, Verdict, VerifiedFinding
 
@@ -21,11 +24,6 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-@runtime_checkable
-class HarnessResultLike(Protocol):
-    parsed: object | None
-
-
 PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "prove" / "verifier.txt"
 
 _VERIFICATION_METHODS: dict[str, str] = {
@@ -36,18 +34,6 @@ _VERIFICATION_METHODS: dict[str, str] = {
     "config": "Verify active runtime config and whether secure overrides or mitigations apply.",
     "logic": "Reason through state transitions and attacker-controlled sequencing.",
 }
-
-
-def _extract_parsed(result: object) -> VerifiedFinding:
-    if isinstance(result, HarnessResultLike):
-        parsed = result.parsed
-        if isinstance(parsed, VerifiedFinding):
-            return parsed
-        if isinstance(parsed, dict):
-            return VerifiedFinding(**cast("dict[str, object]", parsed))
-    if isinstance(result, VerifiedFinding):
-        return result
-    raise TypeError("Verifier did not return a valid VerifiedFinding")
 
 
 def _sarif_rule_id(finding: RawFinding) -> str:
@@ -125,25 +111,35 @@ def fallback(finding: RawFinding, reason: str) -> VerifiedFinding:
 
 async def run_verifier(app: HarnessCapable, repo_path: str, finding: RawFinding, depth: str) -> VerifiedFinding:
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
-    prompt = _build_prompt(prompt_template, finding, depth)
-    result = await app.harness(prompt=prompt, schema=VerifiedFinding, cwd=repo_path)
-    verified = _extract_parsed(result)
+    prompt = (
+        _build_prompt(prompt_template, finding, depth)
+        + "\n\nCONTEXT:\n"
+        + f"- Repository path: {repo_path}\n"
+        + "- Use the repository path above for file inspection during verification."
+    )
+    agent_name = "prove-verifier"
+    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
+    try:
+        result = await app.harness(prompt=prompt, schema=VerifiedFinding, cwd=harness_cwd)
+        verified = extract_harness_result(result, VerifiedFinding, "Verifier")
 
-    if not verified.sarif_rule_id:
-        verified.sarif_rule_id = _sarif_rule_id(finding)
-    if not verified.reproduction_steps and verified.verdict != Verdict.NOT_EXPLOITABLE:
-        verified.reproduction_steps = [
-            ReproductionStep(
-                step=1,
-                description="Review vulnerable code location and trace data flow to sink.",
-                command=None,
-                expected_output="Flow reaches sensitive sink without sufficient mitigation.",
-            ),
-            ReproductionStep(
-                step=2,
-                description="Craft payload from exploit_hypothesis and execute against target path.",
-                command=None,
-                expected_output="Observed effect aligns with expected exploit outcome.",
-            ),
-        ]
-    return verified
+        if not verified.sarif_rule_id:
+            verified.sarif_rule_id = _sarif_rule_id(finding)
+        if not verified.reproduction_steps and verified.verdict != Verdict.NOT_EXPLOITABLE:
+            verified.reproduction_steps = [
+                ReproductionStep(
+                    step=1,
+                    description="Review vulnerable code location and trace data flow to sink.",
+                    command=None,
+                    expected_output="Flow reaches sensitive sink without sufficient mitigation.",
+                ),
+                ReproductionStep(
+                    step=2,
+                    description="Craft payload from exploit_hypothesis and execute against target path.",
+                    command=None,
+                    expected_output="Observed effect aligns with expected exploit outcome.",
+                ),
+            ]
+        return verified
+    finally:
+        shutil.rmtree(harness_cwd, ignore_errors=True)

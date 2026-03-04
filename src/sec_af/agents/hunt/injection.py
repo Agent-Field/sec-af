@@ -1,18 +1,16 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol, cast, runtime_checkable
+from typing import TYPE_CHECKING, Protocol
+from sec_af.agents._utils import extract_harness_result
 
 from sec_af.schemas.hunt import HuntResult
 
 if TYPE_CHECKING:
     from sec_af.schemas.recon import ReconResult
-
-
-@runtime_checkable
-class HarnessResultLike(Protocol):
-    parsed: object | None
 
 
 class HarnessCapable(Protocol):
@@ -22,18 +20,6 @@ class HarnessCapable(Protocol):
 
 
 PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "injection.txt"
-
-
-def _extract_parsed(result: object, schema: type[HuntResult]) -> HuntResult:
-    if isinstance(result, HarnessResultLike):
-        parsed = result.parsed
-        if isinstance(parsed, schema):
-            return parsed
-        if isinstance(parsed, dict):
-            return schema(**cast("dict[str, object]", parsed))
-    if isinstance(result, schema):
-        return result
-    raise TypeError("Injection hunter did not return a valid HuntResult")
 
 
 def _recon_context_block(recon_result: ReconResult) -> str:
@@ -66,5 +52,10 @@ async def run_injection_hunter(
         + "- Explore the codebase, trace data flows from sources to sinks, and identify injection points.\n"
         + "- Take multiple turns to build findings incrementally and write final JSON only when complete."
     )
-    result = await app.harness(prompt=prompt, schema=HuntResult, cwd=repo_path)
-    return _extract_parsed(result, HuntResult)
+    agent_name = "hunt-injection"
+    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
+    try:
+        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd)
+        return extract_harness_result(result, HuntResult, "Injection hunter")
+    finally:
+        shutil.rmtree(harness_cwd, ignore_errors=True)

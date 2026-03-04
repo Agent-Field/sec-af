@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol, cast, runtime_checkable
+from typing import TYPE_CHECKING, Protocol
+from sec_af.agents._utils import extract_harness_result
 
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
@@ -23,16 +26,6 @@ _AUTH_HINT_KEYWORDS = (
     "scope",
 )
 _TARGET_CWES = ["CWE-287", "CWE-306", "CWE-862", "CWE-863", "CWE-352"]
-_MAX_TURNS_BY_DEPTH = {
-    "quick": 6,
-    "standard": 10,
-    "thorough": 14,
-}
-
-
-@runtime_checkable
-class HarnessResultLike(Protocol):
-    parsed: object | None
 
 
 class HarnessCapable(Protocol):
@@ -41,21 +34,9 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-def _extract_parsed(result: object, schema: type[HuntResult]) -> HuntResult:
-    if isinstance(result, HarnessResultLike):
-        parsed = result.parsed
-        if isinstance(parsed, schema):
-            return parsed
-        if isinstance(parsed, dict):
-            return schema(**cast("dict[str, object]", parsed))
-    if isinstance(result, schema):
-        return result
-    raise TypeError("Auth hunter did not return valid findings")
-
-
 def _depth_label(depth: str) -> str:
     normalized = depth.lower().strip()
-    return normalized if normalized in _MAX_TURNS_BY_DEPTH else "standard"
+    return normalized if normalized in {"quick", "standard", "thorough"} else "standard"
 
 
 def _keyword_match(value: str) -> bool:
@@ -155,16 +136,22 @@ async def run_auth_hunter(
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     depth_label = _depth_label(depth)
     prompt = _build_prompt(prompt_template, repo_path, recon_result, depth_label)
+    agent_name = "hunt-auth"
+    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
+    try:
+        result = await app.harness(
+            prompt=prompt,
+            schema=HuntResult,
+            cwd=harness_cwd,
+        )
+        parsed = extract_harness_result(result, HuntResult, "Auth hunter")
 
-    result = await app.harness(
-        prompt=prompt, schema=HuntResult, cwd=repo_path, max_turns=_MAX_TURNS_BY_DEPTH[depth_label]
-    )
-    parsed = _extract_parsed(result, HuntResult)
-
-    return HuntResult(
-        findings=parsed.findings,
-        total_raw=len(parsed.findings),
-        deduplicated_count=len(parsed.findings),
-        chain_count=0,
-        strategies_run=[HuntStrategy.AUTH.value],
-    )
+        return HuntResult(
+            findings=parsed.findings,
+            total_raw=len(parsed.findings),
+            deduplicated_count=len(parsed.findings),
+            chain_count=0,
+            strategies_run=[HuntStrategy.AUTH.value],
+        )
+    finally:
+        shutil.rmtree(harness_cwd, ignore_errors=True)

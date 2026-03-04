@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from pathlib import Path
-from typing import Protocol, cast, runtime_checkable
+from typing import Protocol
+from sec_af.agents._utils import extract_harness_result
 
 from sec_af.schemas.recon import ArchitectureMap
-
-
-@runtime_checkable
-class HarnessResultLike(Protocol):
-    parsed: object | None
 
 
 class HarnessCapable(Protocol):
@@ -21,18 +19,6 @@ class HarnessCapable(Protocol):
 PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "recon" / "architecture.txt"
 
 
-def _extract_parsed(result: object, schema: type[ArchitectureMap]) -> ArchitectureMap:
-    if isinstance(result, HarnessResultLike):
-        parsed = result.parsed
-        if isinstance(parsed, schema):
-            return parsed
-        if isinstance(parsed, dict):
-            return schema(**cast("dict[str, object]", parsed))
-    if isinstance(result, schema):
-        return result
-    raise TypeError("Architecture mapper did not return a valid ArchitectureMap")
-
-
 async def run_architecture_mapper(app: HarnessCapable, repo_path: str) -> ArchitectureMap:
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
@@ -42,8 +28,13 @@ async def run_architecture_mapper(app: HarnessCapable, repo_path: str) -> Archit
         + "- Take multiple turns to explore the codebase first, then build your analysis.\n"
         + "- Write final JSON only when analysis is complete."
     )
-    result = await app.harness(prompt=prompt, schema=ArchitectureMap, cwd=repo_path)
-    return _extract_parsed(result, ArchitectureMap)
+    agent_name = "recon-architecture"
+    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
+    try:
+        result = await app.harness(prompt=prompt, schema=ArchitectureMap, cwd=harness_cwd)
+        return extract_harness_result(result, ArchitectureMap, "Architecture mapper")
+    finally:
+        shutil.rmtree(harness_cwd, ignore_errors=True)
 
 
 def architecture_context_block(architecture: ArchitectureMap) -> str:

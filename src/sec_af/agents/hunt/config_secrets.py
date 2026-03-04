@@ -1,18 +1,16 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol, cast, runtime_checkable
+from typing import TYPE_CHECKING, Protocol
+from sec_af.agents._utils import extract_harness_result
 
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
     from sec_af.schemas.recon import ReconResult
-
-
-@runtime_checkable
-class HarnessResultLike(Protocol):
-    parsed: object | None
 
 
 class HarnessCapable(Protocol):
@@ -22,18 +20,6 @@ class HarnessCapable(Protocol):
 
 
 PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "config_secrets.txt"
-
-
-def _extract_parsed(result: object, schema: type[HuntResult]) -> HuntResult:
-    if isinstance(result, HarnessResultLike):
-        parsed = result.parsed
-        if isinstance(parsed, schema):
-            return parsed
-        if isinstance(parsed, dict):
-            return schema(**cast("dict[str, object]", parsed))
-    if isinstance(result, schema):
-        return result
-    raise TypeError("Config/Secrets hunter did not return a valid HuntResult")
 
 
 def _recon_context_block(recon: ReconResult) -> str:
@@ -56,14 +42,19 @@ async def run_config_secrets_hunter(
         + "- ReconResult JSON:\n"
         + _recon_context_block(recon)
     )
-    result = await app.harness(prompt=prompt, schema=HuntResult, cwd=repo_path)
-    parsed = _extract_parsed(result, HuntResult)
-    if not parsed.strategies_run:
-        parsed.strategies_run = [HuntStrategy.CONFIG_SECRETS.value]
-    if parsed.total_raw <= 0:
-        parsed.total_raw = len(parsed.findings)
-    if parsed.deduplicated_count <= 0:
-        parsed.deduplicated_count = len(parsed.findings)
-    if parsed.chain_count <= 0:
-        parsed.chain_count = len(parsed.chains)
-    return parsed
+    agent_name = "hunt-config-secrets"
+    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
+    try:
+        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd)
+        parsed = extract_harness_result(result, HuntResult, "Config/Secrets hunter")
+        if not parsed.strategies_run:
+            parsed.strategies_run = [HuntStrategy.CONFIG_SECRETS.value]
+        if parsed.total_raw <= 0:
+            parsed.total_raw = len(parsed.findings)
+        if parsed.deduplicated_count <= 0:
+            parsed.deduplicated_count = len(parsed.findings)
+        if parsed.chain_count <= 0:
+            parsed.chain_count = len(parsed.chains)
+        return parsed
+    finally:
+        shutil.rmtree(harness_cwd, ignore_errors=True)
