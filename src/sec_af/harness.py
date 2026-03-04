@@ -118,6 +118,7 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
         prompt: str,
         schema: type[SchemaT],
         cwd: str,
+        project_dir: str | None = None,
         model: str | None = None,
         max_turns: int | None = None,
         max_budget_usd: float | None = None,
@@ -127,6 +128,11 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
         enhanced_prompt = _with_file_write_hint(_with_multi_turn_prompt(prompt), cwd)
 
         async def _operation() -> Any:
+            extra_kwargs: dict[str, Any] = {}
+            if self.config.opencode_server:
+                extra_kwargs["opencode_server"] = self.config.opencode_server
+            if project_dir:
+                extra_kwargs["project_dir"] = project_dir
             return await self.app.harness(
                 enhanced_prompt,
                 schema=schema,
@@ -136,6 +142,7 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
                 max_turns=max_turns or self.config.max_turns,
                 max_budget_usd=max_budget_usd,
                 env=self.config.provider_env(),
+                **extra_kwargs,
             )
 
         result = await self._run_with_retry(_operation, self.config)
@@ -171,14 +178,20 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
         tasks = [_run_request(request) for request in requests]
         return await asyncio.gather(*tasks, return_exceptions=True)
 
-    async def run_recon_analysis(self, *, prompt: str, schema: type[SchemaT], cwd: str) -> SchemaT:
-        return await self.invoke(prompt=prompt, schema=schema, cwd=cwd, phase="recon")
+    async def run_recon_analysis(
+        self, *, prompt: str, schema: type[SchemaT], cwd: str, project_dir: str | None = None
+    ) -> SchemaT:
+        return await self.invoke(prompt=prompt, schema=schema, cwd=cwd, project_dir=project_dir, phase="recon")
 
-    async def run_hunt_analysis(self, *, prompt: str, schema: type[SchemaT], cwd: str) -> SchemaT:
-        return await self.invoke(prompt=prompt, schema=schema, cwd=cwd, phase="hunt")
+    async def run_hunt_analysis(
+        self, *, prompt: str, schema: type[SchemaT], cwd: str, project_dir: str | None = None
+    ) -> SchemaT:
+        return await self.invoke(prompt=prompt, schema=schema, cwd=cwd, project_dir=project_dir, phase="hunt")
 
-    async def run_prove_analysis(self, *, prompt: str, schema: type[SchemaT], cwd: str) -> SchemaT:
-        return await self.invoke(prompt=prompt, schema=schema, cwd=cwd, phase="prove")
+    async def run_prove_analysis(
+        self, *, prompt: str, schema: type[SchemaT], cwd: str, project_dir: str | None = None
+    ) -> SchemaT:
+        return await self.invoke(prompt=prompt, schema=schema, cwd=cwd, project_dir=project_dir, phase="prove")
 
 
 class AIGateWrapper(_RetryMixin):

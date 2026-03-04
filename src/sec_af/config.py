@@ -91,6 +91,9 @@ class AIIntegrationConfig(BaseModel):
     )
     max_backoff_seconds: float = Field(default_factory=lambda: float(os.getenv("SEC_AF_AI_MAX_BACKOFF_SECONDS", "8.0")))
     opencode_bin: str = Field(default_factory=lambda: os.getenv("SEC_AF_OPENCODE_BIN", "opencode"))
+    opencode_server: str | None = Field(
+        default_factory=lambda: os.getenv("SEC_AF_OPENCODE_SERVER", os.getenv("OPENCODE_SERVER")),
+    )
 
     @classmethod
     def from_env(cls) -> "AIIntegrationConfig":

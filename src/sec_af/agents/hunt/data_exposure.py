@@ -43,7 +43,7 @@ async def run_data_exposure_hunter(
     agent_name = "hunt-data-exposure"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd)
+        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd, project_dir=repo_path)
         parsed = extract_harness_result(result, HuntResult, "Data Exposure Hunter")
         if not parsed.strategies_run:
             parsed.strategies_run = ["data_exposure"]

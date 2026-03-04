@@ -41,6 +41,8 @@ results/
 
 # Pipeline output
 .claude_output_*.json
+.secaf-out-*/
+.agentfield_output.json
 
 # Worktrees
 .worktrees/

@@ -47,7 +47,7 @@ async def run_crypto_hunter(app: HarnessCapable, repo_path: str, recon: ReconRes
     agent_name = "hunt-crypto"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd)
+        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd, project_dir=repo_path)
         parsed = extract_harness_result(result, HuntResult, "Crypto hunter")
 
         if not parsed.strategies_run:

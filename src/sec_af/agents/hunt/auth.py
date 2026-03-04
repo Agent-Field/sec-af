@@ -143,6 +143,7 @@ async def run_auth_hunter(
             prompt=prompt,
             schema=HuntResult,
             cwd=harness_cwd,
+            project_dir=repo_path,
         )
         parsed = extract_harness_result(result, HuntResult, "Auth hunter")
 

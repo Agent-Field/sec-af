@@ -36,7 +36,7 @@ async def run_security_context_profiler(
     agent_name = "recon-security-context"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=SecurityContext, cwd=harness_cwd)
+        result = await app.harness(prompt=prompt, schema=SecurityContext, cwd=harness_cwd, project_dir=repo_path)
         return extract_harness_result(result, SecurityContext, "Security context profiler")
     finally:
         shutil.rmtree(harness_cwd, ignore_errors=True)

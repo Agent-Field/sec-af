@@ -31,7 +31,7 @@ async def run_architecture_mapper(app: HarnessCapable, repo_path: str) -> Archit
     agent_name = "recon-architecture"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=ArchitectureMap, cwd=harness_cwd)
+        result = await app.harness(prompt=prompt, schema=ArchitectureMap, cwd=harness_cwd, project_dir=repo_path)
         return extract_harness_result(result, ArchitectureMap, "Architecture mapper")
     finally:
         shutil.rmtree(harness_cwd, ignore_errors=True)

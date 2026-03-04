@@ -142,6 +142,9 @@ async def deduplicate_and_correlate(
     chains: list[PotentialChain] = []
 
     if deduplicated:
+        import shutil
+        import tempfile
+
         prompt = (
             "You are SEC-AF's deduplicator/correlator.\n"
             "Take multiple turns:\n"
@@ -151,14 +154,19 @@ async def deduplicate_and_correlate(
             f"Recon context:\n{recon.model_dump_json()}\n\n"
             f"Deduplicated candidate findings:\n{json.dumps([f.model_dump() for f in deduplicated])}"
         )
+        harness_cwd = tempfile.mkdtemp(prefix="secaf-dedup-")
         try:
-            harness_result = await app.harness(prompt, schema=DeduplicatedResult, cwd=repo_path)
+            harness_result = await app.harness(
+                prompt, schema=DeduplicatedResult, cwd=harness_cwd, project_dir=repo_path
+            )
             parsed = _extract_dedup_payload(harness_result)
             if parsed is not None:
                 deduplicated = parsed.findings or deduplicated
                 chains = parsed.chains
         except Exception:
             chains = []
+        finally:
+            shutil.rmtree(harness_cwd, ignore_errors=True)
 
     if not chains:
         chains = _fallback_correlate(deduplicated)

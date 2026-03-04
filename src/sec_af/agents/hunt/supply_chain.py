@@ -50,7 +50,7 @@ async def run_supply_chain_hunter(app: HarnessCapable, repo_path: str, recon: Re
     agent_name = "hunt-supply-chain"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd)
+        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd, project_dir=repo_path)
         hunt_result = extract_harness_result(result, HuntResult, "Supply Chain Hunter")
 
         if not hunt_result.strategies_run:

@@ -388,7 +388,7 @@ def _verified_finding_fallback(finding: RawFinding) -> VerifiedFinding:
         cwe_id=finding.cwe_id,
         cwe_name=finding.cwe_name,
         owasp_category=finding.owasp_category,
-        tags=set(),
+        tags=[],
         verdict=Verdict.INCONCLUSIVE,
         evidence_level=EvidenceLevel.STATIC_MATCH,
         rationale="Automated proof unavailable; requires manual review.",

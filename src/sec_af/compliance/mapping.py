@@ -357,21 +357,11 @@ def get_compliance_mappings(
         return [mapping.model_copy(deep=True) for mapping in mappings]
 
     allowed = {_normalize_framework(framework) for framework in frameworks}
-    return [
-        mapping.model_copy(deep=True)
-        for mapping in mappings
-        if _normalize_framework(mapping.framework) in allowed
-    ]
+    return [mapping.model_copy(deep=True) for mapping in mappings if _normalize_framework(mapping.framework) in allowed]
 
 
 def get_supported_frameworks() -> list[str]:
-    return sorted(
-        {
-            mapping.framework
-            for mappings in COMPLIANCE_MAP.values()
-            for mapping in mappings
-        }
-    )
+    return sorted({mapping.framework for mappings in COMPLIANCE_MAP.values() for mapping in mappings})
 
 
 def _read_field(finding: dict[str, Any] | Any, field_name: str) -> Any:
@@ -402,12 +392,13 @@ def get_compliance_gaps(
                 aggregated[key] = {
                     "count": 0,
                     "max_severity": "info",
-                    "cwe_ids": set(),
+                    "cwe_ids": [],
                 }
 
             entry = aggregated[key]
             entry["count"] += 1
-            entry["cwe_ids"].add(normalized_cwe)
+            if normalized_cwe not in entry["cwe_ids"]:
+                entry["cwe_ids"].append(normalized_cwe)
 
             current_rank = _SEVERITY_RANK.get(entry["max_severity"], 0)
             new_rank = _SEVERITY_RANK.get(severity, 0)
@@ -425,6 +416,4 @@ def get_compliance_gaps(
         )
         for (framework, control_id, control_name), data in aggregated.items()
     ]
-    return sorted(
-        gaps, key=lambda gap: (gap.framework, gap.control_id, gap.control_name)
-    )
+    return sorted(gaps, key=lambda gap: (gap.framework, gap.control_id, gap.control_name))

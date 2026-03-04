@@ -114,7 +114,13 @@ async def audit(
         fail_on_findings=fail_on_findings,
     )
     orchestrator = AuditOrchestrator(app=app, input=audit_input)
-    repo_path = str(Path(os.getenv("SEC_AF_REPO_PATH", os.getcwd())).resolve())
+    repo_path = (
+        str(Path(repo_url).resolve())
+        if os.path.isdir(repo_url)
+        else str(Path(os.getenv("SEC_AF_REPO_PATH", os.getcwd())).resolve())
+    )
+    orchestrator.repo_path = Path(repo_path)
+    orchestrator.checkpoint_dir = orchestrator.repo_path / ".sec-af"
     try:
         if isinstance(resume_from_checkpoint, str) and resume_from_checkpoint.strip():
             result = await orchestrator.run_from_checkpoint(resume_from_checkpoint)

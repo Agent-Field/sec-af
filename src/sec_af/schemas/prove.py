@@ -167,7 +167,7 @@ class VerifiedFinding(BaseModel):
     cwe_id: str
     cwe_name: str
     owasp_category: str | None = None
-    tags: set[str] = Field(default_factory=set)
+    tags: list[str] = Field(default_factory=list)
     verdict: Verdict
     evidence_level: EvidenceLevel
     rationale: str

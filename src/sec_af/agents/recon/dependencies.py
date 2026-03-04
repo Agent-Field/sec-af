@@ -30,7 +30,7 @@ async def run_dependency_auditor(app: HarnessCapable, repo_path: str) -> Depende
     agent_name = "recon-dependencies"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=DependencyReport, cwd=harness_cwd)
+        result = await app.harness(prompt=prompt, schema=DependencyReport, cwd=harness_cwd, project_dir=repo_path)
         return extract_harness_result(result, DependencyReport, "Dependency auditor")
     finally:
         shutil.rmtree(harness_cwd, ignore_errors=True)

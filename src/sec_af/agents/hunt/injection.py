@@ -55,7 +55,7 @@ async def run_injection_hunter(
     agent_name = "hunt-injection"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd)
+        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd, project_dir=repo_path)
         return extract_harness_result(result, HuntResult, "Injection hunter")
     finally:
         shutil.rmtree(harness_cwd, ignore_errors=True)

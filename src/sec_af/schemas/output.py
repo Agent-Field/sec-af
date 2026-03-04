@@ -3,16 +3,15 @@
 See DESIGN.md §7 and §12.3 for output payloads and progress reporting.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
-from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
 from .compliance import ComplianceGap
 from .hunt import Severity
-
-if TYPE_CHECKING:
-    from .prove import VerifiedFinding
+from .prove import VerifiedFinding  # noqa: F401 — needed for Pydantic forward ref resolution
 
 
 class Location(BaseModel):
@@ -99,6 +98,10 @@ class SecurityAuditResult(BaseModel):
     cost_usd: float = 0.0
     cost_breakdown: dict[str, float] = Field(default_factory=dict)
     sarif: str
+
+
+# Resolve forward references now that VerifiedFinding is available
+SecurityAuditResult.model_rebuild()
 
 
 class AuditProgress(BaseModel):

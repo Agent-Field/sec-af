@@ -120,7 +120,7 @@ async def run_verifier(app: HarnessCapable, repo_path: str, finding: RawFinding,
     agent_name = "prove-verifier"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=VerifiedFinding, cwd=harness_cwd)
+        result = await app.harness(prompt=prompt, schema=VerifiedFinding, cwd=harness_cwd, project_dir=repo_path)
         verified = extract_harness_result(result, VerifiedFinding, "Verifier")
 
         if not verified.sarif_rule_id:
