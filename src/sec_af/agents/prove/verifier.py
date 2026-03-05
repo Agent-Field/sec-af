@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-import json
-import shutil
-import tempfile
-from pathlib import Path
+import asyncio
 from typing import TYPE_CHECKING, Protocol
-from sec_af.agents._utils import extract_harness_result
 
-from sec_af.schemas.prove import EvidenceLevel, Location, ReproductionStep, Verdict, VerifiedFinding
+from sec_af.schemas.prove import DataFlowTrace, EvidenceLevel, Location, ReproductionStep, Verdict, VerifiedFinding
+
+from .assembler import assemble_verified_finding
+from .exploit import run_exploit_hypothesizer
+from .sanitization import run_sanitization_analyzer
+from .tracer import run_tracer
+from .verdict import run_verdict_agent
 
 if TYPE_CHECKING:
     from sec_af.schemas.hunt import RawFinding
@@ -24,61 +26,9 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "prove" / "verifier.txt"
-
-_VERIFICATION_METHODS: dict[str, str] = {
-    "sast": "Trace source-to-sink flow, validate sanitization, and construct exploit scenario.",
-    "api": "Trace request lifecycle and authorization checks, then validate abuse path.",
-    "sca": "Confirm vulnerable version and reachability of vulnerable call chain.",
-    "secrets": "Validate secret format/context and determine whether credential is likely real and actionable.",
-    "config": "Verify active runtime config and whether secure overrides or mitigations apply.",
-    "logic": "Reason through state transitions and attacker-controlled sequencing.",
-}
-
-
 def _sarif_rule_id(finding: RawFinding) -> str:
     cwe_slug = finding.cwe_name.lower().replace(" ", "-").replace("/", "-")
     return f"sec-af/{finding.finding_type.value}/{cwe_slug}"
-
-
-def _finding_data_flow(finding: RawFinding) -> str:
-    if not finding.data_flow:
-        return "[]"
-    rows = [
-        {
-            "file_path": step.file_path,
-            "line": step.line,
-            "component": step.component,
-            "operation": step.operation,
-        }
-        for step in finding.data_flow
-    ]
-    return json.dumps(rows, indent=2)
-
-
-def _build_prompt(template: str, finding: RawFinding, depth: str) -> str:
-    verification_method = _VERIFICATION_METHODS.get(
-        finding.finding_type.value,
-        "Trace data/control flow and verify exploitability with evidence.",
-    )
-    replacements = {
-        "{{TITLE}}": finding.title,
-        "{{DESCRIPTION}}": finding.description,
-        "{{CWE_ID}}": finding.cwe_id,
-        "{{CWE_NAME}}": finding.cwe_name,
-        "{{FILE_PATH}}": finding.file_path,
-        "{{START_LINE}}": str(finding.start_line),
-        "{{CODE_SNIPPET}}": finding.code_snippet,
-        "{{FINDING_TYPE}}": finding.finding_type.value,
-        "{{VERIFICATION_METHOD}}": verification_method,
-        "{{RELATED_FILES}}": json.dumps(finding.related_files, indent=2),
-        "{{DATA_FLOW_JSON}}": _finding_data_flow(finding),
-        "{{DEPTH}}": depth,
-    }
-    prompt = template
-    for needle, value in replacements.items():
-        prompt = prompt.replace(needle, value)
-    return prompt
 
 
 def fallback(
@@ -122,36 +72,57 @@ def fallback(
 
 
 async def run_verifier(app: HarnessCapable, repo_path: str, finding: RawFinding, depth: str) -> VerifiedFinding:
-    prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
-    prompt = (
-        _build_prompt(prompt_template, finding, depth)
-        + "\n\nCONTEXT:\n"
-        + f"- Repository path: {repo_path}\n"
-        + "- Use the repository path above for file inspection during verification."
+    tracer_task = run_tracer(app=app, repo_path=repo_path, finding=finding, depth=depth)
+    seed_trace = DataFlowTrace(
+        source=f"{finding.file_path}:{finding.start_line}",
+        sink=finding.function_name or finding.file_path,
+        steps=[f"{step.file_path}:{step.line} {step.operation}" for step in finding.data_flow]
+        if finding.data_flow
+        else [],
+        sink_reached=False,
     )
-    agent_name = "prove-verifier"
-    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
-    try:
-        result = await app.harness(prompt=prompt, schema=VerifiedFinding, cwd=harness_cwd, project_dir=repo_path)
-        verified = extract_harness_result(result, VerifiedFinding, "Verifier")
+    sanitization_task = run_sanitization_analyzer(
+        app=app,
+        repo_path=repo_path,
+        finding=finding,
+        data_flow_trace=seed_trace,
+        depth=depth,
+    )
+    data_flow_trace, sanitization = await asyncio.gather(tracer_task, sanitization_task)
 
-        if not verified.sarif_rule_id:
-            verified.sarif_rule_id = _sarif_rule_id(finding)
-        if not verified.reproduction_steps and verified.verdict != Verdict.NOT_EXPLOITABLE:
-            verified.reproduction_steps = [
-                ReproductionStep(
-                    step=1,
-                    description="Review vulnerable code location and trace data flow to sink.",
-                    command=None,
-                    expected_output="Flow reaches sensitive sink without sufficient mitigation.",
-                ),
-                ReproductionStep(
-                    step=2,
-                    description="Craft payload from exploit_hypothesis and execute against target path.",
-                    command=None,
-                    expected_output="Observed effect aligns with expected exploit outcome.",
-                ),
-            ]
-        return verified
-    finally:
-        shutil.rmtree(harness_cwd, ignore_errors=True)
+    exploit = await run_exploit_hypothesizer(
+        app=app,
+        repo_path=repo_path,
+        finding=finding,
+        data_flow_trace=data_flow_trace,
+        sanitization=sanitization,
+        depth=depth,
+    )
+    verdict = await run_verdict_agent(
+        app=app,
+        repo_path=repo_path,
+        finding=finding,
+        data_flow=data_flow_trace,
+        sanitization=sanitization,
+        exploit=exploit,
+    )
+    verified = assemble_verified_finding(finding, data_flow_trace, sanitization, exploit, verdict)
+
+    if not verified.sarif_rule_id:
+        verified.sarif_rule_id = _sarif_rule_id(finding)
+    if not verified.reproduction_steps and verified.verdict != Verdict.NOT_EXPLOITABLE:
+        verified.reproduction_steps = [
+            ReproductionStep(
+                step=1,
+                description="Review vulnerable code location and trace data flow to sink.",
+                command=None,
+                expected_output="Flow reaches sensitive sink without sufficient mitigation.",
+            ),
+            ReproductionStep(
+                step=2,
+                description="Craft payload from exploit_hypothesis and execute against target path.",
+                command=None,
+                expected_output="Observed effect aligns with expected exploit outcome.",
+            ),
+        ]
+    return verified

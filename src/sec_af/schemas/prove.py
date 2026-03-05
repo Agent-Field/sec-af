@@ -32,6 +32,47 @@ class EvidenceLevel(IntEnum):
     FULL_EXPLOIT = 6
 
 
+class DataFlowTrace(BaseModel):
+    """Flat schema for data flow tracing sub-agent. 4 fields."""
+
+    source: str = Field(description="Where tainted input enters (e.g. 'request.params.id')")
+    sink: str = Field(description="Security-sensitive operation reached (e.g. 'sql.execute(query)')")
+    steps: list[str] = Field(description="Ordered list of file:line descriptions showing flow path")
+    sink_reached: bool = Field(description="Whether tainted data actually reaches the sink")
+
+
+class SanitizationResult(BaseModel):
+    """Flat schema for sanitization analysis sub-agent. 4 fields."""
+
+    found: bool = Field(description="Whether any sanitization/validation was found on the path")
+    type: str | None = Field(
+        default=None,
+        description="Type of sanitization (e.g. 'parameterized query', 'html encoding')",
+    )
+    sufficient: bool | None = Field(
+        default=None,
+        description="Whether sanitization is sufficient to prevent exploit",
+    )
+    bypass_method: str | None = Field(default=None, description="How sanitization could be bypassed, if applicable")
+
+
+class ExploitHypothesis(BaseModel):
+    """Flat schema for exploit construction sub-agent. 3 fields."""
+
+    hypothesis: str = Field(description="Natural language description of exploit scenario")
+    payload: str | None = Field(default=None, description="Concrete exploit payload or input")
+    expected_outcome: str = Field(description="What would happen if exploit succeeds")
+
+
+class VerdictDecision(BaseModel):
+    """Flat schema for verdict sub-agent. Uses .ai() not .harness(). 4 fields."""
+
+    verdict: str = Field(description='One of: "confirmed", "likely", "inconclusive", "not_exploitable"')
+    evidence_level: int = Field(description="1-6 scale: 1=STATIC_MATCH to 6=FULL_EXPLOIT")
+    rationale: str
+    confidence: str = Field(description='One of: "high", "medium", "low"')
+
+
 class DataFlowStep(BaseModel):
     """DESIGN.md §6.4 one step in source-to-sink proof trace."""
 
