@@ -118,6 +118,7 @@ class RawFinding(BaseModel):
         return FindingForVerifier(
             id=self.id,
             title=self.title,
+            description=self.description,
             file_path=self.file_path,
             start_line=self.start_line,
             end_line=self.end_line,
