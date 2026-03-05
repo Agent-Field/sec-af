@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable
 
+from sec_af.agents.hunt._language_hints import get_language_hints
 from sec_af.schemas.hunt import HuntStrategy
 from sec_af.schemas.recon import KnownCVE, ReconResult
 
@@ -406,6 +407,11 @@ def recon_context_generic(recon: ReconResult) -> str:
             ),
         ]
     )
+
+
+def language_hints_for_context(recon: ReconResult) -> str:
+    """Build language-specific hints from recon-detected languages."""
+    return get_language_hints(recon.languages)
 
 
 def get_context_for_strategy(strategy: HuntStrategy, recon: ReconResult) -> str:

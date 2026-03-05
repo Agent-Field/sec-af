@@ -47,6 +47,8 @@ OUTPUT REQUIREMENTS:
 - Populate file_path, start_line, end_line, code_snippet, and related_files whenever possible.
 - Generate stable fingerprints from vulnerability identity and location.
 
+{{LANGUAGE_HINTS}}
+
 CONSTRAINTS:
 - Take multiple turns: investigate workflow intent, validate exploitability, then produce findings.
 - Prefer high-confidence findings over speculative broad coverage.

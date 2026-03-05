@@ -44,6 +44,8 @@ OUTPUT:
 - findings must contain RawFinding entries with evidence-backed descriptions and correct CWE mapping.
 - hunter_strategy should be "crypto".
 
+{{LANGUAGE_HINTS}}
+
 CONSTRAINTS:
 - Take multiple turns: first discover crypto-relevant files, then evaluate exploitability context.
 - Prefer concrete evidence (file path, line range, code snippet, why risky in context).

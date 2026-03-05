@@ -35,6 +35,8 @@ OUTPUT:
 - Keep HuntResult metadata coherent (total_raw, deduplicated_count, chain_count, strategies_run,
   hunt_duration_seconds).
 
+{{LANGUAGE_HINTS}}
+
 CONSTRAINTS:
 - Take multiple turns: explore resource-intensive paths, validate missing bounds, then construct final findings.
 - Prefer high confidence only when unbounded or weakly bounded behavior is proven in code.

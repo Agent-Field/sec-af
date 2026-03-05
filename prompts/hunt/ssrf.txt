@@ -31,6 +31,8 @@ OUTPUT:
 - Keep HuntResult metadata coherent (total_raw, deduplicated_count, chain_count, strategies_run,
   hunt_duration_seconds).
 
+{{LANGUAGE_HINTS}}
+
 CONSTRAINTS:
 - Take multiple turns: explore the codebase, trace data flows from sources to sinks, identify SSRF points,
   then construct final findings.

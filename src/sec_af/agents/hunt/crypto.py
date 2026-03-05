@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 from sec_af.agents._utils import extract_harness_result
-from sec_af.context import recon_context_for_crypto
+from sec_af.context import language_hints_for_context, recon_context_for_crypto
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
@@ -62,14 +62,41 @@ async def run_crypto_hunter(
     if not should_run_crypto_hunter(recon):
         return HuntResult()
 
+    security_usage_candidates = [
+        usage
+        for usage in recon.security_context.crypto_usage
+        if any(term in (usage.usage_context or "").lower() for term in _SECURITY_CRITICAL_TERMS)
+    ]
+    non_security_usage_candidates = [
+        usage
+        for usage in recon.security_context.crypto_usage
+        if any(term in (usage.usage_context or "").lower() for term in _NON_SECURITY_TERMS)
+    ]
+
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
-        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_crypto(recon))
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_crypto(recon)).replace(
+            "{{LANGUAGE_HINTS}}", language_hints_for_context(recon)
+        )
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Hunt strategy: crypto\n"
         + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible crypto misuse, stop and return empty findings.\n"
         + "- Focus CWEs: CWE-326, CWE-327, CWE-328, CWE-330, CWE-916, CWE-259, CWE-321, CWE-798\n"
+        + "- Security-critical usage candidates: "
+        + (
+            ", ".join((usage.usage_context or usage.algorithm) for usage in security_usage_candidates)
+            if security_usage_candidates
+            else "none"
+        )
+        + "\n"
+        + "- Non-security usage candidates: "
+        + (
+            ", ".join((usage.usage_context or usage.algorithm) for usage in non_security_usage_candidates)
+            if non_security_usage_candidates
+            else "none"
+        )
+        + "\n"
         + "- Prioritize weak crypto findings only when used in security-sensitive contexts; avoid checksum/cache-only noise.\n"
         + "- Take multiple turns to explore relevant files before finalizing findings.\n"
         + "- Write final JSON only when analysis is complete."

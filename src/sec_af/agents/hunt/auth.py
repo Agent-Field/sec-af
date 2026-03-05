@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 from sec_af.agents._utils import extract_harness_result
-from sec_af.context import recon_context_for_auth
+from sec_af.context import language_hints_for_context, recon_context_for_auth
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
@@ -33,6 +33,7 @@ def _build_prompt(template: str, repo_path: str, recon_result: ReconResult, dept
         .replace("{{DEPTH}}", _depth_label(depth))
         .replace("{{TARGET_CWES}}", ", ".join(_TARGET_CWES))
         .replace("{{RECON_CONTEXT}}", recon_context_for_auth(recon_result))
+        .replace("{{LANGUAGE_HINTS}}", language_hints_for_context(recon_result))
     )
 
 

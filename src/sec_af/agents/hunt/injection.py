@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 from sec_af.agents._utils import extract_harness_result
-from sec_af.context import recon_context_for_injection
+from sec_af.context import language_hints_for_context, recon_context_for_injection
 from sec_af.schemas.hunt import HuntResult
 
 if TYPE_CHECKING:
@@ -31,7 +31,9 @@ async def run_injection_hunter(
 ) -> HuntResult:
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
-        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_injection(recon_result))
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_injection(recon_result)).replace(
+            "{{LANGUAGE_HINTS}}", language_hints_for_context(recon_result)
+        )
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + f"- Depth profile: {depth}\n"

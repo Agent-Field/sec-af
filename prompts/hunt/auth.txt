@@ -39,6 +39,8 @@ DO NOT FLAG:
 - Endpoints covered by router/global auth middleware where enforcement is clearly present.
 - Endpoints explicitly marked as test/demo fixtures when not active in production paths.
 
+{{LANGUAGE_HINTS}}
+
 OUTPUT FORMAT:
 - Return JSON only matching HuntResult.
 - Populate `findings` with RawFinding entries for this strategy.

@@ -35,6 +35,8 @@ OUTPUT REQUIREMENTS:
 - Fill file_path, start_line, end_line, code_snippet, and related_files whenever possible.
 - Generate stable fingerprints from vulnerability identity and location.
 
+{{LANGUAGE_HINTS}}
+
 CONSTRAINTS:
 - Take multiple turns: explore code first, validate workflows, then build findings incrementally.
 - Prefer high-confidence findings over broad coverage.

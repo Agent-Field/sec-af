@@ -32,6 +32,8 @@ OUTPUT:
 - Include endpoint-specific evidence (method/path, file_path, lines, and relevant snippets).
 - Include attack chains only when there is concrete multi-step linkage.
 
+{{LANGUAGE_HINTS}}
+
 CONSTRAINTS:
 - Take multiple turns to inspect files before drafting findings.
 - Prefer confirmed code evidence over heuristics.

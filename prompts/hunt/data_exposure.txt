@@ -41,6 +41,8 @@ DO NOT FLAG:
 - Error verbosity that is clearly limited to development/local debug mode
 - HTTPS URLs or TLS-enabled transmissions
 
+{{LANGUAGE_HINTS}}
+
 CONSTRAINTS:
 - Take multiple turns: inspect relevant files first, then produce findings.
 - Prefer evidence over assumptions; if uncertain, lower confidence.
