@@ -9,7 +9,7 @@ from sec_af.agents.prove.sanitization import run_sanitization_analyzer as _run_s
 from sec_af.agents.prove.tracer import run_tracer as _run_tracer
 from sec_af.agents.prove.verifier import run_verifier as _run_verifier
 from sec_af.agents.prove.verdict import run_verdict_agent as _run_verdict_agent
-from sec_af.schemas.hunt import RawFinding
+from sec_af.schemas.hunt import Confidence, FindingType, RawFinding, Severity
 from sec_af.schemas.prove import (
     DataFlowTrace,
     ExploitHypothesis,
@@ -17,10 +17,35 @@ from sec_af.schemas.prove import (
     SanitizationResult,
     VerifiedFinding,
 )
+from sec_af.schemas.views import FindingForVerifier
 
 from . import router
 
 _runtime_router: Any = router
+
+
+def _coerce_verifier_finding(finding: dict[str, Any]) -> RawFinding:
+    try:
+        return RawFinding.model_validate(finding)
+    except Exception:
+        view = FindingForVerifier.model_validate(finding)
+        return RawFinding(
+            id=view.id,
+            hunter_strategy="phase_boundary_projection",
+            title=view.title,
+            description=view.data_flow_summary or view.title,
+            finding_type=FindingType.SAST,
+            cwe_id=view.cwe_id,
+            cwe_name=view.cwe_id,
+            file_path=view.file_path,
+            start_line=view.start_line,
+            end_line=view.end_line,
+            function_name=view.function_name,
+            code_snippet=view.code_snippet,
+            estimated_severity=Severity.MEDIUM,
+            confidence=Confidence.MEDIUM,
+            fingerprint=view.id,
+        )
 
 
 @router.reasoner()
@@ -35,7 +60,7 @@ async def run_dep_reachability(repo_path: str, finding: dict[str, Any], depth: s
 async def run_verifier(repo_path: str, finding: dict[str, Any], depth: str) -> dict[str, Any]:
     runtime_router = _runtime_router
     runtime_router.note("Verifier starting", tags=["prove", "verifier"])
-    finding_model = RawFinding(**finding)
+    finding_model = _coerce_verifier_finding(finding)
     result = await _run_verifier(runtime_router, repo_path, finding_model, depth)
     return result.model_dump()
 

@@ -74,6 +74,7 @@ from .recon import (
 from .recon import (
     DataFlowStep as ReconDataFlowStep,
 )
+from .views import FindingForDedup, FindingForReachability, FindingForVerifier
 
 __all__ = [
     "APIEndpoint",
@@ -102,6 +103,9 @@ __all__ = [
     "EntryPoint",
     "EpssScore",
     "EvidenceLevel",
+    "FindingForDedup",
+    "FindingForReachability",
+    "FindingForVerifier",
     "FindingType",
     "HttpEvidence",
     "HuntResult",
