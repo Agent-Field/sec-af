@@ -207,4 +207,67 @@ async def run_hunt(
     return deduplicated
 
 
-__all__ = ["run_hunt"]
+async def run_hunt_streaming(
+    app: HarnessCapable,
+    repo_path: str,
+    recon_result: ReconResult,
+    findings_queue: asyncio.Queue[list[RawFinding] | None],
+    depth: str,
+    max_concurrent_hunters: int = 4,
+    early_stop_file_threshold: int = 30,
+    include_paths: list[str] | None = None,
+) -> HuntResult:
+    started = time.monotonic()
+    profile = _normalize_depth(depth)
+    strategies = _select_strategies(profile)
+
+    concurrency_limit = max(1, min(max_concurrent_hunters, len(strategies)))
+    semaphore = asyncio.Semaphore(concurrency_limit)
+
+    all_raw_findings: list[RawFinding] = []
+    fingerprint_deduped: dict[str, RawFinding] = {}
+    dedup_lock = asyncio.Lock()
+
+    async def _run_and_push(strategy: HuntStrategy) -> None:
+        async with semaphore:
+            findings = await _run_single_hunter(
+                _STRATEGY_RUNNERS[strategy],
+                app=app,
+                repo_path=repo_path,
+                recon_result=recon_result,
+                depth=profile,
+                early_stop_file_threshold=early_stop_file_threshold,
+                include_paths=include_paths,
+            )
+
+        new_findings: list[RawFinding] = []
+        async with dedup_lock:
+            all_raw_findings.extend(findings)
+            for finding in findings:
+                fingerprint = finding.fingerprint or f"{finding.file_path}:{finding.start_line}:{finding.cwe_id}"
+                finding.fingerprint = fingerprint
+                if fingerprint not in fingerprint_deduped:
+                    fingerprint_deduped[fingerprint] = finding
+                    new_findings.append(finding)
+
+        if new_findings:
+            await findings_queue.put(new_findings)
+
+    tasks = [asyncio.create_task(_run_and_push(strategy)) for strategy in strategies]
+    await asyncio.gather(*tasks, return_exceptions=True)
+    await findings_queue.put(None)
+
+    deduplicated = await deduplicate_and_correlate(list(fingerprint_deduped.values()), recon_result, app, repo_path)
+    if include_paths:
+        normalized = {path.strip() for path in include_paths if path and path.strip()}
+        deduplicated.findings = [finding for finding in deduplicated.findings if finding.file_path in normalized]
+
+    deduplicated.total_raw = len(all_raw_findings)
+    deduplicated.deduplicated_count = len(deduplicated.findings)
+    deduplicated.chain_count = len(deduplicated.chains)
+    deduplicated.strategies_run = [strategy.value for strategy in strategies]
+    deduplicated.hunt_duration_seconds = time.monotonic() - started
+    return deduplicated
+
+
+__all__ = ["run_hunt", "run_hunt_streaming"]

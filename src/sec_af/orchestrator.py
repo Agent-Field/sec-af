@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import time
@@ -25,7 +26,7 @@ from .schemas.hunt import Confidence, HuntResult, HuntStrategy, RawFinding, Seve
 from .schemas.input import AuditInput  # noqa: TC001
 from .schemas.output import AttackChain, AuditProgress, SecurityAuditResult
 from .schemas.prove import EvidenceLevel, Location, Verdict, VerifiedFinding
-from .schemas.recon import ReconResult
+from .schemas.recon import DataFlowMap, ReconResult, SecurityContext
 from .scoring import compute_exploitability_score
 
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
@@ -79,15 +80,39 @@ class AuditOrchestrator:
         self.ai_gate = AIGateWrapper(app=self.app)
 
     async def run(self) -> SecurityAuditResult:
-        self.app.note("Starting SEC-AF orchestrator", tags=["audit", "start"])
-        recon = await self._run_recon()
+        self.app.note("Starting SEC-AF streaming orchestrator", tags=["audit", "start", "streaming"])
+
+        fast_recon = await self._run_fast_recon()
+        self._write_checkpoint("recon_fast", fast_recon)
+
+        findings_queue: asyncio.Queue[list[RawFinding] | None] = asyncio.Queue()
+
+        deep_task = asyncio.create_task(self._run_deep_recon_async(fast_recon))
+        hunt_task = asyncio.create_task(self._run_hunt_streaming(fast_recon, findings_queue))
+        prove_task = asyncio.create_task(self._run_prove_streaming(findings_queue))
+
+        deep_result, hunt, verified = await asyncio.gather(deep_task, hunt_task, prove_task)
+        self.findings_not_verified = max(0, len(hunt.findings) - len(verified))
+
+        recon = self._merge_recon(fast_recon, deep_result)
         self._write_checkpoint("recon", recon)
-
-        hunt = await self._run_hunt(recon)
         self._write_checkpoint("hunt", hunt)
-
-        verified = await self._run_prove(recon, hunt)
         self._write_checkpoint("prove", verified)
+
+        await self._assess_reachability_parallel(verified)
+
+        self.prove_drop_summary = {"demoted_total": 0, "by_reason": {}, "findings": []}
+        for finding in verified:
+            if finding.drop_reason:
+                self._track_drop(
+                    finding_title=finding.title,
+                    original_verdict=None,
+                    reason=finding.drop_reason,
+                )
+
+        if getattr(self.input, "enable_dast", False):
+            self.app.note("DAST-like runtime verification enabled", tags=["audit", "prove", "dast"])
+            await self._run_dast_verification(verified)
 
         result = await self._generate_output(recon=recon, hunt=hunt, verified=verified)
         self.app.note("SEC-AF audit complete", tags=["audit", "complete"])
@@ -136,6 +161,104 @@ class AuditOrchestrator:
         )
         self._emit_progress(phase="recon", agents_total=1, agents_completed=1, findings_so_far=0)
         return recon
+
+    async def _run_fast_recon(self) -> ReconResult:
+        self.app.note("Phase: FAST RECON", tags=["audit", "recon", "fast"])
+        if self.is_pr_mode:
+            cached = self._try_load_cached_recon()
+            if cached is not None:
+                self.app.note("Using cached recon for PR-mode", tags=["audit", "recon", "cached"])
+                self._emit_progress(phase="recon", agents_total=2, agents_completed=1, findings_so_far=0)
+                return cached
+        from .agents.recon import run_fast_recon
+
+        fast = await run_fast_recon(
+            app=_PhaseHarnessProxy(self, "recon"),
+            repo_path=str(self.repo_path),
+        )
+        self._emit_progress(phase="recon", agents_total=2, agents_completed=1, findings_so_far=0)
+        return fast
+
+    async def _run_deep_recon_async(self, fast_recon: ReconResult) -> tuple[DataFlowMap, SecurityContext]:
+        if self.config.depth == DepthProfile.QUICK:
+            return fast_recon.data_flows, fast_recon.security_context
+
+        from .agents.recon import run_deep_recon
+
+        result = await run_deep_recon(
+            app=_PhaseHarnessProxy(self, "recon"),
+            repo_path=str(self.repo_path),
+            architecture=fast_recon.architecture,
+        )
+        self._emit_progress(phase="recon", agents_total=2, agents_completed=2, findings_so_far=0)
+        return result
+
+    def _merge_recon(self, fast: ReconResult, deep_result: tuple[DataFlowMap, SecurityContext]) -> ReconResult:
+        data_flows, security_context = deep_result
+        frameworks = sorted({item for item in security_context.framework_security if item})
+        return ReconResult(
+            architecture=fast.architecture,
+            data_flows=data_flows,
+            dependencies=fast.dependencies,
+            config=fast.config,
+            security_context=security_context,
+            languages=fast.languages,
+            frameworks=frameworks,
+            lines_of_code=fast.lines_of_code,
+            file_count=fast.file_count,
+        )
+
+    async def _run_hunt_streaming(
+        self, recon: ReconResult, findings_queue: asyncio.Queue[list[RawFinding] | None]
+    ) -> HuntResult:
+        self.app.note("Phase: HUNT (streaming)", tags=["audit", "hunt", "streaming"])
+        from .agents.hunt import run_hunt_streaming
+
+        include_paths = self.config.include_paths
+        if self.is_pr_mode and self.diff_analysis and self.diff_analysis.changed_files:
+            include_paths = self.diff_analysis.all_relevant_files
+            self.app.note(
+                (
+                    f"PR-mode: scanning {self.diff_analysis.file_count} files "
+                    f"({len(self.diff_analysis.changed_files)} changed + "
+                    f"{len(self.diff_analysis.blast_radius_files)} blast radius)"
+                ),
+                tags=["audit", "hunt", "pr-mode"],
+            )
+
+        hunt = await run_hunt_streaming(
+            app=_PhaseHarnessProxy(self, "hunt"),
+            repo_path=str(self.repo_path),
+            recon_result=recon,
+            findings_queue=findings_queue,
+            depth=self.input.depth,
+            max_concurrent_hunters=self.budget_config.max_concurrent_hunters,
+            early_stop_file_threshold=self.budget_config.hunter_early_stop_file_threshold,
+            include_paths=include_paths,
+        )
+        recon_findings = extract_recon_findings(recon)
+        hunt = merge_recon_findings_into_hunt(hunt, recon_findings)
+        self._emit_progress(phase="hunt", agents_total=1, agents_completed=1, findings_so_far=len(hunt.findings))
+        return hunt
+
+    async def _run_prove_streaming(
+        self, findings_queue: asyncio.Queue[list[RawFinding] | None]
+    ) -> list[VerifiedFinding]:
+        self.app.note("Phase: PROVE (streaming)", tags=["audit", "prove", "streaming"])
+        from .agents.prove import run_prove_streaming
+
+        prover_cap = self._prover_cap()
+        self.findings_not_verified = 0
+        verified = await run_prove_streaming(
+            app=_PhaseHarnessProxy(self, "prove"),
+            repo_path=str(self.repo_path),
+            findings_queue=findings_queue,
+            depth=self.input.depth,
+            max_concurrent_provers=self.budget_config.max_concurrent_provers,
+            prover_cap=prover_cap,
+        )
+        self._emit_progress(phase="prove", agents_total=1, agents_completed=1, findings_so_far=len(verified))
+        return verified
 
     async def _run_hunt(self, recon: ReconResult) -> HuntResult:
         self.app.note("Phase: HUNT", tags=["audit", "hunt"])
