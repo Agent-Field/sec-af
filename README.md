@@ -1,33 +1,52 @@
+<div align="center">
+
 # SEC-AF
 
-**AI-native security auditor that verifies what it finds.** Point it at a repo, get back evidence-backed findings — not pattern-match noise.
+### AI-Native Security Auditor Built on [AgentField](https://github.com/Agent-Field/agentfield)
 
-![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)
-![AgentField](https://img.shields.io/badge/built%20on-AgentField-0A7BFF.svg)
+[![Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-16a34a?style=for-the-badge)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Built with AgentField](https://img.shields.io/badge/Built%20with-AgentField-0A66C2?style=for-the-badge)](https://github.com/Agent-Field/agentfield)
 
-## Here's what you get back
+<p>
+  <a href="#what-you-get-back">Output</a> •
+  <a href="#benchmark-dvga">Benchmark</a> •
+  <a href="#how-it-works">How It Works</a> •
+  <a href="#comparison">Comparison</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#api">API</a>
+</p>
 
-When SEC-AF audits [DVGA](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) (a deliberately vulnerable GraphQL app), it returns findings like this:
+</div>
 
-```json
+Other tools flag patterns. SEC-AF **proves exploitability** — every finding comes with a verdict, a data flow trace, and evidence you can act on. One API call audits a repo end-to-end for ~$2–10.
+
+## What You Get Back
+
+This is a real finding from SEC-AF auditing [DVGA](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) (a deliberately vulnerable GraphQL app):
+
+```jsonc
 {
   "title": "OS Command Injection in run_cmd Helper Function",
   "severity": "critical",
-  "verdict": "confirmed",
+  "verdict": "confirmed",           // not "maybe" — confirmed exploitable
   "evidence_level": 5,
   "cwe_id": "CWE-78",
-  "description": "The run_cmd() function at core/helpers.py:9 directly executes user-controlled input via os.popen(cmd).read() without any input validation or sanitization...",
-  "rationale": "Tracer confirms complete data flow from GraphQL parameters (host, port, path, scheme, cmd, arg) to os.popen(cmd).read() sink. Sanitization functions allowed_cmds() and strip_dangerous_characters() are bypassable in Easy mode...",
+
+  "rationale": "Tracer confirms complete data flow from GraphQL parameters
+    (host, port, path, scheme, cmd, arg) to os.popen(cmd).read() sink.
+    Sanitization functions are bypassable in Easy mode...",
+
   "proof": {
     "verification_method": "composite_subagent_chain:sast",
-    "evidence_level": 5,
     "data_flow_trace": [
-      { "description": "core/views.py:203-207: GraphQL Arguments defined (host, port, path, scheme)", "tainted": true },
-      { "description": "core/views.py:211: helpers.run_cmd(f'curl --insecure {url}') called with tainted input", "tainted": true },
-      { "description": "core/helpers.py:9: os.popen(cmd).read() executes arbitrary commands", "tainted": true }
+      { "description": "core/views.py:203 — GraphQL args defined (host, port, path, scheme)", "tainted": true },
+      { "description": "core/views.py:210 — URL constructed from user input", "tainted": true },
+      { "description": "core/views.py:211 — helpers.run_cmd(f'curl {url}') called", "tainted": true },
+      { "description": "core/helpers.py:9 — os.popen(cmd).read() executes input", "tainted": true }
     ]
   },
+
   "location": {
     "file_path": "core/helpers.py",
     "start_line": 9,
@@ -36,94 +55,91 @@ When SEC-AF audits [DVGA](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Appl
 }
 ```
 
-Every finding includes a **verdict** (`confirmed` / `likely` / `inconclusive` / `not_exploitable`), a **proof object** with data flow traces, and the **exact location** in your code. No "maybe this is a problem" — SEC-AF traces the data flow and tells you whether it's exploitable.
+Every finding includes a **verdict** (`confirmed` / `likely` / `inconclusive` / `not_exploitable`), a **proof object** with the full taint trace, and the **exact code location**. Not "this might be a problem" — SEC-AF traces the data from source to sink and proves whether it's exploitable.
 
 > Full benchmark output (30 findings): [`exampl/dvga-benchmark-result.json`](exampl/dvga-benchmark-result.json)
 
-## DVGA Benchmark Results
+## Benchmark: DVGA
 
-We run SEC-AF against [Damn Vulnerable GraphQL Application](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application), a purpose-built vulnerable app with 21 documented security scenarios.
+We run SEC-AF against [Damn Vulnerable GraphQL Application](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) — a purpose-built vulnerable app with 21 documented security scenarios.
 
-| Metric | Result |
+| Metric | Value |
 |---|---|
 | Raw findings discovered | 89 |
 | After AI deduplication | 55 |
-| After adversarial verification | **30 verified** |
+| **After adversarial verification** | **30 confirmed** |
 | DVGA official scenarios detected | 12 / 21 (57%) |
-| Additional findings beyond official list | 16 |
-| False positive rate (verified findings) | 3% (1/30 marked not_exploitable) |
+| Findings beyond the official list | **16 additional** |
+| False positive rate | 3% (1/30) |
 
-**What it found** (30 verified findings):
+<details>
+<summary><strong>Breakdown: 30 verified findings by category</strong></summary>
 
 | Category | Count | Examples |
 |---|---|---|
 | Command Injection | 6 | `os.popen(cmd)` via 3 GraphQL resolvers, curl injection, broken allowlist bypass |
-| SQL Injection | 3 | Unsanitized `filter` param in `resolve_pastes`, LIKE pattern injection |
-| Missing Authentication | 5 | CreatePaste, CreateUser, file upload, ImportPaste, user enumeration — all unauthenticated |
-| Authorization Bypass | 3 | BOLA on DeletePaste, IDOR on EditPaste, password disclosure via resolve_password |
-| Authentication Flaws | 3 | JWT signature verification disabled, hardcoded JWT secret, plaintext password storage |
+| SQL Injection | 3 | Unsanitized `filter` in `resolve_pastes`, LIKE pattern injection |
+| Missing Authentication | 5 | CreatePaste, CreateUser, file upload, ImportPaste, user enumeration |
+| Authorization Bypass | 3 | BOLA on DeletePaste, IDOR on EditPaste, password disclosure |
+| Authentication Flaws | 3 | JWT signature verification disabled, hardcoded JWT secret, plaintext passwords |
 | SSRF | 1 | ImportPaste mutation follows user-supplied URLs server-side |
-| Path Traversal | 1 | Unsanitized filename in save_file |
-| DoS | 3 | Missing pagination on search/audit queries, infinite WebSocket subscription loop |
-| Info Disclosure | 2 | Stack traces in GraphQL errors, debug mode enabled by default |
-| Config / TLS | 3 | Plaintext password storage, hardcoded secret, disabled TLS verification |
+| Path Traversal | 1 | Unsanitized filename in `save_file` |
+| DoS | 3 | Missing pagination on search/audit queries, infinite WebSocket loop |
+| Info Disclosure / Config | 5 | Stack traces in errors, debug mode on, disabled TLS verification |
 
-**What it missed**: Primarily GraphQL protocol-level attacks (batch queries, deep recursion, alias abuse, field duplication) that require runtime/DAST analysis. SEC-AF is currently SAST-focused — these are on the roadmap.
+</details>
+
+<details>
+<summary><strong>What it missed (and why)</strong></summary>
+
+The 9 missed scenarios are primarily **GraphQL protocol-level attacks**: batch queries, deep recursion, alias abuse, field duplication, introspection exposure. These require runtime/DAST analysis. SEC-AF is currently SAST-focused — protocol-level detection is on the roadmap.
+
+</details>
 
 ## How It Works
 
 SEC-AF runs a **Signal Cascade** pipeline — each phase narrows the signal:
 
-```
-                    ┌─────────────────────────────────────────┐
-  POST /execute     │                                         │
-  ───────────────►  │  RECON    5 agents build security       │
-                    │           context (architecture,        │
-                    │           data flows, dependencies,     │
-                    │           config, security profile)     │
-                    │                    │                     │
-                    │                    ▼                     │
-                    │  HUNT     11 strategy agents discover   │
-                    │           findings using scan+enrich    │  89 raw
-                    │           decomposition pattern         │
-                    │                    │                     │
-                    │                    ▼                     │
-                    │  DEDUP    AI-powered deduplication      │  55 unique
-                    │           and chain correlation         │
-                    │                    │                     │
-                    │                    ▼                     │
-                    │  PROVE    Per-finding adversarial       │  30 verified
-                    │           verification with verdicts    │
-                    │                    │                     │
-                    │                    ▼                     │
-                    │  OUTPUT   SARIF 2.1.0 / JSON / Markdown │
-                    └─────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["POST /execute/async/sec-af.audit"] --> B["RECON"]
+    B --> C["HUNT"]
+    C --> D["DEDUP"]
+    D --> E["PROVE"]
+    E --> F["OUTPUT"]
+
+    B -.- B1["5 agents build security context\n(architecture, data flows, deps, config, security profile)"]
+    C -.- C1["11 strategy agents scan + enrich findings\n(injection, auth, crypto, SSRF, XSS, DoS, ...)"]
+    D -.- D1["AI-powered deduplication + chain correlation\n89 raw → 55 unique"]
+    E -.- E1["Adversarial per-finding verification\n55 unique → 30 confirmed"]
+    F -.- F1["SARIF 2.1.0 · JSON · Markdown"]
 ```
 
 **Key design decisions:**
-- Every LLM call is either a fast `.ai()` gate (yes/no decisions, strategy picks) or a deep `.harness()` session (multi-turn analysis). No monolithic prompts.
-- Hunters use **scan+enrich decomposition**: a scanner identifies locations, then an enricher analyzes each finding individually. This produces higher-quality evidence per finding.
-- The PROVE phase is **adversarial** — it tries to disprove each finding. Anything that survives gets a verdict and evidence level.
+
+- **`.ai()` vs `.harness()` split** — fast gates (strategy selection, yes/no) use `.ai()`. Deep analysis (recon, hunt, prove) uses `.harness()` with multi-turn sessions. No monolithic prompts.
+- **Scan + enrich decomposition** — hunters don't produce findings in one shot. A scanner identifies locations, then an enricher analyzes each one individually. Higher evidence quality per finding.
+- **Adversarial verification** — the PROVE phase doesn't confirm findings, it tries to **disprove** them. What survives gets a verdict and evidence level.
 
 ## Comparison
 
-> We only include claims we can verify from official docs and pricing pages. If we're wrong about something, [open an issue](https://github.com/Agent-Field/sec-af/issues).
+> Claims sourced from official docs and pricing pages. If something is wrong, [open an issue](https://github.com/Agent-Field/sec-af/issues).
 
-| | SEC-AF | Semgrep OSS | Semgrep Pro | Snyk Code | CodeQL | Nullify |
-|---|---|---|---|---|---|---|
-| **What it is** | AI-native audit agent | Pattern-matching SAST | Pattern + taint analysis | AI-assisted SAST | Semantic code analysis | AI security workforce |
-| **Open source** | ✅ Apache 2.0 | ✅ LGPL-2.1 | ❌ Commercial | ❌ Proprietary | Queries: MIT, Engine: proprietary (free for public repos) | ❌ Proprietary |
-| **Findings are verified** | ✅ Adversarial PROVE phase with verdict + proof object | ❌ Pattern matches | ❌ Pattern + dataflow matches | ❌ Priority scoring, no exploit proof | ❌ Static analysis results | ✅ Proof-of-exploit generation |
-| **Evidence traces** | ✅ Data flow trace per finding with taint propagation | ❌ | ⚠️ Dataflow in Pro engine | ⚠️ Source-to-sink data flow shown | ✅ Path queries show data flow | ✅ Exploit path shown |
-| **Scoring transparency** | ✅ Published composite formula | N/A | ❌ Internal scoring | ❌ Opaque Priority Score | N/A | ❌ Internal scoring |
-| **SARIF output** | ✅ Native 2.1.0 | ✅ | ✅ | ✅ | ✅ Native | Not documented |
-| **Compliance mapping** | ✅ PCI-DSS, SOC2, OWASP, HIPAA, ISO27001 | ⚠️ OWASP rules available | ⚠️ OWASP rules available | ❌ Platform-level compliance only | ❌ | Not documented |
-| **Languages** | Any LLM-supported language (not parser-bound) | 35+ | 35+ | 14+ | 10 | Not documented |
-| **Pricing** | Usage-based (~$2–10/audit via OpenRouter) | Free | $30/mo/contributor | $25–105/mo/developer | Free (public), $49/mo/committer (GHAS) | $6,000/mo |
+| | SEC-AF | Semgrep | Snyk Code | CodeQL | Nullify |
+|---|---|---|---|---|---|
+| **Approach** | **AI-native** · LLM reasons about code | **Rule-based** · pattern + taint matching | **AI-assisted** · DeepCode AI engine | **Rule-based** · semantic analysis + dataflow | **AI-native** · autonomous security workforce |
+| **Open source** | ✅ Apache 2.0 | Engine: LGPL-2.1 · Pro rules: proprietary | ❌ Proprietary | Queries: MIT · Engine: proprietary | ❌ Proprietary |
+| **Verified findings** | ✅ Adversarial PROVE phase · verdict + proof per finding | ❌ Pattern matches only | ❌ Priority Score (opaque) · no exploit proof | ❌ Static analysis alerts | ✅ Proof-of-exploit generation |
+| **Evidence per finding** | Data flow trace with taint propagation | — | Source-to-sink flow shown | Path queries show data flow | Exploit path + reproduction steps |
+| **Scoring** | ✅ Published composite formula | Internal | Opaque Priority Score | — | Internal |
+| **SARIF** | ✅ Native 2.1.0 | ✅ | ✅ | ✅ Native | Not documented |
+| **Compliance mapping** | PCI-DSS, SOC2, OWASP, HIPAA, ISO27001 | OWASP rules available | Platform compliance only | — | Not documented |
+| **Languages** | Any LLM-supported language | 35+ (parser-based) | 14+ | 10 | Not documented |
+| **Pricing** | **~$2–10/audit** (usage-based, OpenRouter) | OSS engine: free to use · Pro: $30/mo/contributor | $25–105/mo/developer | Free for public repos · $49/mo/committer (GHAS) | **$6,000/mo** |
 
-**Where SEC-AF wins**: Verified findings with proof objects, transparent scoring, compliance mapping, and open source — at usage-based cost. Traditional SAST tools flag patterns; SEC-AF traces data flows and proves exploitability.
+**Where SEC-AF is strongest**: Verified findings with proof objects, transparent scoring, compliance mapping, open source — at pay-per-audit pricing.
 
-**Where others win**: Semgrep and CodeQL have years of rule coverage across 35+ languages with battle-tested parsers. Snyk has deep IDE integration and SCA. Nullify adds runtime cloud context and auto-remediation campaigns. SEC-AF is newer and currently strongest on code-level SAST with AI reasoning.
+**Where others are stronger**: Semgrep and CodeQL have years of battle-tested rule coverage across 35+ languages. Snyk has deep IDE/SCA integration. Nullify adds runtime cloud context and auto-remediation campaigns. SEC-AF is newer and currently strongest on AI-driven code-level analysis.
 
 ## Quick Start
 
@@ -131,7 +147,7 @@ SEC-AF runs a **Signal Cascade** pipeline — each phase narrows the signal:
 docker compose up --build
 ```
 
-This starts the AgentField control plane (`http://localhost:8080`) and the SEC-AF agent (`http://localhost:8003`).
+Starts AgentField control plane (`http://localhost:8080`) + SEC-AF agent (`http://localhost:8003`).
 
 Trigger an audit:
 
@@ -141,29 +157,16 @@ curl -X POST http://localhost:8080/api/v1/execute/async/sec-af.audit \
   -d '{"input": {"repo_url": "https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application"}}'
 ```
 
-Response:
-
-```json
-{"execution_id": "exec_1234567890", "status": "queued"}
-```
-
 Poll for results:
 
 ```bash
-curl http://localhost:8080/api/v1/executions/exec_1234567890
+curl http://localhost:8080/api/v1/executions/<execution_id>
 ```
 
 ## API
 
-### Minimal
-
-```bash
-curl -X POST http://localhost:8080/api/v1/execute/async/sec-af.audit \
-  -H "Content-Type: application/json" \
-  -d '{"input": {"repo_url": "https://github.com/org/repo"}}'
-```
-
-### Full options
+<details>
+<summary><strong>Full request options</strong></summary>
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/execute/async/sec-af.audit \
@@ -186,17 +189,21 @@ curl -X POST http://localhost:8080/api/v1/execute/async/sec-af.audit \
   }'
 ```
 
-### Depth profiles
+</details>
+
+<details>
+<summary><strong>Depth profiles</strong></summary>
 
 | Profile | Strategies | Verification | Typical time | Typical cost |
 |---|---|---|---|---|
-| `quick` | Core (5 strategies) | Top findings only | 2–5 min | ~$0.50–2 |
-| `standard` | Core + extended (11) | Top 30 findings | 5–15 min | ~$2–10 |
-| `thorough` | Full set | All findings | 15–45 min | ~$10–50 |
+| `quick` | 5 core strategies | Top findings only | 2–5 min | ~$0.50–2 |
+| `standard` | 11 strategies (core + extended) | Top 30 findings | 5–15 min | ~$2–10 |
+| `thorough` | Full strategy set | All findings | 15–45 min | ~$10–50 |
 
-## Verdict Model
+</details>
 
-Each finding gets a verdict based on the PROVE phase:
+<details>
+<summary><strong>Verdict model</strong></summary>
 
 | Verdict | Meaning |
 |---|---|
@@ -205,7 +212,10 @@ Each finding gets a verdict based on the PROVE phase:
 | `inconclusive` | Insufficient evidence, requires manual review |
 | `not_exploitable` | Evidence indicates no practical exploit path |
 
-## Output Formats
+</details>
+
+<details>
+<summary><strong>Output formats</strong></summary>
 
 | Format | Consumer | Description |
 |---|---|---|
@@ -213,7 +223,12 @@ Each finding gets a verdict based on the PROVE phase:
 | `json` | Pipelines, APIs | Full structured result with verdicts, proofs, costs |
 | `markdown` | Security teams | Narrative report with findings and remediation |
 
+</details>
+
 ## GitHub Actions
+
+<details>
+<summary><strong>CI integration</strong></summary>
 
 ```yaml
 name: sec-af-audit
@@ -265,31 +280,23 @@ jobs:
           sarif_file: results.sarif
 ```
 
+</details>
+
 ## Configuration
+
+<details>
+<summary><strong>Environment variables</strong></summary>
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `AGENTFIELD_SERVER` | Yes | `http://localhost:8080` | Control plane URL |
 | `OPENROUTER_API_KEY` | Yes | — | LLM provider credential |
-| `HARNESS_MODEL` | No | `minimax/minimax-m2.5` | Model for deep analysis |
-| `AI_MODEL` | No | `minimax/minimax-m2.5` | Model for fast gates |
+| `HARNESS_MODEL` | No | `minimax/minimax-m2.5` | Model for deep `.harness()` analysis |
+| `AI_MODEL` | No | `minimax/minimax-m2.5` | Model for fast `.ai()` gates |
 | `SEC_AF_MAX_TURNS` | No | `50` | Max harness turns per call |
-
-<details>
-<summary>All environment variables</summary>
-
-| Variable | Default | Description |
-|---|---|---|
-| `AGENTFIELD_API_KEY` | unset | API key for secured environments |
-| `HARNESS_PROVIDER` | `opencode` | Harness backend provider |
-| `SEC_AF_PROVIDER` | fallback to `HARNESS_PROVIDER` | Provider override |
-| `SEC_AF_MODEL` | fallback to `HARNESS_MODEL` | Harness model override |
-| `SEC_AF_AI_MODEL` | fallback to `AI_MODEL` | `.ai()` model override |
-| `SEC_AF_AI_MAX_RETRIES` | `3` | Retry count for model calls |
-| `SEC_AF_AI_INITIAL_BACKOFF_SECONDS` | `2.0` | Initial retry backoff |
-| `SEC_AF_AI_MAX_BACKOFF_SECONDS` | `8.0` | Max retry backoff |
-| `SEC_AF_OPENCODE_BIN` | `opencode` | Path to OpenCode binary |
-| `SEC_AF_REPO_PATH` | cwd | Local repository path |
+| `AGENTFIELD_API_KEY` | No | unset | API key for secured environments |
+| `HARNESS_PROVIDER` | No | `opencode` | Harness backend provider |
+| `SEC_AF_AI_MAX_RETRIES` | No | `3` | Retry count for model calls |
 
 </details>
 
@@ -302,8 +309,14 @@ pytest
 ruff check src tests
 ```
 
-Architecture details: [`docs/DESIGN.md`](docs/DESIGN.md)
+Architecture: [`docs/DESIGN.md`](docs/DESIGN.md)
 
-## License
+---
 
-Apache License 2.0 — see [`LICENSE`](LICENSE).
+<div align="center">
+
+SEC-AF is built on [AgentField](https://github.com/Agent-Field/agentfield) — open infrastructure for production-grade autonomous agents.
+
+**[Apache-2.0](LICENSE)**
+
+</div>
