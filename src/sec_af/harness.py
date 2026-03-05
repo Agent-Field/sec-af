@@ -47,16 +47,44 @@ def _is_transient_error(error: str) -> bool:
 
 
 PHASE_GUIDANCE: dict[str, str] = {
-    "recon": ("Survey -> Identify -> Map -> Synthesize. Report what IS present, not what MIGHT be present."),
+    "recon": (
+        "APPROACH: You are performing reconnaissance on a codebase to build an accurate structural map.\n"
+        "PROCESS:\n"
+        "1. Survey the codebase structure — identify key directories, entry points, and configuration\n"
+        "2. Identify the technology stack — languages, frameworks, and external services\n"
+        "3. Map security-relevant boundaries — auth layers, data inputs, API surfaces\n"
+        "4. Only after surveying, synthesize findings into the required schema\n"
+        "CONSTRAINTS:\n"
+        "- Report what IS there, not what MIGHT be there\n"
+        "- If uncertain about a detail, omit it rather than guess\n"
+        "- Prioritize breadth over depth — cover the full surface"
+    ),
     "hunt": (
-        "Review context -> Identify relevant files -> Trace data flow -> Report with evidence. "
-        "False negatives are better than false positives. "
-        "Every finding MUST cite specific file paths and line numbers."
+        "APPROACH: You are hunting for a specific class of security vulnerability with recon context.\n"
+        "PROCESS:\n"
+        "1. Review the recon context to understand the codebase topology\n"
+        "2. Identify files and patterns relevant to your specific vulnerability class\n"
+        "3. For each candidate: read the code, trace data flow, assess exploitability\n"
+        "4. Only report findings where you have concrete code evidence\n"
+        "CONSTRAINTS:\n"
+        "- Every finding MUST cite specific file paths and line numbers you have read\n"
+        "- Do not report theoretical vulnerabilities without code evidence\n"
+        "- False negatives are better than false positives\n"
+        "- If a file is sanitized properly, do NOT report it"
     ),
     "prove": (
-        "Read actual code -> Trace flow -> Check sanitization -> Construct exploit -> Verdict. "
-        "INCONCLUSIVE is a valid outcome. "
-        "You MUST read the actual code and not rely on descriptions alone."
+        "APPROACH: You are verifying a specific candidate vulnerability for exploitability.\n"
+        "PROCESS:\n"
+        "1. Read the specific code location cited in the finding\n"
+        "2. Trace the data flow from source to sink\n"
+        "3. Check for sanitization, validation, or other mitigations on the path\n"
+        "4. If exploitable, construct a concrete exploit hypothesis\n"
+        "5. Synthesize your verdict with evidence level\n"
+        "CONSTRAINTS:\n"
+        "- You must READ the actual code — do not rely on the finding description alone\n"
+        "- INCONCLUSIVE is a valid verdict — do not force confirmation or denial\n"
+        "- Cite specific lines where sanitization exists or is missing\n"
+        "- If code has changed since the finding was generated, note the discrepancy"
     ),
 }
 
