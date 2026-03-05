@@ -13,7 +13,7 @@ from .verifier import fallback as verifier_fallback
 from .verifier import run_verifier
 
 if TYPE_CHECKING:
-    from collections.abc import Awaitable
+    from collections.abc import Awaitable, Callable
 
     from sec_af.schemas.prove import VerifiedFinding
 
@@ -153,6 +153,8 @@ async def run_prove_streaming(
     depth: str,
     max_concurrent_provers: int = 3,
     prover_cap: int = 30,
+    budget_check: Callable[[], bool] | None = None,
+    on_adaptation: Callable[[dict[str, object]], None] | None = None,
 ) -> list[VerifiedFinding]:
     profile = _normalize_depth(depth)
     semaphore = asyncio.Semaphore(max(1, max_concurrent_provers))
@@ -160,6 +162,7 @@ async def run_prove_streaming(
     verified: list[VerifiedFinding] = []
     pending_tasks: list[asyncio.Task[VerifiedFinding]] = []
     proved_count = 0
+    budget_throttled = False
 
     async def _verify_one(finding: RawFinding) -> VerifiedFinding:
         async with semaphore:
@@ -186,10 +189,28 @@ async def run_prove_streaming(
         for finding in batch:
             if proved_count >= prover_cap:
                 break
+            if budget_check is not None and budget_check():
+                budget_throttled = True
+                if on_adaptation is not None:
+                    on_adaptation(
+                        {
+                            "rule": "budget_throttle",
+                            "trigger": f"Budget exhausted after scheduling {proved_count} verifiers",
+                            "action": "Stopped spawning new verifiers and drained pending finding batches",
+                            "signal_type": "budget_alert",
+                            "source_phase": "prove",
+                            "source_agent": "verifier_scheduler",
+                            "payload": {
+                                "proved_count": proved_count,
+                                "prover_cap": prover_cap,
+                            },
+                        }
+                    )
+                break
             pending_tasks.append(asyncio.create_task(_verify_one(finding)))
             proved_count += 1
 
-        if proved_count >= prover_cap:
+        if proved_count >= prover_cap or budget_throttled:
             while True:
                 remaining = await findings_queue.get()
                 if remaining is None:

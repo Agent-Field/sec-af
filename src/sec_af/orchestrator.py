@@ -27,6 +27,7 @@ from .schemas.input import AuditInput  # noqa: TC001
 from .schemas.output import AttackChain, AuditProgress, SecurityAuditResult
 from .schemas.prove import EvidenceLevel, Location, Verdict, VerifiedFinding
 from .schemas.recon import DataFlowMap, ReconResult, SecurityContext
+from .schemas.signals import AdaptationDecision, OrchestrationSignal
 from .scoring import compute_exploitability_score
 
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
@@ -77,18 +78,27 @@ class AuditOrchestrator:
         self.budget_exhausted = False
         self.findings_not_verified = 0
         self.prove_drop_summary: dict[str, Any] = {"demoted_total": 0, "by_reason": {}, "findings": []}
+        self.adaptation_log: list[AdaptationDecision] = []
         self.ai_gate = AIGateWrapper(app=self.app)
 
     async def run(self) -> SecurityAuditResult:
         self.app.note("Starting SEC-AF streaming orchestrator", tags=["audit", "start", "streaming"])
+        self.adaptation_log = []
 
         fast_recon = await self._run_fast_recon()
         self._write_checkpoint("recon_fast", fast_recon)
+        priority_strategies = self._compute_hunt_priorities(fast_recon)
 
         findings_queue: asyncio.Queue[list[RawFinding] | None] = asyncio.Queue()
 
         deep_task = asyncio.create_task(self._run_deep_recon_async(fast_recon))
-        hunt_task = asyncio.create_task(self._run_hunt_streaming(fast_recon, findings_queue))
+        hunt_task = asyncio.create_task(
+            self._run_hunt_streaming(
+                fast_recon,
+                findings_queue,
+                priority_strategies=priority_strategies,
+            )
+        )
         prove_task = asyncio.create_task(self._run_prove_streaming(findings_queue))
 
         deep_result, hunt, verified = await asyncio.gather(deep_task, hunt_task, prove_task)
@@ -209,7 +219,10 @@ class AuditOrchestrator:
         )
 
     async def _run_hunt_streaming(
-        self, recon: ReconResult, findings_queue: asyncio.Queue[list[RawFinding] | None]
+        self,
+        recon: ReconResult,
+        findings_queue: asyncio.Queue[list[RawFinding] | None],
+        priority_strategies: list[str] | None = None,
     ) -> HuntResult:
         self.app.note("Phase: HUNT (streaming)", tags=["audit", "hunt", "streaming"])
         from .agents.hunt import run_hunt_streaming
@@ -235,6 +248,8 @@ class AuditOrchestrator:
             max_concurrent_hunters=self.budget_config.max_concurrent_hunters,
             early_stop_file_threshold=self.budget_config.hunter_early_stop_file_threshold,
             include_paths=include_paths,
+            priority_strategies=priority_strategies,
+            on_adaptation=self._on_phase_adaptation,
         )
         recon_findings = extract_recon_findings(recon)
         hunt = merge_recon_findings_into_hunt(hunt, recon_findings)
@@ -256,6 +271,8 @@ class AuditOrchestrator:
             depth=self.input.depth,
             max_concurrent_provers=self.budget_config.max_concurrent_provers,
             prover_cap=prover_cap,
+            budget_check=lambda: self._budget_or_timeout_exhausted("prove"),
+            on_adaptation=self._on_phase_adaptation,
         )
         self._emit_progress(phase="prove", agents_total=1, agents_completed=1, findings_so_far=len(verified))
         return verified
@@ -447,6 +464,7 @@ class AuditOrchestrator:
             metadata={
                 "findings_not_verified": self.findings_not_verified,
                 "prove_drop_summary": self.prove_drop_summary,
+                "adaptation_log": [decision.dict() for decision in self.adaptation_log],
             },
             sarif="",
         )
@@ -649,6 +667,69 @@ class AuditOrchestrator:
             cost_so_far_usd=round(self.total_cost_usd, 4),
         )
         self.app.note(progress.model_dump_json(), tags=["audit", "progress", phase])
+
+    def _compute_hunt_priorities(self, recon: ReconResult) -> list[str] | None:
+        priorities: list[str] = []
+        if recon.config.secrets:
+            signal = OrchestrationSignal(
+                signal_type="recon_critical_config",
+                source_phase="recon",
+                source_agent="config_scanner",
+                payload={"secret_count": len(recon.config.secrets)},
+            )
+            self._log_adaptation(
+                rule="recon_priority",
+                trigger=f"Recon found {len(recon.config.secrets)} secrets",
+                action="Prioritizing config_secrets hunter",
+                signal=signal,
+            )
+            priorities.append("config_secrets")
+        if recon.config.misconfigs:
+            signal = OrchestrationSignal(
+                signal_type="recon_critical_config",
+                source_phase="recon",
+                source_agent="config_scanner",
+                payload={"misconfig_count": len(recon.config.misconfigs)},
+            )
+            self._log_adaptation(
+                rule="recon_priority",
+                trigger=f"Recon found {len(recon.config.misconfigs)} misconfigs",
+                action="Prioritizing config_secrets hunter",
+                signal=signal,
+            )
+            priorities.append("config_secrets")
+        ordered = list(dict.fromkeys(priorities))
+        return ordered if ordered else None
+
+    def _on_phase_adaptation(self, event: dict[str, object]) -> None:
+        signal_payload = event.get("payload") if isinstance(event.get("payload"), dict) else {}
+        signal = OrchestrationSignal(
+            signal_type=str(event.get("signal_type", "adaptation_signal")),
+            source_phase=str(event.get("source_phase", "unknown")),
+            source_agent=str(event.get("source_agent", "unknown")),
+            payload=cast("dict[str, Any]", signal_payload),
+        )
+        self._log_adaptation(
+            rule=str(event.get("rule", "adaptation")),
+            trigger=str(event.get("trigger", "Adaptation trigger")),
+            action=str(event.get("action", "Adaptation action")),
+            signal=signal,
+        )
+
+    def _log_adaptation(
+        self,
+        *,
+        rule: str,
+        trigger: str,
+        action: str,
+        signal: OrchestrationSignal | None = None,
+    ) -> None:
+        decision = AdaptationDecision(rule=rule, trigger=trigger, action=action, signal=signal)
+        self.adaptation_log.append(decision)
+        self.app.note(
+            f"Adaptation [{rule}]: {trigger} -> {action}",
+            tags=["audit", "adaptation", rule],
+        )
 
     def _track_drop(self, *, finding_title: str, original_verdict: str | None, reason: str) -> None:
         self.prove_drop_summary["demoted_total"] = int(self.prove_drop_summary.get("demoted_total", 0)) + 1

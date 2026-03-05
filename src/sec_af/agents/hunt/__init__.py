@@ -22,6 +22,7 @@ class HarnessCapable(Protocol):
 
 
 HunterRunner = Callable[..., Awaitable[object]]
+AdaptationCallback = Callable[[dict[str, object]], None]
 
 
 def _missing_hunter(strategy: HuntStrategy) -> HunterRunner:
@@ -216,39 +217,84 @@ async def run_hunt_streaming(
     max_concurrent_hunters: int = 4,
     early_stop_file_threshold: int = 30,
     include_paths: list[str] | None = None,
+    priority_strategies: list[str] | None = None,
+    on_adaptation: AdaptationCallback | None = None,
 ) -> HuntResult:
     started = time.monotonic()
     profile = _normalize_depth(depth)
     strategies = _select_strategies(profile)
+    if priority_strategies:
+        wanted = {name.strip().lower() for name in priority_strategies if name and name.strip()}
+        prioritized = [strategy for strategy in strategies if strategy.value in wanted]
+        remaining = [strategy for strategy in strategies if strategy.value not in wanted]
+        strategies = prioritized + remaining
 
     concurrency_limit = max(1, min(max_concurrent_hunters, len(strategies)))
     semaphore = asyncio.Semaphore(concurrency_limit)
 
     all_raw_findings: list[RawFinding] = []
     fingerprint_deduped: dict[str, RawFinding] = {}
+    adaptation_state: dict[str, object] = {"depth": profile, "escalated": False}
+    completed_count = 0
+    total_findings_so_far = 0
+    density_check_threshold = max(3, min(4, max(1, len(strategies) // 2)))
     dedup_lock = asyncio.Lock()
 
     async def _run_and_push(strategy: HuntStrategy) -> None:
         async with semaphore:
+            active_depth = cast("DepthProfile", adaptation_state["depth"])
             findings = await _run_single_hunter(
                 _STRATEGY_RUNNERS[strategy],
                 app=app,
                 repo_path=repo_path,
                 recon_result=recon_result,
-                depth=profile,
+                depth=active_depth,
                 early_stop_file_threshold=early_stop_file_threshold,
                 include_paths=include_paths,
             )
 
         new_findings: list[RawFinding] = []
         async with dedup_lock:
+            nonlocal completed_count, total_findings_so_far
             all_raw_findings.extend(findings)
+            completed_count += 1
+            total_findings_so_far += len(findings)
             for finding in findings:
                 fingerprint = finding.fingerprint or f"{finding.file_path}:{finding.start_line}:{finding.cwe_id}"
                 finding.fingerprint = fingerprint
                 if fingerprint not in fingerprint_deduped:
                     fingerprint_deduped[fingerprint] = finding
                     new_findings.append(finding)
+
+            should_escalate = (
+                adaptation_state.get("escalated") is False
+                and adaptation_state.get("depth") == DepthProfile.STANDARD
+                and completed_count >= density_check_threshold
+            )
+            if should_escalate:
+                density = total_findings_so_far / completed_count if completed_count else 0.0
+                if density < 0.5:
+                    adaptation_state["depth"] = DepthProfile.THOROUGH
+                    adaptation_state["escalated"] = True
+                    if on_adaptation:
+                        on_adaptation(
+                            {
+                                "rule": "density_escalation",
+                                "trigger": (
+                                    f"Low finding density {density:.2f} after {completed_count} hunters "
+                                    f"({total_findings_so_far} findings)"
+                                ),
+                                "action": "Escalated remaining hunters from standard to thorough depth",
+                                "signal_type": "low_finding_density",
+                                "source_phase": "hunt",
+                                "source_agent": "strategy_scheduler",
+                                "payload": {
+                                    "completed_hunters": completed_count,
+                                    "total_findings": total_findings_so_far,
+                                    "density": round(density, 4),
+                                },
+                            }
+                        )
 
         if new_findings:
             await findings_queue.put(new_findings)
