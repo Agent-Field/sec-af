@@ -30,6 +30,7 @@ async def run_config_secrets_hunter(
     app: HarnessCapable,
     repo_path: str,
     recon: ReconResult,
+    max_files_without_signal: int = 30,
 ) -> HuntResult:
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
@@ -37,6 +38,7 @@ async def run_config_secrets_hunter(
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + f"- Hunt strategy: {HuntStrategy.CONFIG_SECRETS.value} (CWE-798, CWE-259, CWE-321, CWE-16).\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible secrets/config issues, stop and return empty findings.\n"
         + "- Use RECON ConfigReport and SecurityContext to prioritize likely real findings.\n"
         + "- Take multiple turns: inspect files, validate exploitability signal, then build findings.\n"
         + "- ReconResult JSON:\n"

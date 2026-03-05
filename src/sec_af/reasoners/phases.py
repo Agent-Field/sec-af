@@ -151,20 +151,27 @@ async def hunt_phase(
     repo_path: str,
     recon_context: dict[str, Any],
     depth: str = "standard",
+    max_concurrent_hunters: int = 4,
+    early_stop_file_threshold: int = 30,
 ) -> dict[str, Any]:
     _runtime_router.note("HUNT phase starting", tags=["phase", "hunt"])
     recon = ReconResult(**recon_context)
     strategies = _default_strategies(recon, depth)
 
-    hunt_calls = [
-        _runtime_router.call(
-            f"{NODE_ID}.run_{strategy.value}_hunter",
-            repo_path=repo_path,
-            recon_context=recon_context,
-            depth=depth,
-        )
-        for strategy in strategies
-    ]
+    concurrency_limit = max(1, min(max_concurrent_hunters, len(strategies)))
+    semaphore = asyncio.Semaphore(concurrency_limit)
+
+    async def _run_strategy(strategy: HuntStrategy) -> object:
+        async with semaphore:
+            return await _runtime_router.call(
+                f"{NODE_ID}.run_{strategy.value}_hunter",
+                repo_path=repo_path,
+                recon_context=recon_context,
+                depth=depth,
+                max_files_without_signal=early_stop_file_threshold,
+            )
+
+    hunt_calls = [_run_strategy(strategy) for strategy in strategies]
     hunt_results = await asyncio.gather(*hunt_calls, return_exceptions=True)
 
     all_findings: list[RawFinding] = []
@@ -214,6 +221,7 @@ async def prove_phase(
     hunt_result: dict[str, Any],
     depth: str = "standard",
     max_provers: int | None = None,
+    max_concurrent_provers: int = 3,
 ) -> dict[str, Any]:
     _runtime_router.note("PROVE phase starting", tags=["phase", "prove"])
     hunt = HuntResult.model_validate(hunt_result)
@@ -222,10 +230,19 @@ async def prove_phase(
     cap = _prover_cap(depth, max_provers)
     selected = prioritized[:cap]
 
-    verify_calls = [
-        _runtime_router.call(f"{NODE_ID}.run_verifier", repo_path=repo_path, finding=f.model_dump(), depth=depth)
-        for f in selected
-    ]
+    concurrency_limit = max(1, min(max_concurrent_provers, len(selected))) if selected else 1
+    semaphore = asyncio.Semaphore(concurrency_limit)
+
+    async def _run_verifier(finding: RawFinding) -> object:
+        async with semaphore:
+            return await _runtime_router.call(
+                f"{NODE_ID}.run_verifier",
+                repo_path=repo_path,
+                finding=finding.model_dump(),
+                depth=depth,
+            )
+
+    verify_calls = [_run_verifier(finding) for finding in selected]
     prove_results = await asyncio.gather(*verify_calls, return_exceptions=True)
 
     verified: list[VerifiedFinding] = []

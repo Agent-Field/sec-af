@@ -132,10 +132,15 @@ async def run_auth_hunter(
     repo_path: str,
     recon_result: ReconResult,
     depth: str,
+    max_files_without_signal: int = 30,
 ) -> HuntResult:
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     depth_label = _depth_label(depth)
-    prompt = _build_prompt(prompt_template, repo_path, recon_result, depth_label)
+    prompt = (
+        _build_prompt(prompt_template, repo_path, recon_result, depth_label)
+        + "\n\nEXECUTION CONSTRAINTS:\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible auth issues, stop and return empty findings.\n"
+    )
     agent_name = "hunt-auth"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:

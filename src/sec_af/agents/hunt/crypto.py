@@ -30,7 +30,12 @@ def _crypto_usage_context_block(recon: ReconResult) -> str:
     return json.dumps([usage.model_dump() for usage in recon.security_context.crypto_usage], indent=2)
 
 
-async def run_crypto_hunter(app: HarnessCapable, repo_path: str, recon: ReconResult) -> HuntResult:
+async def run_crypto_hunter(
+    app: HarnessCapable,
+    repo_path: str,
+    recon: ReconResult,
+    max_files_without_signal: int = 30,
+) -> HuntResult:
     if not should_run_crypto_hunter(recon):
         return HuntResult()
 
@@ -40,6 +45,7 @@ async def run_crypto_hunter(app: HarnessCapable, repo_path: str, recon: ReconRes
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Hunt strategy: crypto\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible crypto misuse, stop and return empty findings.\n"
         + "- Focus CWEs: CWE-326, CWE-327, CWE-328, CWE-330, CWE-916\n"
         + "- Take multiple turns to explore relevant files before finalizing findings.\n"
         + "- Write final JSON only when analysis is complete."

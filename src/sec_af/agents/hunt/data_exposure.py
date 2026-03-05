@@ -30,6 +30,7 @@ async def run_data_exposure_hunter(
     app: HarnessCapable,
     repo_path: str,
     recon: ReconResult,
+    max_files_without_signal: int = 30,
 ) -> HuntResult:
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
@@ -37,6 +38,7 @@ async def run_data_exposure_hunter(
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Strategy: data_exposure\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible exposure risk, stop and return empty findings.\n"
         + "- Use multiple turns: inspect files first, then produce findings.\n"
         + "- Return final JSON only when analysis is complete."
     )

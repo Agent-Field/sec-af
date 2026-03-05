@@ -30,7 +30,12 @@ def _empty_supply_chain_result() -> HuntResult:
     return HuntResult(findings=[], chains=[], strategies_run=[])
 
 
-async def run_supply_chain_hunter(app: HarnessCapable, repo_path: str, recon: ReconResult) -> HuntResult:
+async def run_supply_chain_hunter(
+    app: HarnessCapable,
+    repo_path: str,
+    recon: ReconResult,
+    max_files_without_signal: int = 30,
+) -> HuntResult:
     if not should_run_supply_chain_hunter(recon):
         return _empty_supply_chain_result()
 
@@ -40,6 +45,7 @@ async def run_supply_chain_hunter(app: HarnessCapable, repo_path: str, recon: Re
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Hunt strategy: supply_chain (CWE-1104, CWE-829).\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} manifests/files without credible dependency risk, stop and return empty findings.\n"
         + "- Focus manifests/lockfiles (package.json, requirements.txt, go.mod, Pipfile, "
         + "poetry.lock, package-lock.json, yarn.lock, pnpm-lock.yaml, Cargo.toml).\n"
         + f"- Recon dependency report: {json.dumps(recon.dependencies.model_dump(), indent=2)}\n"

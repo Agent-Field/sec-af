@@ -41,6 +41,7 @@ async def run_injection_hunter(
     repo_path: str,
     recon_result: ReconResult,
     depth: str,
+    max_files_without_signal: int = 30,
 ) -> HuntResult:
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
@@ -48,6 +49,7 @@ async def run_injection_hunter(
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + f"- Depth profile: {depth}\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible signal, stop and return empty findings.\n"
         + "- Focus on RECON entry points and data flows as primary source-to-sink paths.\n"
         + "- Explore the codebase, trace data flows from sources to sinks, and identify injection points.\n"
         + "- Take multiple turns to build findings incrementally and write final JSON only when complete."

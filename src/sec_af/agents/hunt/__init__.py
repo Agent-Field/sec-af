@@ -105,6 +105,7 @@ async def _run_single_hunter(
     repo_path: str,
     recon_result: ReconResult,
     depth: DepthProfile,
+    early_stop_file_threshold: int,
 ) -> list[RawFinding]:
     depth_prompt = (
         "Use deep, multi-turn analysis. Trace cross-file flows and hunt secondary pivots."
@@ -119,31 +120,60 @@ async def _run_single_hunter(
             recon_result=recon_result,
             depth=depth.value,
             depth_prompt=depth_prompt,
+            max_files_without_signal=early_stop_file_threshold,
         )
     except TypeError:
         try:
-            result = await runner(app, repo_path, recon_result, depth.value)
+            result = await runner(
+                app=app,
+                repo_path=repo_path,
+                recon_result=recon_result,
+                depth=depth.value,
+            )
         except TypeError:
-            result = await runner(app, repo_path, recon_result)
+            try:
+                result = await runner(
+                    app=app,
+                    repo_path=repo_path,
+                    recon_result=recon_result,
+                    max_files_without_signal=early_stop_file_threshold,
+                )
+            except TypeError:
+                try:
+                    result = await runner(app, repo_path, recon_result, depth.value)
+                except TypeError:
+                    result = await runner(app, repo_path, recon_result)
 
     return _extract_findings(result)
 
 
-async def run_hunt(app: HarnessCapable, repo_path: str, recon_result: ReconResult, depth: str) -> HuntResult:
+async def run_hunt(
+    app: HarnessCapable,
+    repo_path: str,
+    recon_result: ReconResult,
+    depth: str,
+    max_concurrent_hunters: int = 4,
+    early_stop_file_threshold: int = 30,
+) -> HuntResult:
     started = time.monotonic()
     profile = _normalize_depth(depth)
     strategies = _select_strategies(profile)
 
-    hunter_tasks = [
-        _run_single_hunter(
-            _STRATEGY_RUNNERS[strategy],
-            app=app,
-            repo_path=repo_path,
-            recon_result=recon_result,
-            depth=profile,
-        )
-        for strategy in strategies
-    ]
+    concurrency_limit = max(1, min(max_concurrent_hunters, len(strategies)))
+    semaphore = asyncio.Semaphore(concurrency_limit)
+
+    async def _run_strategy(strategy: HuntStrategy) -> list[RawFinding]:
+        async with semaphore:
+            return await _run_single_hunter(
+                _STRATEGY_RUNNERS[strategy],
+                app=app,
+                repo_path=repo_path,
+                recon_result=recon_result,
+                depth=profile,
+                early_stop_file_threshold=early_stop_file_threshold,
+            )
+
+    hunter_tasks = [_run_strategy(strategy) for strategy in strategies]
     hunter_results = await asyncio.gather(*hunter_tasks, return_exceptions=True)
 
     all_findings: list[RawFinding] = []

@@ -25,9 +25,12 @@ class BudgetConfig(BaseModel):
     max_cost_usd: float | None = None
     max_provers: int | None = None
     max_duration_seconds: int | None = None
-    recon_budget_pct: float = 0.15
-    hunt_budget_pct: float = 0.35
-    prove_budget_pct: float = 0.50
+    recon_budget_pct: float = 0.10
+    hunt_budget_pct: float = 0.45
+    prove_budget_pct: float = 0.45
+    max_concurrent_hunters: int = 4
+    max_concurrent_provers: int = 3
+    hunter_early_stop_file_threshold: int = 30
 
 
 class AuditConfig(BaseModel):

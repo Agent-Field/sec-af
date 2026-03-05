@@ -40,6 +40,7 @@ async def run_api_security_hunter(
     app: HarnessCapable,
     repo_path: str,
     recon: ReconResult,
+    max_files_without_signal: int = 30,
 ) -> HuntResult:
     if not recon.architecture.api_surface:
         return HuntResult(strategies_run=[HuntStrategy.API_SECURITY.value])
@@ -50,6 +51,7 @@ async def run_api_security_hunter(
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Focus only on API-relevant code paths and endpoint handlers surfaced by RECON.\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible API issues, stop and return empty findings.\n"
         + "- Take multiple turns: inspect handlers/middleware first, then generate findings.\n"
         + "- Write final JSON only when analysis is complete."
     )

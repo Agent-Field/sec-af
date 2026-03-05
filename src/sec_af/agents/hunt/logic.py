@@ -55,12 +55,17 @@ async def run_logic_hunter(
     repo_path: str,
     recon: ReconResult,
     depth: str | DepthProfile,
+    max_files_without_signal: int = 30,
 ) -> HuntResult:
     if not is_logic_hunter_enabled(depth):
         return HuntResult(findings=[], strategies_run=[])
 
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
-    prompt = _build_prompt(prompt_template, recon, repo_path)
+    prompt = (
+        _build_prompt(prompt_template, recon, repo_path)
+        + "\n\nEXECUTION CONSTRAINTS:\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible logic flaws, stop and return empty findings.\n"
+    )
     agent_name = "hunt-logic"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:

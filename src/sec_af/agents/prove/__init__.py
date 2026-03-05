@@ -51,14 +51,6 @@ def _normalize_depth(depth: str) -> DepthProfile:
         return DepthProfile.STANDARD
 
 
-def _batch_size(depth: DepthProfile) -> int:
-    if depth == DepthProfile.QUICK:
-        return 4
-    if depth == DepthProfile.THOROUGH:
-        return 16
-    return 8
-
-
 def _priority_sort(findings: list[RawFinding]) -> list[RawFinding]:
     return sorted(
         findings,
@@ -80,22 +72,28 @@ def _apply_metadata(finding: VerifiedFinding) -> VerifiedFinding:
     return finding
 
 
-async def _run_verifier_batch(
+async def _run_parallel_verification(
     app: HarnessCapable,
     repo_path: str,
-    batch: list[RawFinding],
+    findings: list[RawFinding],
     depth: str,
+    max_concurrent_provers: int,
 ) -> list[VerifiedFinding]:
-    jobs: list[Awaitable[VerifiedFinding]] = [run_verifier(app, repo_path, finding, depth) for finding in batch]
-    results = await asyncio.gather(*jobs, return_exceptions=True)
+    if not findings:
+        return []
 
-    verified: list[VerifiedFinding] = []
-    for index, result in enumerate(results):
-        if isinstance(result, BaseException):
-            verified.append(verifier_fallback(batch[index], str(result)))
-            continue
-        verified.append(result)
-    return verified
+    concurrency_limit = max(1, min(max_concurrent_provers, len(findings)))
+    semaphore = asyncio.Semaphore(concurrency_limit)
+
+    async def _verify(finding: RawFinding) -> VerifiedFinding:
+        async with semaphore:
+            try:
+                return await run_verifier(app, repo_path, finding, depth)
+            except BaseException as exc:
+                return verifier_fallback(finding, str(exc))
+
+    jobs: list[Awaitable[VerifiedFinding]] = [_verify(finding) for finding in findings]
+    return await asyncio.gather(*jobs)
 
 
 async def run_prove(
@@ -103,15 +101,18 @@ async def run_prove(
     repo_path: str,
     hunt_result: HuntResult,
     depth: str,
+    max_concurrent_provers: int = 3,
 ) -> list[VerifiedFinding]:
     profile = _normalize_depth(depth)
     prioritized = _priority_sort(hunt_result.findings)
 
-    verified_findings: list[VerifiedFinding] = []
-    size = _batch_size(profile)
-    for start in range(0, len(prioritized), size):
-        batch = prioritized[start : start + size]
-        verified_findings.extend(await _run_verifier_batch(app, repo_path, batch, profile.value))
+    verified_findings = await _run_parallel_verification(
+        app,
+        repo_path,
+        prioritized,
+        profile.value,
+        max_concurrent_provers,
+    )
 
     verified_findings = [_apply_metadata(finding) for finding in verified_findings]
 
