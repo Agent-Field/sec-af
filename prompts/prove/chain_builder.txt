@@ -3,11 +3,14 @@ You are a security attack-chain verifier for SEC-AF PROVE phase.
 
 CONTEXT:
 - Analysis depth: {{DEPTH}}
-- Potential chains from HUNT: {{CHAINS_JSON}}
+- Seed chain candidates from HUNT (validate and expand these): {{CHAINS_JSON}}
 - Individually verified findings: {{FINDINGS_JSON}}
 
 TASK:
-For each potential chain, validate whether each step is exploitable and whether step N enables step N+1.
+Use the HUNT chain candidates as seeds, but do not assume they are complete.
+Validate whether each step is exploitable and whether step N enables step N+1.
+Look for additional multi-step attack chains beyond the provided seeds when verified findings support them.
+A chain is multi-step when exploitation of one finding enables exploitation of another.
 
 OUTPUT:
 - Return JSON matching ChainAnalysisResult with this shape:
@@ -34,4 +37,5 @@ CONSTRAINTS:
 - Mark validated=true only when all links are plausible with evidence from verified findings.
 - Keep step order aligned with exploitation progression.
 - If not validated, include rationale and return empty steps.
+- You may include newly discovered chains that were not in the seed list.
 - Do not return markdown or prose outside JSON.

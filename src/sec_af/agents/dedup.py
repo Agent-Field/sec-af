@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections import defaultdict
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING, Protocol, cast
 
 from sec_af.schemas.hunt import Confidence, DeduplicatedResult, HuntResult, PotentialChain, RawFinding, Severity
 
@@ -117,6 +117,27 @@ def _fallback_correlate(findings: list[RawFinding]) -> list[PotentialChain]:
     return chains
 
 
+def _seed_chain_context(seed_chains: list[PotentialChain], findings: list[RawFinding]) -> str:
+    by_id = {finding.id: finding for finding in findings}
+    lines = ["Seed chain candidates (validate and expand these):"]
+    if not seed_chains:
+        lines.append("- No heuristic seed chains were detected from hardcoded CWE pairs.")
+    else:
+        for chain in seed_chains:
+            ordered_labels: list[str] = []
+            for finding_id in chain.finding_ids:
+                finding = by_id.get(finding_id)
+                if finding is None:
+                    continue
+                ordered_labels.append(finding.cwe_name)
+
+            label = " -> ".join(ordered_labels) if ordered_labels else chain.title
+            lines.append(f"- Potential chain: {label} (findings {', '.join(chain.finding_ids)})")
+
+    lines.append("Look for additional multi-step attack chains beyond these seeds.")
+    return "\n".join(lines)
+
+
 def _extract_dedup_payload(result: object) -> DeduplicatedResult | None:
     if isinstance(result, DeduplicatedResult):
         return result
@@ -126,7 +147,8 @@ def _extract_dedup_payload(result: object) -> DeduplicatedResult | None:
         return parsed
     if isinstance(parsed, dict):
         try:
-            return DeduplicatedResult(**parsed)
+            parsed_payload = cast("dict[str, object]", parsed)
+            return DeduplicatedResult.model_validate(parsed_payload)
         except Exception:
             return None
     return None
@@ -140,6 +162,8 @@ async def deduplicate_and_correlate(
 ) -> HuntResult:
     deduplicated = _deduplicate(findings)
     chains: list[PotentialChain] = []
+    seed_chains = _fallback_correlate(deduplicated)
+    seed_context = _seed_chain_context(seed_chains, deduplicated)
 
     if deduplicated:
         import shutil
@@ -149,10 +173,13 @@ async def deduplicate_and_correlate(
             "You are SEC-AF's deduplicator/correlator.\n"
             "Take multiple turns:\n"
             "1) Validate duplicate groups and tighten merged findings.\n"
-            "2) Identify multi-step attack chains across findings.\n"
+            "2) Validate seed chain candidates and identify multi-step attack chains across findings.\n"
+            "   A multi-step attack chain means one vulnerability enables exploitation of another step.\n"
+            "   You are not limited to the provided seeds; discover additional chains when justified.\n"
             "3) Return final JSON matching DeduplicatedResult.\n\n"
             f"Recon context:\n{recon.model_dump_json()}\n\n"
-            f"Deduplicated candidate findings:\n{json.dumps([f.model_dump() for f in deduplicated])}"
+            f"Deduplicated candidate findings:\n{json.dumps([f.model_dump() for f in deduplicated])}\n\n"
+            f"{seed_context}"
         )
         harness_cwd = tempfile.mkdtemp(prefix="secaf-dedup-")
         try:
@@ -169,7 +196,7 @@ async def deduplicate_and_correlate(
             shutil.rmtree(harness_cwd, ignore_errors=True)
 
     if not chains:
-        chains = _fallback_correlate(deduplicated)
+        chains = seed_chains
 
     deduplicated.sort(key=_severity_confidence_sort_key, reverse=True)
     return HuntResult(
