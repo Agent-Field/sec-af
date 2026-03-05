@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import json
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
@@ -14,6 +16,8 @@ if TYPE_CHECKING:
     from agentfield import Agent
 
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
+
+logger = logging.getLogger(__name__)
 
 _TRANSIENT_PATTERNS = (
     "rate limit",
@@ -55,6 +59,29 @@ def _with_file_write_hint(prompt: str, cwd: str) -> str:
     return (
         f"{prompt.rstrip()}\n"
         f"If output is large or complex, use the file-write pattern and ensure final JSON is written to {output_path}."
+    )
+
+
+def _build_schema_retry_prompt(schema: type[SchemaT], error_detail: str, cwd: str) -> str:
+    """Build a retry prompt that includes the full schema JSON definition.
+
+    This ensures the model can see exactly what schema it needs to conform to,
+    improving retry success rates when schema validation fails.
+    """
+    output_path = Path(cwd) / ".agentfield_output.json"
+
+    # Get the JSON schema from the Pydantic model
+    schema_json = schema.model_json_schema()
+    schema_json_str = json.dumps(schema_json, indent=2)
+
+    return (
+        f"The JSON output at {output_path} failed validation.\n"
+        f"Error: {error_detail}\n\n"
+        f"Your response must conform to this JSON schema:\n"
+        f"```json\n{schema_json_str}\n```\n\n"
+        f"Rewrite the COMPLETE, corrected JSON to: {output_path}\n"
+        f"The file must contain ONLY valid JSON matching the schema above. "
+        f"No markdown fences, no extra text, no comments."
     )
 
 
@@ -112,6 +139,83 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
     def invocation_count(self) -> int:
         return self._cost_tracker.invocation_count
 
+    async def _invoke_with_schema_retry(
+        self,
+        *,
+        prompt: str,
+        schema: type[SchemaT],
+        cwd: str,
+        project_dir: str | None = None,
+        model: str | None = None,
+        max_turns: int | None = None,
+        max_budget_usd: float | None = None,
+        phase: str | None = None,
+        retry_count: int = 0,
+    ) -> SchemaT:
+        """Retry harness invocation with schema context included in the retry prompt."""
+        max_schema_retries = 3
+
+        if retry_count >= max_schema_retries:
+            raise AIIntegrationError(f"Schema validation failed after {max_schema_retries} retries with schema context")
+
+        error_detail = f"Retry attempt {retry_count + 1}/{max_schema_retries}"
+        retry_prompt = _build_schema_retry_prompt(schema, error_detail, cwd)
+
+        logger.info(
+            "Schema validation retry %d/%d with schema context",
+            retry_count + 1,
+            max_schema_retries,
+        )
+
+        async def _retry_operation() -> Any:
+            extra_kwargs: dict[str, Any] = {}
+            if self.config.opencode_server:
+                extra_kwargs["opencode_server"] = self.config.opencode_server
+            if project_dir:
+                extra_kwargs["project_dir"] = project_dir
+            return await self.app.harness(
+                retry_prompt,
+                schema=schema,
+                cwd=cwd,
+                provider=self.config.provider,
+                model=model or self.config.harness_model,
+                max_turns=max_turns or self.config.max_turns,
+                max_budget_usd=max_budget_usd,
+                env=self.config.provider_env(),
+                schema_max_retries=0,
+                **extra_kwargs,
+            )
+
+        result = await self._run_with_retry(_retry_operation, self.config)
+        self._cost_tracker.register_cost(getattr(result, "cost_usd", None))
+
+        if getattr(result, "is_error", False):
+            message = getattr(result, "error_message", "unknown harness error")
+            raise AIIntegrationError(f"Harness failure{f' ({phase})' if phase else ''}: {message}")
+
+        parsed = getattr(result, "parsed", None)
+        if isinstance(parsed, schema):
+            return parsed
+        if isinstance(parsed, dict):
+            return schema(**parsed)
+        if isinstance(result, schema):
+            return result
+
+        if not parsed:
+            return await self._invoke_with_schema_retry(
+                prompt=prompt,
+                schema=schema,
+                cwd=cwd,
+                project_dir=project_dir,
+                model=model,
+                max_turns=max_turns,
+                max_budget_usd=max_budget_usd,
+                phase=phase,
+                retry_count=retry_count + 1,
+            )
+
+        raise AIIntegrationError(f"Harness returned invalid payload for schema {schema.__name__}")
+
     async def invoke(
         self,
         *,
@@ -142,6 +246,7 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
                 max_turns=max_turns or self.config.max_turns,
                 max_budget_usd=max_budget_usd,
                 env=self.config.provider_env(),
+                schema_max_retries=0,
                 **extra_kwargs,
             )
 
@@ -159,6 +264,19 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
             return schema(**parsed)
         if isinstance(result, schema):
             return result
+
+        if not parsed and not getattr(result, "is_error", False):
+            return await self._invoke_with_schema_retry(
+                prompt=enhanced_prompt,
+                schema=schema,
+                cwd=cwd,
+                project_dir=project_dir,
+                model=model,
+                max_turns=max_turns,
+                max_budget_usd=max_budget_usd,
+                phase=phase,
+            )
+
         raise AIIntegrationError(f"Harness returned invalid payload for schema {schema.__name__}")
 
     async def invoke_batch(
