@@ -13,8 +13,9 @@ from pydantic import BaseModel
 from .agents.hunt import run_hunt
 from .agents.prove import run_prove
 from .agents.recon import extract_recon_findings, run_recon
-from .compliance.mapping import get_compliance_gaps, get_compliance_mappings
+from .compliance.mapping import get_compliance_gaps, get_compliance_mappings, get_compliance_mappings_hybrid
 from .config import DepthProfile
+from .harness import AIGateWrapper
 from .output.json_output import generate_json
 from .output.report import generate_report
 from .output.sarif import generate_sarif
@@ -64,6 +65,7 @@ class AuditOrchestrator:
         self.budget_exhausted = False
         self.findings_not_verified = 0
         self.prove_drop_summary: dict[str, Any] = {"demoted_total": 0, "by_reason": {}, "findings": []}
+        self.ai_gate = AIGateWrapper(app=self.app)
 
     async def run(self) -> SecurityAuditResult:
         self.app.note("Starting SEC-AF orchestrator", tags=["audit", "start"])
@@ -76,7 +78,7 @@ class AuditOrchestrator:
         verified = await self._run_prove(recon, hunt)
         self._write_checkpoint("prove", verified)
 
-        result = self._generate_output(recon=recon, hunt=hunt, verified=verified)
+        result = await self._generate_output(recon=recon, hunt=hunt, verified=verified)
         self.app.note("SEC-AF audit complete", tags=["audit", "complete"])
         return result
 
@@ -106,7 +108,7 @@ class AuditOrchestrator:
             hunt = self._read_checkpoint("hunt", HuntResult)
             verified = self._read_checkpoint_list("prove", VerifiedFinding)
 
-        return self._generate_output(recon=recon, hunt=hunt, verified=verified)
+        return await self._generate_output(recon=recon, hunt=hunt, verified=verified)
 
     async def _run_recon(self) -> ReconResult:
         self.app.note("Phase: RECON", tags=["audit", "recon"])
@@ -163,7 +165,7 @@ class AuditOrchestrator:
         self._emit_progress(phase="prove", agents_total=1, agents_completed=1, findings_so_far=len(verified))
         return verified
 
-    def _generate_output(
+    async def _generate_output(
         self,
         *,
         recon: ReconResult,
@@ -174,9 +176,10 @@ class AuditOrchestrator:
         for finding in verified:
             finding.exploitability_score = compute_exploitability_score(finding)
             finding.sarif_security_severity = finding.exploitability_score
-            finding.compliance = get_compliance_mappings(
+            finding.compliance = await get_compliance_mappings_hybrid(
                 finding.cwe_id,
                 frameworks=self.input.compliance_frameworks or None,
+                ai_gate=self.ai_gate,
             )
 
         verdict_counts: dict[Verdict, int] = {

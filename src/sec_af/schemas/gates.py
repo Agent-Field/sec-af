@@ -43,3 +43,14 @@ class VerdictGate(BaseModel):
     confirmed: bool
     confidence: float
     reason: str
+
+
+class ComplianceSuggestion(BaseModel):
+    framework: str
+    control_id: str
+    control_name: str
+
+
+class ComplianceGate(BaseModel):
+    mappings: list[ComplianceSuggestion]
+    confidence: str

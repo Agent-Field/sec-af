@@ -1,4 +1,5 @@
 import importlib
+import asyncio
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -7,6 +8,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+sys.modules.pop("sec_af.compliance.mapping", None)
 mapping = importlib.import_module("sec_af.compliance.mapping")
 COMPLIANCE_MAP = mapping.COMPLIANCE_MAP
 get_compliance_gaps = mapping.get_compliance_gaps
@@ -162,3 +164,79 @@ def test_get_compliance_gaps_ignores_entries_without_valid_cwe() -> None:
     ]
 
     assert get_compliance_gaps(findings) == []
+
+
+class _FakeAIGate:
+    def __init__(self, response: object):
+        self.calls = 0
+        self.response = response
+
+    async def invoke(self, *, user: str, schema: object, system: str | None = None) -> object:
+        _ = user, schema, system
+        self.calls += 1
+        return self.response
+
+
+def test_get_compliance_mappings_hybrid_uses_ai_fallback_for_unknown_cwe() -> None:
+    assert hasattr(mapping, "get_compliance_mappings_hybrid")
+    mapping._AI_COMPLIANCE_CACHE.clear()
+    gate = _FakeAIGate(
+        mapping.ComplianceGate(
+            mappings=[
+                {
+                    "framework": "OWASP",
+                    "control_id": "A03:2021",
+                    "control_name": "Injection",
+                },
+                {
+                    "framework": "PCI-DSS",
+                    "control_id": "Req 6.2.4",
+                    "control_name": "Prevent injection attacks",
+                },
+            ],
+            confidence="high",
+        )
+    )
+
+    results = asyncio.run(mapping.get_compliance_mappings_hybrid("CWE-9999", ai_gate=gate))
+
+    assert gate.calls == 1
+    assert len(results) == 2
+    assert {item.framework for item in results} == {"OWASP", "PCI-DSS"}
+
+
+def test_get_compliance_mappings_hybrid_uses_cache_for_ai_results() -> None:
+    mapping._AI_COMPLIANCE_CACHE.clear()
+    gate = _FakeAIGate(
+        mapping.ComplianceGate(
+            mappings=[
+                {
+                    "framework": "OWASP",
+                    "control_id": "A03:2021",
+                    "control_name": "Injection",
+                }
+            ],
+            confidence="high",
+        )
+    )
+
+    first = asyncio.run(mapping.get_compliance_mappings_hybrid("CWE-9999", ai_gate=gate))
+    second = asyncio.run(mapping.get_compliance_mappings_hybrid("CWE-9999", ai_gate=gate))
+
+    assert gate.calls == 1
+    assert first == second
+
+
+def test_get_compliance_mappings_hybrid_keeps_fast_path_for_known_cwe() -> None:
+    mapping._AI_COMPLIANCE_CACHE.clear()
+    gate = _FakeAIGate(
+        mapping.ComplianceGate(
+            mappings=[],
+            confidence="low",
+        )
+    )
+
+    results = asyncio.run(mapping.get_compliance_mappings_hybrid("CWE-89", ai_gate=gate))
+
+    assert gate.calls == 0
+    assert results == get_compliance_mappings("CWE-89")

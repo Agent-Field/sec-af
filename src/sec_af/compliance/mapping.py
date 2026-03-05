@@ -1,7 +1,11 @@
 from collections.abc import Iterable
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol
 
 from ..schemas.compliance import ComplianceGap, ComplianceMapping
+from ..schemas.gates import ComplianceGate
+
+if TYPE_CHECKING:
+    from pydantic import BaseModel
 
 
 def _cm(framework: str, control_id: str, control_name: str) -> ComplianceMapping:
@@ -333,6 +337,19 @@ _SEVERITY_RANK = {
     "info": 1,
 }
 
+_DEFAULT_FRAMEWORKS = ["OWASP", "PCI-DSS", "SOC2", "HIPAA", "ISO27001"]
+_AI_COMPLIANCE_CACHE: dict[tuple[str, tuple[str, ...] | None], list[ComplianceMapping]] = {}
+
+
+class _AIGateLike(Protocol):
+    async def invoke(
+        self,
+        *,
+        user: str,
+        schema: type["BaseModel"],
+        system: str | None = None,
+    ) -> Any: ...
+
 
 def _normalize_cwe_id(cwe_id: str) -> str:
     raw = cwe_id.strip().upper()
@@ -358,6 +375,56 @@ def get_compliance_mappings(
 
     allowed = {_normalize_framework(framework) for framework in frameworks}
     return [mapping.model_copy(deep=True) for mapping in mappings if _normalize_framework(mapping.framework) in allowed]
+
+
+async def get_compliance_mappings_hybrid(
+    cwe_id: str,
+    frameworks: list[str] | None = None,
+    ai_gate: _AIGateLike | None = None,
+) -> list[ComplianceMapping]:
+    normalized_cwe = _normalize_cwe_id(cwe_id)
+    cached_mappings = get_compliance_mappings(normalized_cwe, frameworks=frameworks)
+    if cached_mappings:
+        return cached_mappings
+    if ai_gate is None:
+        return []
+
+    cache_frameworks = None
+    framework_list = list(_DEFAULT_FRAMEWORKS)
+    if frameworks:
+        cache_frameworks = tuple(sorted({_normalize_framework(framework) for framework in frameworks}))
+        framework_list = list(frameworks)
+
+    cache_key = (normalized_cwe, cache_frameworks)
+    if cache_key in _AI_COMPLIANCE_CACHE:
+        return [mapping.model_copy(deep=True) for mapping in _AI_COMPLIANCE_CACHE[cache_key]]
+
+    cwe_description = "Unknown CWE"
+    framework_prompt = ", ".join(framework_list) if framework_list else ", ".join(_DEFAULT_FRAMEWORKS)
+    prompt = (
+        f"Map {normalized_cwe} ({cwe_description}) to compliance framework controls. "
+        f"Frameworks: {framework_prompt}. Return specific control IDs."
+    )
+
+    try:
+        suggestion = await ai_gate.invoke(user=prompt, schema=ComplianceGate)
+    except Exception:
+        return []
+
+    ai_mappings = [
+        ComplianceMapping(
+            framework=item.framework,
+            control_id=item.control_id,
+            control_name=item.control_name,
+        )
+        for item in suggestion.mappings
+    ]
+    if frameworks:
+        allowed = {_normalize_framework(framework) for framework in frameworks}
+        ai_mappings = [mapping for mapping in ai_mappings if _normalize_framework(mapping.framework) in allowed]
+
+    _AI_COMPLIANCE_CACHE[cache_key] = [mapping.model_copy(deep=True) for mapping in ai_mappings]
+    return [mapping.model_copy(deep=True) for mapping in ai_mappings]
 
 
 def get_supported_frameworks() -> list[str]:

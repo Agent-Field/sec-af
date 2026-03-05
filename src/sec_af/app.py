@@ -201,7 +201,7 @@ async def audit(
             orchestrator._write_checkpoint("prove", verified)
 
             orchestrator.agent_invocations = prove_dict.get("total_selected", 0) + len(hunt.strategies_run) + 3
-            result = orchestrator._generate_output(recon=recon, hunt=hunt, verified=verified)
+            result = await orchestrator._generate_output(recon=recon, hunt=hunt, verified=verified)
             app.note("SEC-AF audit complete", tags=["audit", "complete"])
     except ValueError as exc:
         raise HTTPException(status_code=400, detail={"error": str(exc)}) from exc

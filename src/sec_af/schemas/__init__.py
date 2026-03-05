@@ -6,6 +6,8 @@ config, and compliance mapping flows.
 
 from .compliance import ComplianceGap, ComplianceMapping
 from .gates import (
+    ComplianceGate,
+    ComplianceSuggestion,
     DuplicateCheck,
     RelevanceGate,
     SeverityClassification,
@@ -81,8 +83,10 @@ __all__ = [
     "AuditMetrics",
     "AuditProgress",
     "ChainStep",
+    "ComplianceGate",
     "ComplianceGap",
     "ComplianceMapping",
+    "ComplianceSuggestion",
     "Confidence",
     "ConfigReport",
     "CryptoUsage",

