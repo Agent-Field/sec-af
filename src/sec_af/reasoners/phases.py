@@ -283,41 +283,90 @@ async def hunt_phase(
         )
 
     concurrency_limit = max(1, min(max_concurrent_hunters, len(strategies)))
+    findings_queue: asyncio.Queue[list[RawFinding]] = asyncio.Queue()
     semaphore = asyncio.Semaphore(concurrency_limit)
 
-    async def _run_strategy(strategy: HuntStrategy) -> object:
+    async def _run_and_enqueue(strategy: HuntStrategy) -> None:
+        """Hunter producer: runs strategy and enqueues findings."""
         async with semaphore:
-            strategy_context = prune_recon_for_strategy(recon, strategy.value)
-            return await _runtime_router.call(
-                f"{NODE_ID}.run_{strategy.value}_hunter",
-                repo_path=repo_path,
-                recon_context=strategy_context,
-                depth=depth,
-                max_files_without_signal=early_stop_file_threshold,
-            )
+            strategy_name = strategy.value
+            operation_name = f"run_{strategy_name}_hunter"
+            strategy_context = prune_recon_for_strategy(recon, strategy_name)
+            try:
+                raw = await _runtime_router.call(
+                    f"{NODE_ID}.{operation_name}",
+                    repo_path=repo_path,
+                    recon_context=strategy_context,
+                    depth=depth,
+                    max_files_without_signal=early_stop_file_threshold,
+                )
+                payload = HuntResult.model_validate(_as_dict(_unwrap(raw, operation_name), operation_name))
+                await findings_queue.put(payload.findings)
+            except Exception as exc:
+                _runtime_router.note(
+                    f"Hunt strategy failed: {strategy_name}: {exc}",
+                    tags=["hunt", "error"],
+                )
+                await findings_queue.put([])
 
-    hunt_calls = [_run_strategy(strategy) for strategy in strategies]
-    hunt_results = await asyncio.gather(*hunt_calls, return_exceptions=True)
+    async def _incremental_dedup() -> tuple[list[RawFinding], int]:
+        """Consumer: deduplicates findings incrementally as hunters complete."""
+        all_findings: list[RawFinding] = []
+        seen_fingerprints: set[str] = set()
+        completed = 0
+        total_raw = 0
 
-    all_findings: list[RawFinding] = []
-    for idx, raw in enumerate(hunt_results):
-        if isinstance(raw, Exception):
-            _runtime_router.note(f"Hunt strategy failed: {strategies[idx].value}: {raw}", tags=["hunt", "error"])
-            continue
-        payload = HuntResult.model_validate(
-            _as_dict(_unwrap(raw, f"run_{strategies[idx].value}_hunter"), f"run_{strategies[idx].value}_hunter")
+        while completed < len(strategies):
+            batch = await findings_queue.get()
+            completed += 1
+            total_raw += len(batch)
+
+            new_findings: list[RawFinding] = []
+            for finding in batch:
+                fingerprint = finding.fingerprint
+                if not fingerprint:
+                    fingerprint = f"{finding.file_path}:{finding.start_line}:{finding.cwe_id}"
+                    finding.fingerprint = fingerprint
+                if fingerprint in seen_fingerprints:
+                    continue
+                seen_fingerprints.add(fingerprint)
+                new_findings.append(finding)
+
+            all_findings.extend(new_findings)
+
+            if new_findings:
+                duplicate_count = len(batch) - len(new_findings)
+                _runtime_router.note(
+                    f"Incremental dedup: +{len(new_findings)} new ({duplicate_count} fingerprint dupes), "
+                    f"total={len(all_findings)}",
+                    tags=["hunt", "dedup", "incremental"],
+                )
+
+        return all_findings, total_raw
+
+    producer_tasks = [asyncio.create_task(_run_and_enqueue(strategy)) for strategy in strategies]
+    consumer_task = asyncio.create_task(_incremental_dedup())
+
+    await asyncio.gather(*producer_tasks)
+    deduped_findings, total_raw = await consumer_task
+
+    if deduped_findings:
+        _runtime_router.note(
+            f"HUNT found {len(deduped_findings)} fingerprint-unique findings, running semantic dedup",
+            tags=["hunt", "dedup"],
         )
-        all_findings.extend(payload.findings)
+        dedup_raw = await _runtime_router.call(
+            f"{NODE_ID}.run_deduplicator",
+            findings=[f.model_dump() for f in deduped_findings],
+            recon_context=recon_context,
+            repo_path=repo_path,
+        )
+        dedup = HuntResult.model_validate(_as_dict(_unwrap(dedup_raw, "run_deduplicator"), "run_deduplicator"))
+    else:
+        dedup = HuntResult(findings=[], total_raw=0, deduplicated_count=0)
 
-    _runtime_router.note(f"HUNT found {len(all_findings)} raw findings, deduplicating", tags=["hunt", "dedup"])
-    dedup_raw = await _runtime_router.call(
-        f"{NODE_ID}.run_deduplicator",
-        findings=[f.model_dump() for f in all_findings],
-        recon_context=recon_context,
-        repo_path=repo_path,
-    )
-    dedup = HuntResult.model_validate(_as_dict(_unwrap(dedup_raw, "run_deduplicator"), "run_deduplicator"))
     dedup.strategies_run = [s.value for s in strategies]
+    dedup.total_raw = total_raw
 
     _runtime_router.note("HUNT phase complete", tags=["phase", "hunt", "done"])
     return dedup.model_dump()
