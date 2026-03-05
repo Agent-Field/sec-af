@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 from .agents.hunt import run_hunt
 from .agents.prove import run_prove
-from .agents.recon import run_recon
+from .agents.recon import extract_recon_findings, run_recon
 from .compliance.mapping import get_compliance_gaps, get_compliance_mappings
 from .config import DepthProfile
 from .output.json_output import generate_json
@@ -126,6 +126,8 @@ class AuditOrchestrator:
             recon_result=recon,
             depth=self.input.depth,
         )
+        recon_findings = extract_recon_findings(recon)
+        hunt = merge_recon_findings_into_hunt(hunt, recon_findings)
         self._emit_progress(phase="hunt", agents_total=1, agents_completed=1, findings_so_far=len(hunt.findings))
         return hunt
 
@@ -433,4 +435,24 @@ def _verified_finding_fallback(finding: RawFinding) -> VerifiedFinding:
         ),
         sarif_rule_id=f"sec-af/{finding.finding_type.value}/{finding.cwe_id.lower()}",
         sarif_security_severity=0.0,
+    )
+
+
+def merge_recon_findings_into_hunt(hunt: HuntResult, recon_findings: list[RawFinding]) -> HuntResult:
+    if not recon_findings:
+        return hunt
+
+    merged_findings = [*recon_findings, *hunt.findings]
+    strategies_run = list(hunt.strategies_run)
+    if "recon" not in strategies_run:
+        strategies_run.insert(0, "recon")
+
+    return HuntResult(
+        findings=merged_findings,
+        chains=hunt.chains,
+        total_raw=hunt.total_raw + len(recon_findings),
+        deduplicated_count=len(merged_findings),
+        chain_count=hunt.chain_count,
+        strategies_run=strategies_run,
+        hunt_duration_seconds=hunt.hunt_duration_seconds,
     )
