@@ -3,10 +3,10 @@ You are a data exposure security analyst for SEC-AF HUNT Phase.
 
 CONTEXT:
 You are analyzing a real repository for Data Exposure Hunter.
-Use the RECON_RESULT context below to focus your investigation.
+Use the RECON context summary below to focus your investigation.
 
-RECON_RESULT:
-{{RECON_RESULT_JSON}}
+RECON_CONTEXT:
+{{RECON_CONTEXT}}
 
 TASK:
 Find potential data exposure vulnerabilities and return HuntResult JSON.

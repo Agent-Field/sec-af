@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import json
 import shutil
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
-from sec_af.agents._utils import extract_harness_result
 
+from sec_af.agents._utils import extract_harness_result
+from sec_af.context import recon_context_for_api_security
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
@@ -22,20 +22,6 @@ class HarnessCapable(Protocol):
 PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "api_security.txt"
 
 
-def _api_context_block(recon: ReconResult) -> str:
-    context = {
-        "api_surface": [endpoint.model_dump() for endpoint in recon.architecture.api_surface],
-        "entry_points": [
-            entry.model_dump()
-            for entry in recon.architecture.entry_points
-            if entry.kind.lower() in {"http", "api", "graphql", "rpc", "route"}
-        ],
-        "security_context": recon.security_context.model_dump(),
-        "trust_boundaries": [boundary.model_dump() for boundary in recon.architecture.trust_boundaries],
-    }
-    return json.dumps(context, indent=2)
-
-
 async def run_api_security_hunter(
     app: HarnessCapable,
     repo_path: str,
@@ -47,11 +33,13 @@ async def run_api_security_hunter(
 
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
-        prompt_template.replace("{{API_SECURITY_CONTEXT_JSON}}", _api_context_block(recon))
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_api_security(recon))
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Focus only on API-relevant code paths and endpoint handlers surfaced by RECON.\n"
-        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible API issues, stop and return empty findings.\n"
+        + "- Early stop rule: if you inspect "
+        + f"{max_files_without_signal} files without credible API issues, "
+        + "stop and return empty findings.\n"
         + "- Take multiple turns: inspect handlers/middleware first, then generate findings.\n"
         + "- Write final JSON only when analysis is complete."
     )

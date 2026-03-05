@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import json
 import shutil
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
-from sec_af.agents._utils import extract_harness_result
 
+from sec_af.agents._utils import extract_harness_result
+from sec_af.context import recon_context_for_supply_chain
 from sec_af.schemas.hunt import HuntResult
 
 if TYPE_CHECKING:
@@ -41,14 +41,15 @@ async def run_supply_chain_hunter(
 
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
-        prompt_template
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_supply_chain(recon))
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Hunt strategy: supply_chain (CWE-1104, CWE-829).\n"
-        + f"- Early stop rule: if you inspect {max_files_without_signal} manifests/files without credible dependency risk, stop and return empty findings.\n"
+        + "- Early stop rule: if you inspect "
+        + f"{max_files_without_signal} manifests/files without credible dependency risk, "
+        + "stop and return empty findings.\n"
         + "- Focus manifests/lockfiles (package.json, requirements.txt, go.mod, Pipfile, "
         + "poetry.lock, package-lock.json, yarn.lock, pnpm-lock.yaml, Cargo.toml).\n"
-        + f"- Recon dependency report: {json.dumps(recon.dependencies.model_dump(), indent=2)}\n"
         + "- Take multiple turns: inspect manifests/lockfiles, validate dependency risks, "
         + "then produce final structured findings.\n"
         + "- Write final JSON only when analysis is complete.\n"

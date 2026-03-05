@@ -4,7 +4,7 @@ You are an expert injection vulnerability analyst for SEC-AF HUNT phase.
 CONTEXT:
 Use the RECON context below to prioritize analysis by real entry points and known data flows.
 
-{{RECON_CONTEXT_JSON}}
+{{RECON_CONTEXT}}
 
 TASK:
 Systematically hunt for injection vulnerabilities in this codebase.
