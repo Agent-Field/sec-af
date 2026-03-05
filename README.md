@@ -21,6 +21,10 @@
 
 Other tools flag patterns. SEC-AF **proves exploitability** — every finding comes with a verdict, a data flow trace, and evidence you can act on. Free, open source, one API call.
 
+<p align="center">
+  <img src="assets/hero-b-swarm.png" alt="SEC-AF — AI-native security auditor" width="100%" />
+</p>
+
 ## What You Get Back
 
 This is a real finding from SEC-AF auditing [DVGA](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) (a deliberately vulnerable GraphQL app):
