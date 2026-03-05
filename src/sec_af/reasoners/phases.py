@@ -178,6 +178,9 @@ def _default_strategies(recon: ReconResult, depth: str) -> list[HuntStrategy]:
         HuntStrategy.DATA_EXPOSURE,
         HuntStrategy.CONFIG_SECRETS,
     ]
+    profile = _normalize_depth(depth)
+    if profile in {DepthProfile.STANDARD, DepthProfile.THOROUGH}:
+        strategies.append(HuntStrategy.XSS)
     if recon.security_context.crypto_usage:
         strategies.append(HuntStrategy.CRYPTO)
     if recon.dependencies.direct_count > 0:
@@ -185,7 +188,6 @@ def _default_strategies(recon: ReconResult, depth: str) -> list[HuntStrategy]:
     if recon.architecture.api_surface:
         strategies.append(HuntStrategy.API_SECURITY)
 
-    profile = _normalize_depth(depth)
     if profile in {DepthProfile.STANDARD, DepthProfile.THOROUGH}:
         strategies.append(HuntStrategy.LOGIC_BUGS)
 

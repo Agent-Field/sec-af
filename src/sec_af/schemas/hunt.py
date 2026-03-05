@@ -44,6 +44,7 @@ class HuntStrategy(str, Enum):
     """DESIGN.md §5.2 and §5.3 strategy catalog for hunters."""
 
     INJECTION = "injection"
+    XSS = "xss"
     AUTH = "auth"
     CRYPTO = "crypto"
     LOGIC_BUGS = "logic_bugs"

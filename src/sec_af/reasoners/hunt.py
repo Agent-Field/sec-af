@@ -11,6 +11,7 @@ from sec_af.agents.hunt.data_exposure import run_data_exposure_hunter as _run_da
 from sec_af.agents.hunt.injection import run_injection_hunter as _run_injection_hunter
 from sec_af.agents.hunt.logic import run_logic_hunter as _run_logic_hunter
 from sec_af.agents.hunt.supply_chain import run_supply_chain_hunter as _run_supply_chain_hunter
+from sec_af.agents.hunt.xss import run_xss_hunter as _run_xss_hunter
 from sec_af.schemas.hunt import RawFinding
 from sec_af.schemas.recon import ReconResult
 
@@ -85,6 +86,23 @@ async def run_auth_hunter(
     _runtime_router.note("Auth hunter starting", tags=["hunt", "auth"])
     return await _run_hunter(
         _run_auth_hunter,
+        repo_path=repo_path,
+        recon_context=recon_context,
+        depth=depth,
+        max_files_without_signal=max_files_without_signal,
+    )
+
+
+@router.reasoner()
+async def run_xss_hunter(
+    repo_path: str,
+    recon_context: dict[str, Any],
+    depth: str,
+    max_files_without_signal: int = 30,
+) -> dict[str, Any]:
+    _runtime_router.note("XSS hunter starting", tags=["hunt", "xss"])
+    return await _run_hunter(
+        _run_xss_hunter,
         repo_path=repo_path,
         recon_context=recon_context,
         depth=depth,

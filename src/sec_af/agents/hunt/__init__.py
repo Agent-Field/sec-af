@@ -45,6 +45,7 @@ def _load_hunter(module_name: str, func_name: str, strategy: HuntStrategy) -> Hu
 
 _STRATEGY_RUNNERS: dict[HuntStrategy, HunterRunner] = {
     HuntStrategy.INJECTION: _load_hunter(".injection", "run_injection_hunter", HuntStrategy.INJECTION),
+    HuntStrategy.XSS: _load_hunter(".xss", "run_xss_hunter", HuntStrategy.XSS),
     HuntStrategy.AUTH: _load_hunter(".auth", "run_auth_hunter", HuntStrategy.AUTH),
     HuntStrategy.CRYPTO: _load_hunter(".crypto", "run_crypto_hunter", HuntStrategy.CRYPTO),
     HuntStrategy.LOGIC_BUGS: _load_hunter(".logic", "run_logic_hunter", HuntStrategy.LOGIC_BUGS),
