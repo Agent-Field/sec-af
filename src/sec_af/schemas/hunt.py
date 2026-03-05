@@ -59,6 +59,34 @@ class HuntStrategy(str, Enum):
     JAVASCRIPT_SPECIFIC = "javascript_specific"
 
 
+class VulnLocation(BaseModel):
+    """Flat schema for Step 1: location scanning. 4 fields."""
+
+    file_path: str = Field(description="Path to the file containing the potential vulnerability")
+    start_line: int = Field(description="Starting line number of the vulnerable code")
+    code_snippet: str = Field(description="Relevant code snippet around the vulnerability")
+    pattern_type: str = Field(
+        description="Type of vulnerability pattern detected (e.g. 'sql_injection', 'command_injection')"
+    )
+
+
+class EnrichedFinding(BaseModel):
+    """Flat schema for Step 2: finding enrichment. 6 fields."""
+
+    title: str = Field(description="Human-readable title for the finding")
+    description: str = Field(description="Detailed description of the vulnerability")
+    cwe_id: str = Field(description="CWE identifier (e.g. 'CWE-89')")
+    severity: str = Field(description='One of: "critical", "high", "medium", "low", "info"')
+    confidence: str = Field(description='One of: "high", "medium", "low"')
+    data_flow_summary: str = Field(description="Natural language summary of the data flow (string, not nested)")
+
+
+class ScanLocationsResult(BaseModel):
+    """Container for Step 1 results."""
+
+    locations: list[VulnLocation] = Field(default_factory=list)
+
+
 class RawFinding(BaseModel):
     """DESIGN.md §5.4 potential vulnerability from a hunter."""
 

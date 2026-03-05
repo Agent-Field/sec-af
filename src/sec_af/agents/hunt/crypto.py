@@ -49,6 +49,19 @@ _NON_SECURITY_TERMS = (
 )
 
 
+def _usage_contexts(recon: ReconResult) -> list[str]:
+    return [usage.usage_context for usage in recon.security_context.crypto_usage if usage.usage_context]
+
+
+def _filter_contexts_by_terms(contexts: list[str], terms: tuple[str, ...]) -> list[str]:
+    filtered: list[str] = []
+    for context in contexts:
+        lowered = context.lower()
+        if any(term in lowered for term in terms):
+            filtered.append(context)
+    return filtered
+
+
 def should_run_crypto_hunter(recon: ReconResult) -> bool:
     return bool(recon.security_context.crypto_usage)
 
@@ -63,6 +76,9 @@ async def run_crypto_hunter(
         return HuntResult()
 
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
+    usage_contexts = _usage_contexts(recon)
+    security_critical_candidates = _filter_contexts_by_terms(usage_contexts, _SECURITY_CRITICAL_TERMS)
+    non_security_candidates = _filter_contexts_by_terms(usage_contexts, _NON_SECURITY_TERMS)
     prompt = (
         prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_crypto(recon))
         + "\n\nCONTEXT:\n"
@@ -70,6 +86,12 @@ async def run_crypto_hunter(
         + "- Hunt strategy: crypto\n"
         + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible crypto misuse, stop and return empty findings.\n"
         + "- Focus CWEs: CWE-326, CWE-327, CWE-328, CWE-330, CWE-916, CWE-259, CWE-321, CWE-798\n"
+        + "- Security-critical usage candidates: "
+        + (", ".join(security_critical_candidates) if security_critical_candidates else "none")
+        + "\n"
+        + "- Non-security usage candidates: "
+        + (", ".join(non_security_candidates) if non_security_candidates else "none")
+        + "\n"
         + "- Prioritize weak crypto findings only when used in security-sensitive contexts; avoid checksum/cache-only noise.\n"
         + "- Take multiple turns to explore relevant files before finalizing findings.\n"
         + "- Write final JSON only when analysis is complete."
