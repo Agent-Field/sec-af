@@ -24,7 +24,19 @@ _runtime_router: Any = router
 
 
 def _recon_model(recon_context: dict[str, Any]) -> ReconResult:
-    return ReconResult(**recon_context)
+    normalized = {
+        "architecture": {},
+        "data_flows": {},
+        "dependencies": {},
+        "config": {},
+        "security_context": {"auth_model": "unknown", "auth_details": ""},
+        "languages": [],
+        "frameworks": [],
+        "lines_of_code": 0,
+        "file_count": 0,
+    }
+    normalized.update(recon_context)
+    return ReconResult.model_validate(normalized)
 
 
 async def _run_hunter(
