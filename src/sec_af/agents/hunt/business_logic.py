@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Protocol
 
 from sec_af.agents._utils import extract_harness_result
 from sec_af.config import DepthProfile
-from sec_af.context import language_hints_for_context
+from sec_af.context import framework_hints_for_context, language_hints_for_context
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
@@ -68,9 +68,9 @@ async def run_business_logic_hunter(
 
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
-        prompt_template.replace("{{RECON_CONTEXT_JSON}}", _recon_context_block(recon_result)).replace(
-            "{{LANGUAGE_HINTS}}", language_hints_for_context(recon_result)
-        )
+        prompt_template.replace("{{RECON_CONTEXT_JSON}}", _recon_context_block(recon_result))
+        .replace("{{LANGUAGE_HINTS}}", language_hints_for_context(recon_result))
+        .replace("{{FRAMEWORK_HINTS}}", framework_hints_for_context(recon_result))
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + f"- Depth profile: {_normalize_depth(depth).value}\n"

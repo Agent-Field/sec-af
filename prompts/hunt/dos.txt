@@ -36,6 +36,7 @@ OUTPUT:
   hunt_duration_seconds).
 
 {{LANGUAGE_HINTS}}
+{{FRAMEWORK_HINTS}}
 
 CONSTRAINTS:
 - Take multiple turns: explore resource-intensive paths, validate missing bounds, then construct final findings.

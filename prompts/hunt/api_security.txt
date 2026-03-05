@@ -33,6 +33,7 @@ OUTPUT:
 - Include attack chains only when there is concrete multi-step linkage.
 
 {{LANGUAGE_HINTS}}
+{{FRAMEWORK_HINTS}}
 
 CONSTRAINTS:
 - Take multiple turns to inspect files before drafting findings.

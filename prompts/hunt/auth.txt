@@ -40,6 +40,7 @@ DO NOT FLAG:
 - Endpoints explicitly marked as test/demo fixtures when not active in production paths.
 
 {{LANGUAGE_HINTS}}
+{{FRAMEWORK_HINTS}}
 
 OUTPUT FORMAT:
 - Return JSON only matching HuntResult.

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 from sec_af.agents._utils import extract_harness_result
-from sec_af.context import language_hints_for_context, recon_context_for_api_security
+from sec_af.context import framework_hints_for_context, language_hints_for_context, recon_context_for_api_security
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
@@ -33,9 +33,9 @@ async def run_api_security_hunter(
 
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
-        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_api_security(recon)).replace(
-            "{{LANGUAGE_HINTS}}", language_hints_for_context(recon)
-        )
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_api_security(recon))
+        .replace("{{LANGUAGE_HINTS}}", language_hints_for_context(recon))
+        .replace("{{FRAMEWORK_HINTS}}", framework_hints_for_context(recon))
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Focus only on API-relevant code paths and endpoint handlers surfaced by RECON.\n"
