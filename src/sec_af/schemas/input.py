@@ -53,3 +53,7 @@ class AuditInput(BaseModel):
         default=False,
         description="Enable DAST-like runtime exploit verification (requires sandbox)",
     )
+    custom_policies: list[str] = Field(
+        default_factory=list,
+        description="Org-specific security policy rules to evaluate (e.g., 'All endpoints must require authentication')",
+    )
