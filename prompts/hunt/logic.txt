@@ -36,6 +36,7 @@ OUTPUT REQUIREMENTS:
 - Generate stable fingerprints from vulnerability identity and location.
 
 {{LANGUAGE_HINTS}}
+{{FRAMEWORK_HINTS}}
 
 CONSTRAINTS:
 - Take multiple turns: explore code first, validate workflows, then build findings incrementally.

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 from sec_af.agents._utils import extract_harness_result
-from sec_af.context import language_hints_for_context, recon_context_for_crypto
+from sec_af.context import framework_hints_for_context, language_hints_for_context, recon_context_for_crypto
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
@@ -80,9 +80,9 @@ async def run_crypto_hunter(
     security_critical_candidates = _filter_contexts_by_terms(usage_contexts, _SECURITY_CRITICAL_TERMS)
     non_security_candidates = _filter_contexts_by_terms(usage_contexts, _NON_SECURITY_TERMS)
     prompt = (
-        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_crypto(recon)).replace(
-            "{{LANGUAGE_HINTS}}", language_hints_for_context(recon)
-        )
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_crypto(recon))
+        .replace("{{LANGUAGE_HINTS}}", language_hints_for_context(recon))
+        .replace("{{FRAMEWORK_HINTS}}", framework_hints_for_context(recon))
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Hunt strategy: crypto\n"

@@ -35,6 +35,7 @@ OUTPUT:
   hunt_duration_seconds).
 
 {{LANGUAGE_HINTS}}
+{{FRAMEWORK_HINTS}}
 
 CONSTRAINTS:
 - Take multiple turns: explore the codebase, trace data flows from sources to rendering sinks,

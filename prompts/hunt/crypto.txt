@@ -45,6 +45,7 @@ OUTPUT:
 - hunter_strategy should be "crypto".
 
 {{LANGUAGE_HINTS}}
+{{FRAMEWORK_HINTS}}
 
 CONSTRAINTS:
 - Take multiple turns: first discover crypto-relevant files, then evaluate exploitability context.

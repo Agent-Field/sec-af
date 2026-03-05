@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 from sec_af.agents._utils import extract_harness_result
-from sec_af.context import language_hints_for_context, recon_context_for_supply_chain
+from sec_af.context import framework_hints_for_context, language_hints_for_context, recon_context_for_supply_chain
 from sec_af.schemas.hunt import HuntResult
 
 if TYPE_CHECKING:
@@ -41,9 +41,9 @@ async def run_supply_chain_hunter(
 
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
-        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_supply_chain(recon)).replace(
-            "{{LANGUAGE_HINTS}}", language_hints_for_context(recon)
-        )
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_supply_chain(recon))
+        .replace("{{LANGUAGE_HINTS}}", language_hints_for_context(recon))
+        .replace("{{FRAMEWORK_HINTS}}", framework_hints_for_context(recon))
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Hunt strategy: supply_chain (CWE-1104, CWE-829).\n"

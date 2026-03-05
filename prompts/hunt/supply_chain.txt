@@ -30,6 +30,7 @@ OUTPUT:
 - Include CVE identifiers in description/code_snippet when available from recon evidence.
 
 {{LANGUAGE_HINTS}}
+{{FRAMEWORK_HINTS}}
 
 CONSTRAINTS:
 - Take multiple turns: inspect relevant files first, then build findings incrementally.

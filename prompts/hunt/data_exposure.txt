@@ -42,6 +42,7 @@ DO NOT FLAG:
 - HTTPS URLs or TLS-enabled transmissions
 
 {{LANGUAGE_HINTS}}
+{{FRAMEWORK_HINTS}}
 
 CONSTRAINTS:
 - Take multiple turns: inspect relevant files first, then produce findings.
