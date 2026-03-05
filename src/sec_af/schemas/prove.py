@@ -41,6 +41,15 @@ class DataFlowTrace(BaseModel):
     sink_reached: bool = Field(description="Whether tainted data actually reaches the sink")
 
 
+class ReachabilityProof(BaseModel):
+    """Flat schema for dependency reachability analysis. 4 fields."""
+
+    vulnerable_function: str = Field(description="The vulnerable function/method in the dependency")
+    call_chain: list[str] = Field(description="Import/call chain from app code to vulnerable function")
+    reachable: bool = Field(description="Whether the vulnerable function is actually called")
+    direct: bool = Field(description="Whether the dependency is direct or transitive")
+
+
 class SanitizationResult(BaseModel):
     """Flat schema for sanitization analysis sub-agent. 4 fields."""
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from sec_af.agents.prove.dep_reachability import run_dep_reachability as _run_dep_reachability
 from sec_af.agents.prove.exploit import run_exploit_hypothesizer as _run_exploit_hypothesizer
 from sec_af.agents.prove.sanitization import run_sanitization_analyzer as _run_sanitization_analyzer
 from sec_af.agents.prove.tracer import run_tracer as _run_tracer
@@ -13,6 +14,14 @@ from sec_af.schemas.prove import DataFlowTrace, ExploitHypothesis, SanitizationR
 from . import router
 
 _runtime_router: Any = router
+
+
+@router.reasoner()
+async def run_dep_reachability(repo_path: str, finding: dict[str, Any], depth: str) -> dict[str, Any]:
+    runtime_router = _runtime_router
+    runtime_router.note("Dependency reachability analyzer starting", tags=["prove", "dep-reachability"])
+    result = await _run_dep_reachability(runtime_router, repo_path, finding, depth)
+    return result.model_dump()
 
 
 @router.reasoner()
