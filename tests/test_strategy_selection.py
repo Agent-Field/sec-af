@@ -99,3 +99,11 @@ def test_recon_summary_string_format(sample_recon: ReconResult) -> None:
     assert "jwt" in summary.lower()
     # Verify it's not empty
     assert len(summary) > 0
+
+
+def test_default_strategies_include_dos(sample_recon: ReconResult) -> None:
+    from sec_af.reasoners.phases import _default_strategies
+
+    strategies = _default_strategies(sample_recon, "standard")
+
+    assert HuntStrategy.DOS in strategies

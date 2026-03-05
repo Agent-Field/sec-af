@@ -174,6 +174,7 @@ async def recon_phase(repo_path: str, depth: str = "standard") -> dict[str, Any]
 def _default_strategies(recon: ReconResult, depth: str) -> list[HuntStrategy]:
     strategies: list[HuntStrategy] = [
         HuntStrategy.INJECTION,
+        HuntStrategy.DOS,
         HuntStrategy.AUTH,
         HuntStrategy.DATA_EXPOSURE,
         HuntStrategy.CONFIG_SECRETS,

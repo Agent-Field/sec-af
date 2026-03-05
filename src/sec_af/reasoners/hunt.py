@@ -8,6 +8,7 @@ from sec_af.agents.hunt.auth import run_auth_hunter as _run_auth_hunter
 from sec_af.agents.hunt.config_secrets import run_config_secrets_hunter as _run_config_secrets_hunter
 from sec_af.agents.hunt.crypto import run_crypto_hunter as _run_crypto_hunter
 from sec_af.agents.hunt.data_exposure import run_data_exposure_hunter as _run_data_exposure_hunter
+from sec_af.agents.hunt.dos import run_dos_hunter as _run_dos_hunter
 from sec_af.agents.hunt.injection import run_injection_hunter as _run_injection_hunter
 from sec_af.agents.hunt.logic import run_logic_hunter as _run_logic_hunter
 from sec_af.agents.hunt.supply_chain import run_supply_chain_hunter as _run_supply_chain_hunter
@@ -68,6 +69,23 @@ async def run_injection_hunter(
     _runtime_router.note("Injection hunter starting", tags=["hunt", "injection"])
     return await _run_hunter(
         _run_injection_hunter,
+        repo_path=repo_path,
+        recon_context=recon_context,
+        depth=depth,
+        max_files_without_signal=max_files_without_signal,
+    )
+
+
+@router.reasoner()
+async def run_dos_hunter(
+    repo_path: str,
+    recon_context: dict[str, Any],
+    depth: str,
+    max_files_without_signal: int = 30,
+) -> dict[str, Any]:
+    _runtime_router.note("DoS hunter starting", tags=["hunt", "dos"])
+    return await _run_hunter(
+        _run_dos_hunter,
         repo_path=repo_path,
         recon_context=recon_context,
         depth=depth,

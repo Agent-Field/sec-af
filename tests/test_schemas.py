@@ -101,6 +101,7 @@ def test_enum_values_are_stable() -> None:
     assert Confidence.HIGH.value == "high"
     assert Verdict.CONFIRMED.value == "confirmed"
     assert EvidenceLevel.FULL_EXPLOIT == 6
+    assert HuntStrategy.DOS.value == "dos"
     assert HuntStrategy.CONFIG_SECRETS.value == "config_secrets"
 
 

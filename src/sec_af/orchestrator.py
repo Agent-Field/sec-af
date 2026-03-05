@@ -288,6 +288,7 @@ class AuditOrchestrator:
     def _default_strategies(self, recon: ReconResult) -> list[HuntStrategy]:
         strategies: list[HuntStrategy] = [
             HuntStrategy.INJECTION,
+            HuntStrategy.DOS,
             HuntStrategy.AUTH,
             HuntStrategy.DATA_EXPOSURE,
             HuntStrategy.CONFIG_SECRETS,
