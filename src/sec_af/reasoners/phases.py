@@ -4,7 +4,7 @@ import asyncio
 import os
 from typing import Any, cast
 
-from sec_af.context import recon_context_generic
+from sec_af.context import prune_recon_for_strategy, recon_context_generic
 from sec_af.agents.prove.verifier import fallback as verifier_fallback
 from sec_af.schemas.hunt import (
     Confidence,
@@ -287,10 +287,11 @@ async def hunt_phase(
 
     async def _run_strategy(strategy: HuntStrategy) -> object:
         async with semaphore:
+            strategy_context = prune_recon_for_strategy(recon, strategy.value)
             return await _runtime_router.call(
                 f"{NODE_ID}.run_{strategy.value}_hunter",
                 repo_path=repo_path,
-                recon_context=recon_context,
+                recon_context=strategy_context,
                 depth=depth,
                 max_files_without_signal=early_stop_file_threshold,
             )

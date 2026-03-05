@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable
+from typing import Any
 
 from sec_af.agents.hunt._framework_hints import get_framework_hints
 from sec_af.agents.hunt._language_hints import get_language_hints
@@ -9,6 +10,32 @@ from sec_af.schemas.recon import KnownCVE, ReconResult
 
 _MAX_PRIMARY_ITEMS = 15
 _MAX_SECONDARY_ITEMS = 10
+
+_BASE_RECON_FIELDS = ("languages", "frameworks", "lines_of_code", "file_count")
+
+STRATEGY_CONTEXT_MAP: dict[str, list[str]] = {
+    "injection": ["architecture", "data_flows", "security_context"],
+    "xss": ["architecture", "data_flows", "security_context"],
+    "ssrf": ["architecture", "data_flows", "security_context"],
+    "auth": ["architecture", "security_context"],
+    "crypto": ["security_context"],
+    "dos": ["architecture", "data_flows"],
+    "data_exposure": ["architecture", "data_flows", "config"],
+    "supply_chain": ["dependencies"],
+    "config_secrets": ["config", "architecture"],
+    "api_security": ["architecture", "security_context", "data_flows"],
+    "business_logic": ["architecture", "data_flows", "security_context"],
+}
+
+
+def prune_recon_for_strategy(recon: ReconResult, strategy: str) -> dict[str, Any]:
+    required_fields = STRATEGY_CONTEXT_MAP.get(strategy)
+    if required_fields is None:
+        return recon.model_dump()
+
+    include_fields = set(_BASE_RECON_FIELDS)
+    include_fields.update(required_fields)
+    return recon.model_dump(include=include_fields)
 
 
 def _limit(items: Iterable[str], max_items: int) -> tuple[list[str], int]:
