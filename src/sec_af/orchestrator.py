@@ -187,22 +187,8 @@ class AuditOrchestrator:
             max_concurrent_provers=self.budget_config.max_concurrent_provers,
         )
 
-        # Assess reachability for findings without explicit reachability tags
-        reachability_tags = {"externally_reachable", "requires_auth", "internal_only", "unreachable"}
-        for finding in verified:
-            if not any(tag in reachability_tags for tag in finding.tags):
-                try:
-                    summary = (
-                        f"Finding: {finding.title}\n"
-                        f"Description: {finding.description}\n"
-                        f"CWE: {finding.cwe_id}\n"
-                        f"File: {finding.location.file_path}:{finding.location.start_line}\n"
-                        f"Verdict: {finding.verdict.value}"
-                    )
-                    gate_result = await self.ai_gate.assess_reachability(summary)
-                    finding.tags.append(gate_result.reachability)
-                except Exception:
-                    finding.tags.append("requires_auth")  # safe default
+        # Assess reachability for findings without explicit reachability tags (parallel)
+        await self._assess_reachability_parallel(verified)
 
         self.prove_drop_summary = {"demoted_total": 0, "by_reason": {}, "findings": []}
         for finding in verified:
@@ -454,6 +440,32 @@ class AuditOrchestrator:
         if self.input.max_provers is None:
             return default_cap
         return max(0, min(self.input.max_provers, default_cap))
+
+    async def _assess_reachability_parallel(self, verified: list[VerifiedFinding]) -> None:
+        """Assess reachability for all findings in parallel using asyncio.gather + semaphore."""
+        reachability_tags = {"externally_reachable", "requires_auth", "internal_only", "unreachable"}
+        needs_assessment = [f for f in verified if not any(tag in reachability_tags for tag in f.tags)]
+        if not needs_assessment:
+            return
+
+        semaphore = asyncio.Semaphore(min(5, len(needs_assessment)))
+
+        async def _assess_one(finding: VerifiedFinding) -> None:
+            async with semaphore:
+                try:
+                    summary = (
+                        f"Finding: {finding.title}\n"
+                        f"Description: {finding.description}\n"
+                        f"CWE: {finding.cwe_id}\n"
+                        f"File: {finding.location.file_path}:{finding.location.start_line}\n"
+                        f"Verdict: {finding.verdict.value}"
+                    )
+                    gate_result = await self.ai_gate.assess_reachability(summary)
+                    finding.tags.append(gate_result.reachability)
+                except Exception:
+                    finding.tags.append("requires_auth")  # safe default
+
+        await asyncio.gather(*[_assess_one(f) for f in needs_assessment])
 
     def _check_time_budget(self) -> None:
         if self.max_duration_seconds is None:
