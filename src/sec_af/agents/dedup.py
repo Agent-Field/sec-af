@@ -8,14 +8,23 @@ from typing import TYPE_CHECKING, Protocol, cast
 from sec_af.schemas.hunt import Confidence, DeduplicatedResult, HuntResult, PotentialChain, RawFinding, Severity
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
-
     from sec_af.schemas.recon import ReconResult
 
 
 class HarnessCapable(Protocol):
     async def harness(
         self, prompt: str, *, schema: object = None, cwd: str | None = None, **kwargs: object
+    ) -> object: ...
+
+
+class AICapable(Protocol):
+    async def ai(
+        self,
+        *,
+        user: str,
+        schema: object,
+        system: str | None = None,
+        **kwargs: object,
     ) -> object: ...
 
 
@@ -71,7 +80,42 @@ def _merge_duplicate(existing: RawFinding, incoming: RawFinding) -> RawFinding:
     return winner
 
 
-def _deduplicate(findings: Iterable[RawFinding]) -> list[RawFinding]:
+async def _ai_check_duplicate(
+    app: AICapable,
+    candidate: RawFinding,
+    existing: RawFinding,
+) -> bool:
+    from sec_af.schemas.gates import DuplicateCheck
+
+    prompt = (
+        "Determine if these two security findings are duplicates (same root cause).\n\n"
+        f"Finding A:\n"
+        f"- Title: {candidate.title}\n"
+        f"- CWE: {candidate.cwe_id} ({candidate.cwe_name})\n"
+        f"- File: {candidate.file_path}:{candidate.start_line}\n"
+        f"- Description: {candidate.description[:200]}\n\n"
+        f"Finding B:\n"
+        f"- Title: {existing.title}\n"
+        f"- CWE: {existing.cwe_id} ({existing.cwe_name})\n"
+        f"- File: {existing.file_path}:{existing.start_line}\n"
+        f"- Description: {existing.description[:200]}"
+    )
+    try:
+        result = await app.ai(user=prompt, schema=DuplicateCheck)
+        if isinstance(result, DuplicateCheck):
+            return result.is_duplicate
+        if isinstance(result, dict):
+            payload = cast("dict[str, object]", result)
+            return DuplicateCheck.model_validate(payload).is_duplicate
+        return False
+    except Exception:
+        return False
+
+
+async def _deduplicate_with_ai(
+    findings: list[RawFinding],
+    app: object,
+) -> list[RawFinding]:
     by_fingerprint: dict[str, RawFinding] = {}
     for finding in findings:
         finding.fingerprint = finding.fingerprint or compute_fingerprint(finding)
@@ -82,8 +126,38 @@ def _deduplicate(findings: Iterable[RawFinding]) -> list[RawFinding]:
         by_fingerprint[finding.fingerprint] = _merge_duplicate(existing, finding)
 
     deduped = list(by_fingerprint.values())
-    deduped.sort(key=_severity_confidence_sort_key, reverse=True)
-    return deduped
+
+    by_file: dict[str, list[RawFinding]] = defaultdict(list)
+    for finding in deduped:
+        by_file[finding.file_path].append(finding)
+
+    to_remove: set[str] = set()
+    has_ai = hasattr(app, "ai") and callable(getattr(app, "ai", None))
+    if has_ai:
+        ai_app = cast("AICapable", app)
+        for file_findings in by_file.values():
+            if len(file_findings) < 2:
+                continue
+            for i, candidate in enumerate(file_findings):
+                if candidate.fingerprint in to_remove:
+                    continue
+                for existing in file_findings[i + 1 :]:
+                    if existing.fingerprint in to_remove:
+                        continue
+                    if candidate.cwe_id == existing.cwe_id:
+                        is_dup = await _ai_check_duplicate(ai_app, candidate, existing)
+                        if is_dup:
+                            if _confidence_value(candidate) >= _confidence_value(existing):
+                                to_remove.add(existing.fingerprint)
+                                by_fingerprint[candidate.fingerprint] = _merge_duplicate(candidate, existing)
+                            else:
+                                to_remove.add(candidate.fingerprint)
+                                by_fingerprint[existing.fingerprint] = _merge_duplicate(existing, candidate)
+                            break
+
+    final = [f for f in deduped if f.fingerprint not in to_remove]
+    final.sort(key=_severity_confidence_sort_key, reverse=True)
+    return final
 
 
 def _fallback_correlate(findings: list[RawFinding]) -> list[PotentialChain]:
@@ -160,7 +234,7 @@ async def deduplicate_and_correlate(
     app: HarnessCapable,
     repo_path: str,
 ) -> HuntResult:
-    deduplicated = _deduplicate(findings)
+    deduplicated = await _deduplicate_with_ai(findings, app)
     chains: list[PotentialChain] = []
     seed_chains = _fallback_correlate(deduplicated)
     seed_context = _seed_chain_context(seed_chains, deduplicated)
