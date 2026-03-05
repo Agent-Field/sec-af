@@ -19,7 +19,7 @@
 
 </div>
 
-Other tools flag patterns. SEC-AF **proves exploitability**: every finding ships with a verdict, a data flow trace, and evidence you can act on. Free, open source, one API call.
+Other tools flag patterns. SEC-AF **proves exploitability**: every finding ships with a verdict, a data flow trace, and evidence you can act on. Free, open source, one API call. A full audit with 30 verified findings costs about **$1.50 in LLM calls**.
 
 <p align="center">
   <img src="assets/hero-b-swarm.png" alt="SEC-AF — AI-native security auditor" width="100%" />
@@ -129,7 +129,7 @@ SEC-AF runs a **Signal Cascade** pipeline. Each phase narrows the signal:
 | **SARIF** | ✅ Native 2.1.0 | Not documented | ✅ | ✅ | ✅ Native |
 | **Compliance mapping** | PCI-DSS, SOC2, OWASP, HIPAA, ISO27001 | Not documented | Platform compliance only | OWASP rules available | - |
 | **Languages** | Any LLM-supported language | Not documented | 14+ | 35+ (parser-based) | 10 |
-| **Pricing** | **Free · open source** | **$6,000/mo** | $25–105/mo/developer | OSS engine: free to use · Pro: $30/mo/contributor | Free for public repos · $49/mo/committer (GHAS) |
+| **Pricing** | **Free · open source** (~$1.50/audit in LLM costs) | **$6,000/mo** | $25-105/mo/developer | OSS engine: free to use · Pro: $30/mo/contributor | Free for public repos · $49/mo/committer (GHAS) |
 
 **Where SEC-AF is strongest**: Verified findings with proof objects, transparent scoring, compliance mapping, and fully open source.
 
@@ -190,9 +190,11 @@ curl -X POST http://localhost:8080/api/v1/execute/async/sec-af.audit \
 
 | Profile | Strategies | Verification | Typical time | Typical cost |
 |---|---|---|---|---|
-| `quick` | 5 core strategies | Top findings only | 2–5 min | ~$0.50–2 |
-| `standard` | 11 strategies (core + extended) | Top 30 findings | 5–15 min | ~$2–10 |
-| `thorough` | Full strategy set | All findings | 15–45 min | ~$10–50 |
+| `quick` | 5 core strategies | Top findings only | 2-5 min | ~$0.10-0.50 |
+| `standard` | 11 strategies (core + extended) | Top 30 findings | 5-15 min | ~$0.50-3 |
+| `thorough` | Full strategy set | All findings | 15-45 min | ~$2-10 |
+
+Costs based on MiniMax M2.5 via OpenRouter ($0.295/M input, $1.20/M output). The DVGA benchmark (30 verified findings, ~258 LLM calls) cost roughly $1.50.
 
 </details>
 
