@@ -104,20 +104,9 @@ The 9 missed scenarios are primarily **GraphQL protocol-level attacks**: batch q
 
 SEC-AF runs a **Signal Cascade** pipeline — each phase narrows the signal:
 
-```mermaid
-flowchart TD
-    A["POST /execute/async/sec-af.audit"] --> B["RECON"]
-    B --> C["HUNT"]
-    C --> D["DEDUP"]
-    D --> E["PROVE"]
-    E --> F["OUTPUT"]
-
-    B -.- B1["5 agents build security context\n(architecture, data flows, deps, config, security profile)"]
-    C -.- C1["11 strategy agents scan + enrich findings\n(injection, auth, crypto, SSRF, XSS, DoS, ...)"]
-    D -.- D1["AI-powered deduplication + chain correlation\n89 raw → 55 unique"]
-    E -.- E1["Adversarial per-finding verification\n55 unique → 30 confirmed"]
-    F -.- F1["SARIF 2.1.0 · JSON · Markdown"]
-```
+<p align="center">
+  <img src="assets/architecture.png" alt="SEC-AF Signal Cascade Pipeline — RECON → HUNT → DEDUP → PROVE → OUTPUT" width="100%" />
+</p>
 
 **Key design decisions:**
 
