@@ -6,8 +6,6 @@ See DESIGN.md §7 and §12.3 for output payloads and progress reporting.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
-
 from pydantic import BaseModel, Field
 
 from .compliance import ComplianceGap
@@ -113,6 +111,15 @@ class MonitoringResult(BaseModel):
     regression_detected: bool = False
 
 
+class PolicyViolation(BaseModel):
+    """A violation of an org-specific security policy."""
+
+    policy: str = Field(description="The policy rule that was violated")
+    violation_description: str = Field(description="How the code violates this policy")
+    file_path: str = Field(description="File where violation was found")
+    severity: str = Field(default="medium", description="Severity of the violation")
+
+
 class SecurityAuditResult(BaseModel):
     """DESIGN.md §7.3 top-level SEC-AF audit output."""
 
@@ -133,16 +140,17 @@ class SecurityAuditResult(BaseModel):
     noise_reduction_pct: float = 0.0
     by_severity: dict[str, int] = Field(default_factory=dict)
     compliance_gaps: list[ComplianceGap] = Field(default_factory=list)
+    policy_violations: list[PolicyViolation] = Field(default_factory=list)
     duration_seconds: float = 0.0
     agent_invocations: int = 0
     cost_usd: float = 0.0
     cost_breakdown: dict[str, float] = Field(default_factory=dict)
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, object] = Field(default_factory=dict)
     sarif: str
 
 
 # Resolve forward references now that VerifiedFinding is available
-SecurityAuditResult.model_rebuild()
+_ = SecurityAuditResult.model_rebuild()
 
 
 class AuditProgress(BaseModel):

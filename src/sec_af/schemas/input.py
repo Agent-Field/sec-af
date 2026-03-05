@@ -65,3 +65,7 @@ class AuditInput(BaseModel):
         default=None,
         description="Path to baseline scan results for regression detection",
     )
+    custom_policies: list[str] = Field(
+        default_factory=list,
+        description="Org-specific security policy rules to evaluate (e.g., 'All endpoints must require authentication')",
+    )
