@@ -55,6 +55,56 @@ def _normalize_depth(depth: str) -> DepthProfile:
         return DepthProfile.STANDARD
 
 
+def _recon_summary_string(recon: ReconResult) -> str:
+    """Build a natural-language summary of recon context for AI strategy selection.
+
+    Returns a focused string like:
+    "Python/Django app, 5000 LOC, JWT auth, PostgreSQL, 5 direct dependencies..."
+    """
+    parts: list[str] = []
+
+    # Languages and frameworks
+    if recon.languages:
+        lang_str = "/".join(recon.languages)
+        if recon.frameworks:
+            framework_str = "/".join(recon.frameworks)
+            parts.append(f"{lang_str} ({framework_str})")
+        else:
+            parts.append(lang_str)
+
+    # Code metrics
+    if recon.lines_of_code > 0:
+        parts.append(f"{recon.lines_of_code} LOC")
+    if recon.file_count > 0:
+        parts.append(f"{recon.file_count} files")
+
+    # Authentication
+    if recon.security_context.auth_model:
+        parts.append(f"{recon.security_context.auth_model} auth")
+
+    # Cryptography
+    if recon.security_context.crypto_usage:
+        parts.append(f"{len(recon.security_context.crypto_usage)} crypto algorithms")
+
+    # Dependencies
+    if recon.dependencies.direct_count > 0:
+        parts.append(f"{recon.dependencies.direct_count} direct dependencies")
+    if recon.dependencies.known_cves:
+        parts.append(f"{len(recon.dependencies.known_cves)} known CVEs")
+
+    # API surface
+    if recon.architecture.api_surface:
+        parts.append(f"{len(recon.architecture.api_surface)} API endpoints")
+
+    # Secrets and config issues
+    if recon.config.secrets:
+        parts.append(f"{len(recon.config.secrets)} secrets found")
+    if recon.config.misconfigs:
+        parts.append(f"{len(recon.config.misconfigs)} misconfigs")
+
+    return ", ".join(parts) if parts else "Unknown application"
+
+
 # ---------------------------------------------------------------------------
 # RECON PHASE
 # ---------------------------------------------------------------------------
@@ -151,10 +201,32 @@ async def hunt_phase(
     repo_path: str,
     recon_context: dict[str, Any],
     depth: str = "standard",
+    ai_gate: Any | None = None,
 ) -> dict[str, Any]:
     _runtime_router.note("HUNT phase starting", tags=["phase", "hunt"])
     recon = ReconResult(**recon_context)
-    strategies = _default_strategies(recon, depth)
+
+    default_candidates = _default_strategies(recon, depth)
+    default_strategy_names = [s.value for s in default_candidates]
+
+    strategies = default_candidates
+    if ai_gate is not None:
+        try:
+            recon_summary = _recon_summary_string(recon)
+            selection = await ai_gate.select_strategy(
+                recon_summary=recon_summary,
+                depth=depth,
+                default_candidates=default_strategy_names,
+            )
+            selected_names = selection.strategies
+            strategy_map = {s.value: s for s in default_candidates}
+            strategies = [strategy_map[name] for name in selected_names if name in strategy_map]
+            if not strategies:
+                strategies = default_candidates
+                _runtime_router.note("AI gate returned no valid strategies, using defaults", tags=["hunt", "ai_gate"])
+        except Exception as e:
+            _runtime_router.note(f"AI gate failed: {e}, using default strategies", tags=["hunt", "ai_gate", "error"])
+            strategies = default_candidates
 
     hunt_calls = [
         _runtime_router.call(
