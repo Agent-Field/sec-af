@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 from pydantic import BaseModel
 
 from .config import AIIntegrationConfig
-from .schemas.gates import DuplicateCheck, SeverityClassification, StrategySelection
+from .schemas.gates import DuplicateCheck, ReachabilityGate, SeverityClassification, StrategySelection
 
 if TYPE_CHECKING:
     from agentfield import Agent
@@ -377,6 +377,15 @@ class AIGateWrapper(_RetryMixin):
             f"Recon summary: {recon_summary}"
         )
         return await self.invoke(user=prompt, schema=StrategySelection)
+
+    async def assess_reachability(self, finding_summary: str) -> ReachabilityGate:
+        prompt = (
+            "Assess the reachability of this security finding. "
+            "Determine if it is externally_reachable, requires_auth, internal_only, or unreachable. "
+            "Consider the attack surface, authentication requirements, and network exposure.\n\n"
+            f"{finding_summary}"
+        )
+        return await self.invoke(user=prompt, schema=ReachabilityGate)
 
 
 def build_ai_integration(

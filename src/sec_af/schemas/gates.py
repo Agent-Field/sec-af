@@ -54,3 +54,13 @@ class ComplianceSuggestion(BaseModel):
 class ComplianceGate(BaseModel):
     mappings: list[ComplianceSuggestion]
     confidence: str
+
+
+class ReachabilityGate(BaseModel):
+    """Reachability assessment for findings without explicit reachability tags."""
+
+    reachability: str = Field(
+        description='One of: "externally_reachable", "requires_auth", "internal_only", "unreachable".'
+    )
+    rationale: str
+    confidence: str = Field(description='One of: "high", "medium", "low".')
