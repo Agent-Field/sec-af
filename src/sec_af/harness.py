@@ -46,11 +46,68 @@ def _is_transient_error(error: str) -> bool:
     return any(pattern in lowered for pattern in _TRANSIENT_PATTERNS)
 
 
-def _with_multi_turn_prompt(prompt: str) -> str:
+PHASE_GUIDANCE: dict[str, str] = {
+    "recon": ("Survey -> Identify -> Map -> Synthesize. Report what IS present, not what MIGHT be present."),
+    "hunt": (
+        "Review context -> Identify relevant files -> Trace data flow -> Report with evidence. "
+        "False negatives are better than false positives. "
+        "Every finding MUST cite specific file paths and line numbers."
+    ),
+    "prove": (
+        "Read actual code -> Trace flow -> Check sanitization -> Construct exploit -> Verdict. "
+        "INCONCLUSIVE is a valid outcome. "
+        "You MUST read the actual code and not rely on descriptions alone."
+    ),
+}
+
+
+def _schema_guidance(schema: type[SchemaT]) -> str:
+    field_lines: list[str] = []
+    for field_name, field in schema.model_fields.items():
+        description = (field.description or "").strip()
+        if description:
+            field_lines.append(f"- `{field_name}`: {description}")
+
+    if not field_lines:
+        return (
+            "Output format:\n"
+            "- Return valid JSON only (no markdown fences, no extra text).\n"
+            "- Follow the provided Pydantic schema exactly."
+        )
+
     return (
-        f"{prompt.rstrip()}\n\n"
-        "IMPORTANT: This is a complex task. Take multiple turns. "
-        "Explore first, gather evidence, build analysis incrementally, and write final JSON only when complete."
+        "Output format:\n"
+        "- Return valid JSON only (no markdown fences, no extra text).\n"
+        "- Follow the provided Pydantic schema exactly.\n"
+        "- Field guidance from schema descriptions:\n"
+        f"{'\n'.join(field_lines)}"
+    )
+
+
+def _with_phase_guidance(prompt: str, phase: str | None, cwd: str) -> str:
+    normalized_phase = (phase or "").strip().lower()
+    phase_context = PHASE_GUIDANCE.get(
+        normalized_phase,
+        "Build conclusions from repository evidence in iterative passes. "
+        "Prefer explicit evidence over speculation, and clearly separate confirmed facts from uncertainty.",
+    )
+
+    constraints = _with_file_write_hint(
+        (
+            "Constraints:\n"
+            "- Use evidence-first reasoning; do not speculate beyond available artifacts.\n"
+            "- Keep analysis bounded to the task scope and produce only schema-conformant output.\n"
+            "- Cite concrete repository evidence whenever making security-relevant claims."
+        ),
+        cwd,
+    )
+
+    return (
+        f"Context:\n- {phase_context}\n\n"
+        f"{constraints}\n\n"
+        f"Task:\n{prompt.rstrip()}\n\n"
+        "Output:\n"
+        "- Return a single JSON object matching the requested schema."
     )
 
 
@@ -58,7 +115,7 @@ def _with_file_write_hint(prompt: str, cwd: str) -> str:
     output_path = Path(cwd) / ".agentfield_output.json"
     return (
         f"{prompt.rstrip()}\n"
-        f"If output is large or complex, use the file-write pattern and ensure final JSON is written to {output_path}."
+        f"- If output is large or complex, use the file-write pattern and ensure final JSON is written to {output_path}."
     )
 
 
@@ -159,7 +216,8 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
             raise AIIntegrationError(f"Schema validation failed after {max_schema_retries} retries with schema context")
 
         error_detail = f"Retry attempt {retry_count + 1}/{max_schema_retries}"
-        retry_prompt = _build_schema_retry_prompt(schema, error_detail, cwd)
+        retry_task = _build_schema_retry_prompt(schema, error_detail, cwd)
+        retry_prompt = f"{_with_phase_guidance(retry_task, phase, cwd)}\n\n{_schema_guidance(schema)}"
 
         logger.info(
             "Schema validation retry %d/%d with schema context",
@@ -229,7 +287,7 @@ class HarnessWrapper(_RetryMixin, Generic[SchemaT]):
         phase: str | None = None,
     ) -> SchemaT:
         self._cost_tracker.register_invocation()
-        enhanced_prompt = _with_file_write_hint(_with_multi_turn_prompt(prompt), cwd)
+        enhanced_prompt = f"{_with_phase_guidance(prompt, phase, cwd)}\n\n{_schema_guidance(schema)}"
 
         async def _operation() -> Any:
             extra_kwargs: dict[str, Any] = {}
