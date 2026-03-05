@@ -49,7 +49,7 @@ class AuditInput(BaseModel):
         default=False,
         description="Return non-zero status for CI gating",
     )
-    enable_dast: bool = Field(
+    dast_enabled: bool = Field(
         default=False,
         description="Enable DAST-like runtime exploit verification (requires sandbox)",
     )

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from importlib import import_module
-from typing import Any, cast
+from typing import Any
 
 from sec_af.agents.prove.exploit import run_exploit_hypothesizer as _run_exploit_hypothesizer
 from sec_af.agents.prove.sanitization import run_sanitization_analyzer as _run_sanitization_analyzer
@@ -9,7 +9,7 @@ from sec_af.agents.prove.tracer import run_tracer as _run_tracer
 from sec_af.agents.prove.verifier import run_verifier as _run_verifier
 from sec_af.agents.prove.verdict import run_verdict_agent as _run_verdict_agent
 from sec_af.schemas.hunt import RawFinding
-from sec_af.schemas.prove import DataFlowTrace, ExploitHypothesis, SanitizationResult, VerifiedFinding
+from sec_af.schemas.prove import DataFlowTrace, ExploitHypothesis, SanitizationResult
 
 from . import router
 
@@ -93,10 +93,12 @@ async def run_verdict_agent(
 
 
 @router.reasoner()
-async def run_dast_verifier(repo_path: str, finding: dict[str, Any]) -> dict[str, Any]:
+async def run_dast_verifier(
+    repo_path: str, finding: dict[str, Any], exploit_payload: str, depth: str
+) -> dict[str, Any]:
     runtime_router = _runtime_router
     runtime_router.note("DAST verifier starting", tags=["prove", "dast"])
-    finding_model = VerifiedFinding(**finding)
-    run_dast = cast("Any", import_module("sec_af.agents.prove.dast_verifier").run_dast_verifier)
-    result = await run_dast(runtime_router, repo_path, finding_model)
+    finding_model = RawFinding(**finding)
+    _run_dast = import_module("sec_af.agents.prove.dast_verifier").run_dast_verifier
+    result = await _run_dast(runtime_router, repo_path, finding_model, exploit_payload, depth)
     return result.model_dump()

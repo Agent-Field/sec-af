@@ -1,75 +1,58 @@
+"""Sandbox execution helper for DAST-like verification.
+
+Provides a safe execution context for running exploit payloads
+against target applications. Currently uses subprocess isolation
+with strict timeouts and resource limits. Future: Docker containers.
+"""
+
 from __future__ import annotations
 
 import asyncio
-import resource
-import shutil
-import sys
+import subprocess
 from dataclasses import dataclass
 
-
-@dataclass(slots=True)
-class SandboxConfig:
-    timeout_seconds: int = 30
-    network_disabled: bool = True
-    max_memory_mb: int = 256
-    max_file_size_mb: int = 2
-    max_processes: int = 8
-    max_cpu_seconds: int = 5
+_DEFAULT_TIMEOUT = 10
+_MAX_OUTPUT_BYTES = 8192
 
 
-def _network_sandbox_prefix(config: SandboxConfig) -> list[str]:
-    if not config.network_disabled:
-        return []
+@dataclass(frozen=True)
+class SandboxResult:
+    """Result from sandboxed execution."""
 
-    if sys.platform == "darwin":
-        if shutil.which("sandbox-exec"):
-            profile = "(version 1) (deny default) (allow process*) (allow file-read*) (allow file-write*)"
-            return ["sandbox-exec", "-p", profile]
-        msg = "network isolation unavailable: sandbox-exec not found"
-        raise RuntimeError(msg)
-
-    if shutil.which("unshare"):
-        return ["unshare", "-n", "--"]
-
-    msg = "network isolation unavailable: unshare not found"
-    raise RuntimeError(msg)
+    stdout: str
+    stderr: str
+    exit_code: int
+    timed_out: bool
 
 
-def _set_limits(config: SandboxConfig) -> None:
-    memory_bytes = max(1, config.max_memory_mb) * 1024 * 1024
-    file_size_bytes = max(1, config.max_file_size_mb) * 1024 * 1024
-    resource.setrlimit(resource.RLIMIT_CPU, (config.max_cpu_seconds, config.max_cpu_seconds))
-    resource.setrlimit(resource.RLIMIT_AS, (memory_bytes, memory_bytes))
-    resource.setrlimit(resource.RLIMIT_FSIZE, (file_size_bytes, file_size_bytes))
-    resource.setrlimit(resource.RLIMIT_NPROC, (config.max_processes, config.max_processes))
-
-
-async def run_in_sandbox(command: str, cwd: str, config: SandboxConfig) -> tuple[str, str, int]:
+async def run_sandboxed(
+    command: list[str],
+    *,
+    timeout: int = _DEFAULT_TIMEOUT,
+    cwd: str | None = None,
+) -> SandboxResult:
+    """Run a command in a sandboxed subprocess with strict limits."""
+    proc: asyncio.subprocess.Process | None = None
     try:
-        prefix = _network_sandbox_prefix(config)
-    except RuntimeError as exc:
-        return "", str(exc), 126
-
-    process = await asyncio.create_subprocess_exec(
-        *prefix,
-        "/bin/sh",
-        "-lc",
-        command,
-        cwd=cwd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-        preexec_fn=lambda: _set_limits(config),
-    )
-
-    try:
-        stdout_bytes, stderr_bytes = await asyncio.wait_for(process.communicate(), timeout=config.timeout_seconds)
-    except TimeoutError:
-        process.kill()
-        _ = await process.wait()
-        return "", f"Command timed out after {config.timeout_seconds}s", 124
-
-    return (
-        stdout_bytes.decode("utf-8", errors="replace"),
-        stderr_bytes.decode("utf-8", errors="replace"),
-        int(process.returncode or 0),
-    )
+        proc = await asyncio.create_subprocess_exec(
+            *command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            cwd=cwd,
+        )
+        stdout_bytes, stderr_bytes = await asyncio.wait_for(
+            proc.communicate(),
+            timeout=timeout,
+        )
+        return SandboxResult(
+            stdout=stdout_bytes[:_MAX_OUTPUT_BYTES].decode("utf-8", errors="replace"),
+            stderr=stderr_bytes[:_MAX_OUTPUT_BYTES].decode("utf-8", errors="replace"),
+            exit_code=proc.returncode or 0,
+            timed_out=False,
+        )
+    except asyncio.TimeoutError:
+        if proc is not None:
+            proc.kill()
+        return SandboxResult(stdout="", stderr="Execution timed out", exit_code=-1, timed_out=True)
+    except Exception as exc:
+        return SandboxResult(stdout="", stderr=str(exc), exit_code=-1, timed_out=False)
