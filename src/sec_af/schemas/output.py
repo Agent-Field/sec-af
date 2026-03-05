@@ -74,6 +74,24 @@ class ReproductionStep(BaseModel):
     expected_output: str | None = None
 
 
+class ServiceDefinition(BaseModel):
+    """Service node in a multi-repo architecture."""
+
+    name: str
+    repo_url: str
+    api_endpoints: list[str] = Field(default_factory=list)
+    dependencies: list[str] = Field(default_factory=list, description="Names of services this depends on")
+
+
+class CrossServiceFinding(BaseModel):
+    """Flat schema for cross-service attack chain analysis. 4 fields."""
+
+    chain_description: str = Field(description="Description of the cross-service attack path")
+    services_involved: list[str] = Field(description="Service names in the attack chain")
+    entry_point: str = Field(description="Public-facing entry point where attack begins")
+    impact: str = Field(description="Impact if the cross-service chain is exploited")
+
+
 class SecurityAuditResult(BaseModel):
     """DESIGN.md §7.3 top-level SEC-AF audit output."""
 

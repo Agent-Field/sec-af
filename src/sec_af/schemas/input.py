@@ -53,3 +53,7 @@ class AuditInput(BaseModel):
         default=False,
         description="Enable DAST-like runtime exploit verification (requires sandbox)",
     )
+    repo_urls: list[str] = Field(
+        default_factory=list,
+        description="Additional repository URLs for cross-service analysis",
+    )

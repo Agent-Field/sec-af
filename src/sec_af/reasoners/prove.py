@@ -141,3 +141,14 @@ async def run_dast_verifier(
     _run_dast = import_module("sec_af.agents.prove.dast_verifier").run_dast_verifier
     result = await _run_dast(runtime_router, repo_path, finding_model, exploit_payload, depth)
     return result.model_dump()
+
+
+@router.reasoner()
+async def run_cross_service_analyzer(
+    repo_path: str, services: list[str], findings_summary: str, depth: str
+) -> dict[str, Any]:
+    runtime_router = _runtime_router
+    runtime_router.note("Cross-service analyzer starting", tags=["prove", "cross-service"])
+    _run_cross = import_module("sec_af.agents.prove.cross_service").run_cross_service_analyzer
+    result = await _run_cross(runtime_router, repo_path, services, findings_summary, depth)
+    return result.model_dump()
