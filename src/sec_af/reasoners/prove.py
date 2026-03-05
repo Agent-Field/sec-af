@@ -129,3 +129,15 @@ async def run_remediation_agent(
 
     result = await _run_remediation(runtime_router, repo_path, finding_model, verdict, rationale)
     return result.model_dump()
+
+
+@router.reasoner()
+async def run_dast_verifier(
+    repo_path: str, finding: dict[str, Any], exploit_payload: str, depth: str
+) -> dict[str, Any]:
+    runtime_router = _runtime_router
+    runtime_router.note("DAST verifier starting", tags=["prove", "dast"])
+    finding_model = RawFinding(**finding)
+    _run_dast = import_module("sec_af.agents.prove.dast_verifier").run_dast_verifier
+    result = await _run_dast(runtime_router, repo_path, finding_model, exploit_payload, depth)
+    return result.model_dump()

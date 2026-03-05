@@ -131,6 +131,7 @@ async def audit(
     pr_id: str | None = None,
     post_pr_comments: bool = False,
     fail_on_findings: bool = False,
+    enable_dast: bool = False,
     resume_from_checkpoint: str | None = None,
 ) -> dict[str, object]:
     audit_input = AuditInput(
@@ -152,6 +153,7 @@ async def audit(
         pr_id=pr_id,
         post_pr_comments=post_pr_comments,
         fail_on_findings=fail_on_findings,
+        enable_dast=enable_dast,
     )
     orchestrator = AuditOrchestrator(app=app, input=audit_input)
     repo_path = _resolve_repo(repo_url)

@@ -217,8 +217,46 @@ class AuditOrchestrator:
                     original_verdict=None,
                     reason=finding.drop_reason,
                 )
+
+        if getattr(self.input, "enable_dast", False):
+            self.app.note("DAST-like runtime verification enabled", tags=["audit", "prove", "dast"])
+            await self._run_dast_verification(verified)
+
         self._emit_progress(phase="prove", agents_total=1, agents_completed=1, findings_so_far=len(verified))
         return verified
+
+    async def _run_dast_verification(self, verified: list[VerifiedFinding]) -> None:
+        run_dast_verifier = cast("Any", import_module("sec_af.agents.prove.dast_verifier").run_dast_verifier)
+        confirmed = [finding for finding in verified if finding.verdict == Verdict.CONFIRMED]
+        if not confirmed:
+            self.app.note("No confirmed findings available for DAST step", tags=["audit", "prove", "dast"])
+            return
+
+        for finding in confirmed:
+            try:
+                dast_result = await run_dast_verifier(_PhaseHarnessProxy(self, "prove"), str(self.repo_path), finding)
+            except Exception as exc:
+                finding.tags.append("dast_error")
+                self.app.note(
+                    f"DAST verifier failed for '{finding.title}': {exc}",
+                    tags=["audit", "prove", "dast", "error"],
+                )
+                continue
+
+            finding.tags.append("dast_attempted" if dast_result.exploit_attempted else "dast_skipped")
+            finding.tags.append("dast_confirmed" if dast_result.exploit_succeeded else "dast_not_confirmed")
+            finding.rationale = f"{finding.rationale}\nDAST: {dast_result.response_analysis}"
+
+            if finding.proof is not None:
+                finding.proof.poc_execution_output = json.dumps(
+                    {
+                        "exploit_attempted": dast_result.exploit_attempted,
+                        "exploit_succeeded": dast_result.exploit_succeeded,
+                        "evidence": dast_result.evidence,
+                        "confidence": dast_result.confidence,
+                    },
+                    indent=2,
+                )
 
     async def _generate_output(
         self,

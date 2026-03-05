@@ -73,6 +73,15 @@ class ExploitHypothesis(BaseModel):
     expected_outcome: str = Field(description="What would happen if exploit succeeds")
 
 
+class DastVerificationResult(BaseModel):
+    """Flat schema for DAST-like runtime verification. 4 fields."""
+
+    payload_sent: str = Field(description="The exploit payload or request that was sent")
+    response_summary: str = Field(description="Summary of the application response")
+    exploit_confirmed: bool = Field(description="Whether the exploit was confirmed at runtime")
+    safety_notes: str = Field(description="Safety measures taken during verification (sandbox, timeout, etc.)")
+
+
 class VerdictDecision(BaseModel):
     """Flat schema for verdict sub-agent. Uses .ai() not .harness(). 4 fields."""
 
