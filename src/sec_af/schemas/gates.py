@@ -29,6 +29,13 @@ class StrategySelection(BaseModel):
     rationale: str
 
 
+class CWEExpansion(BaseModel):
+    """AI-suggested CWE additions based on recon context."""
+
+    additional_cwes: list[str] = Field(description="CWE IDs to add beyond baseline, e.g. ['CWE-918', 'CWE-611'].")
+    rationale: str
+
+
 class RelevanceGate(BaseModel):
     """DESIGN.md §2.4: relevance/noise filter gate for candidate findings."""
 

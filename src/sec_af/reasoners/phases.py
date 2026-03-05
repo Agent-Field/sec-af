@@ -4,6 +4,7 @@ import asyncio
 import os
 from typing import Any, cast
 
+from sec_af.context import recon_context_generic
 from sec_af.agents.prove.verifier import fallback as verifier_fallback
 from sec_af.schemas.hunt import (
     Confidence,
@@ -103,6 +104,45 @@ def _recon_summary_string(recon: ReconResult) -> str:
         parts.append(f"{len(recon.config.misconfigs)} misconfigs")
 
     return ", ".join(parts) if parts else "Unknown application"
+
+
+async def expand_cwes_for_hunt(
+    recon_summary: str,
+    strategies: list[str],
+) -> list[str]:
+    """Use AI gate to suggest additional CWEs based on recon context."""
+    from sec_af.schemas.gates import CWEExpansion
+
+    runtime_router_local: Any = _runtime_router
+    prompt = (
+        "Based on this codebase recon context, suggest additional CWE IDs that hunters should look for "
+        "beyond their hardcoded baselines. Only suggest CWEs that are specifically relevant to "
+        "the detected languages, frameworks, and architecture patterns.\n\n"
+        f"Active strategies: {', '.join(strategies)}\n\n"
+        f"Recon context:\n{recon_summary}"
+    )
+    try:
+        result = await runtime_router_local.ai(
+            user=prompt,
+            schema=CWEExpansion,
+        )
+        if isinstance(result, CWEExpansion):
+            return result.additional_cwes
+        if isinstance(result, dict):
+            expansion = CWEExpansion(**result)
+            return expansion.additional_cwes
+        return []
+    except Exception:
+        return []  # Graceful fallback - AI expansion is additive, not critical
+
+
+@router.reasoner()
+async def run_cwe_expansion(
+    recon_summary: str,
+    strategies: list[str],
+) -> dict[str, Any]:
+    additional = await expand_cwes_for_hunt(recon_summary, strategies)
+    return {"additional_cwes": additional}
 
 
 # ---------------------------------------------------------------------------
@@ -233,6 +273,14 @@ async def hunt_phase(
         except Exception as e:
             _runtime_router.note(f"AI gate failed: {e}, using default strategies", tags=["hunt", "ai_gate", "error"])
             strategies = default_candidates
+
+    recon_summary = recon_context_generic(recon)
+    additional_cwes = await expand_cwes_for_hunt(recon_summary, [s.value for s in strategies])
+    if additional_cwes:
+        _runtime_router.note(
+            f"CWE expansion suggested {len(additional_cwes)} additional CWEs",
+            tags=["hunt", "ai_gate", "cwe_expansion"],
+        )
 
     concurrency_limit = max(1, min(max_concurrent_hunters, len(strategies)))
     semaphore = asyncio.Semaphore(concurrency_limit)
