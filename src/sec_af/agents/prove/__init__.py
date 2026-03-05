@@ -146,4 +146,71 @@ async def run_prove(
     return verified_findings
 
 
-__all__ = ["run_prove"]
+async def run_prove_streaming(
+    app: HarnessCapable,
+    repo_path: str,
+    findings_queue: asyncio.Queue[list[RawFinding] | None],
+    depth: str,
+    max_concurrent_provers: int = 3,
+    prover_cap: int = 30,
+) -> list[VerifiedFinding]:
+    profile = _normalize_depth(depth)
+    semaphore = asyncio.Semaphore(max(1, max_concurrent_provers))
+
+    verified: list[VerifiedFinding] = []
+    pending_tasks: list[asyncio.Task[VerifiedFinding]] = []
+    proved_count = 0
+
+    async def _verify_one(finding: RawFinding) -> VerifiedFinding:
+        async with semaphore:
+            try:
+                return await run_verifier(app, repo_path, finding, profile.value)
+            except BaseException as exc:
+                message = str(exc)
+                lowered = message.lower()
+                if "unverified" in lowered and "verdict" in lowered:
+                    return verifier_fallback(
+                        finding,
+                        "Verifier returned unverified verdict; demoted for manual review",
+                        drop_reason="verdict_unverified",
+                        original_verdict="unverified",
+                    )
+                drop_reason = "schema_parse_failure" if "validationerror" in lowered else "verifier_error"
+                return verifier_fallback(finding, message, drop_reason=drop_reason)
+
+    while True:
+        batch = await findings_queue.get()
+        if batch is None:
+            break
+
+        for finding in batch:
+            if proved_count >= prover_cap:
+                break
+            pending_tasks.append(asyncio.create_task(_verify_one(finding)))
+            proved_count += 1
+
+        if proved_count >= prover_cap:
+            while True:
+                remaining = await findings_queue.get()
+                if remaining is None:
+                    break
+            break
+
+    if pending_tasks:
+        results = await asyncio.gather(*pending_tasks, return_exceptions=True)
+        for result in results:
+            if isinstance(result, BaseException):
+                continue
+            verified.append(_apply_metadata(result))
+
+    verified.sort(
+        key=lambda finding: (
+            finding.exploitability_score,
+            finding.evidence_level,
+        ),
+        reverse=True,
+    )
+    return verified
+
+
+__all__ = ["run_prove", "run_prove_streaming"]

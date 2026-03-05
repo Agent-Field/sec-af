@@ -340,8 +340,49 @@ async def run_recon(app: HarnessCapable, repo_path: str, depth: str) -> ReconRes
     )
 
 
+async def run_fast_recon(app: HarnessCapable, repo_path: str) -> ReconResult:
+    architecture, dependencies, config = await asyncio.gather(
+        run_architecture_mapper(app, repo_path),
+        run_dependency_auditor(app, repo_path),
+        run_config_scanner(app, repo_path),
+    )
+
+    data_flows, security_context = _quick_defaults()
+    languages = sorted(
+        {module.language.lower() for module in architecture.modules if getattr(module, "language", None)}
+    )
+    frameworks: list[str] = []
+    lines_of_code, file_count = _repo_metrics(repo_path)
+
+    return ReconResult(
+        architecture=architecture,
+        data_flows=data_flows,
+        dependencies=dependencies,
+        config=config,
+        security_context=security_context,
+        languages=languages,
+        frameworks=frameworks,
+        lines_of_code=lines_of_code,
+        file_count=file_count,
+    )
+
+
+async def run_deep_recon(
+    app: HarnessCapable,
+    repo_path: str,
+    architecture: ArchitectureMap,
+) -> tuple[DataFlowMap, SecurityContext]:
+    data_flows, security_context = await asyncio.gather(
+        run_data_flow_mapper(app, repo_path, architecture),
+        run_security_context_profiler(app, repo_path, architecture),
+    )
+    return data_flows, security_context
+
+
 __all__ = [
     "run_recon",
+    "run_fast_recon",
+    "run_deep_recon",
     "run_architecture_mapper",
     "run_data_flow_mapper",
     "run_dependency_auditor",
