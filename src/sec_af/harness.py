@@ -103,12 +103,13 @@ def _schema_guidance(schema: type[SchemaT]) -> str:
             "- Follow the provided Pydantic schema exactly."
         )
 
+    joined_fields = "\n".join(field_lines)
     return (
         "Output format:\n"
         "- Return valid JSON only (no markdown fences, no extra text).\n"
         "- Follow the provided Pydantic schema exactly.\n"
         "- Field guidance from schema descriptions:\n"
-        f"{'\n'.join(field_lines)}"
+        f"{joined_fields}"
     )
 
 

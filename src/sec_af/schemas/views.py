@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 
 class FindingForVerifier(BaseModel):
-    """What the verifier pipeline needs from a RawFinding. 9 fields."""
+    """What the verifier pipeline needs from a RawFinding."""
 
     id: str
     title: str
