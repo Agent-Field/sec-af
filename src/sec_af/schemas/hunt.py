@@ -139,3 +139,20 @@ class DeduplicatedResult(BaseModel):
     chains: list[PotentialChain] = Field(default_factory=list)
     dropped_duplicates: int = 0
     kept_findings: int = 0
+
+
+class ChainCorrelationResult(BaseModel):
+    """Flat harness schema for chain correlation. LLM identifies chains only."""
+
+    chains: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Multi-step attack chains found. Format per entry: "
+            "'title | finding_id1,finding_id2,... | combined_impact | severity'. "
+            "Example: 'SSRF to Internal API | f1,f2 | Access internal services | high'"
+        ),
+    )
+    duplicate_ids: list[str] = Field(
+        default_factory=list,
+        description="Finding IDs that are duplicates missed by programmatic dedup (to drop)",
+    )

@@ -4,6 +4,7 @@ See DESIGN.md §9 for depth profiles and budget controls.
 """
 
 import os
+import tempfile
 from enum import Enum
 
 from pydantic import BaseModel, Field
@@ -111,4 +112,8 @@ class AIIntegrationConfig(BaseModel):
             "GITHUB_TOKEN",
             "GH_TOKEN",
         )
-        return {key: value for key in env_keys if (value := os.getenv(key))}
+        env: dict[str, str] = {key: value for key in env_keys if (value := os.getenv(key))}
+        xdg = os.getenv("XDG_DATA_HOME") or os.path.join(tempfile.gettempdir(), "opencode-shared-data")
+        os.makedirs(xdg, exist_ok=True)
+        env["XDG_DATA_HOME"] = xdg
+        return env

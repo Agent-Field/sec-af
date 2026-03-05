@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
-import json
 from collections import defaultdict
 from typing import TYPE_CHECKING, Protocol, cast
 
-from sec_af.schemas.hunt import Confidence, DeduplicatedResult, HuntResult, PotentialChain, RawFinding, Severity
+from sec_af.schemas.hunt import (
+    ChainCorrelationResult,
+    Confidence,
+    HuntResult,
+    PotentialChain,
+    RawFinding,
+    Severity,
+)
 
 if TYPE_CHECKING:
     from sec_af.schemas.recon import ReconResult
@@ -84,6 +91,7 @@ async def _ai_check_duplicate(
     app: AICapable,
     candidate: RawFinding,
     existing: RawFinding,
+    timeout_seconds: float = 60.0,
 ) -> bool:
     from sec_af.schemas.gates import DuplicateCheck
 
@@ -101,7 +109,10 @@ async def _ai_check_duplicate(
         f"- Description: {existing.description[:200]}"
     )
     try:
-        result = await app.ai(user=prompt, schema=DuplicateCheck)
+        result = await asyncio.wait_for(
+            app.ai(user=prompt, schema=DuplicateCheck),
+            timeout=timeout_seconds,
+        )
         if isinstance(result, DuplicateCheck):
             return result.is_duplicate
         if isinstance(result, dict):
@@ -135,25 +146,31 @@ async def _deduplicate_with_ai(
     has_ai = hasattr(app, "ai") and callable(getattr(app, "ai", None))
     if has_ai:
         ai_app = cast("AICapable", app)
+
+        # Collect all candidate pairs up front so we can check them in parallel.
+        pairs: list[tuple[RawFinding, RawFinding]] = []
         for file_findings in by_file.values():
             if len(file_findings) < 2:
                 continue
             for i, candidate in enumerate(file_findings):
-                if candidate.fingerprint in to_remove:
-                    continue
                 for existing in file_findings[i + 1 :]:
-                    if existing.fingerprint in to_remove:
-                        continue
                     if candidate.cwe_id == existing.cwe_id:
-                        is_dup = await _ai_check_duplicate(ai_app, candidate, existing)
-                        if is_dup:
-                            if _confidence_value(candidate) >= _confidence_value(existing):
-                                to_remove.add(existing.fingerprint)
-                                by_fingerprint[candidate.fingerprint] = _merge_duplicate(candidate, existing)
-                            else:
-                                to_remove.add(candidate.fingerprint)
-                                by_fingerprint[existing.fingerprint] = _merge_duplicate(existing, candidate)
-                            break
+                        pairs.append((candidate, existing))
+
+        if pairs:
+            results = await asyncio.gather(*[_ai_check_duplicate(ai_app, a, b) for a, b in pairs])
+            for (candidate, existing), is_dup in zip(pairs, results):
+                if not is_dup:
+                    continue
+                # Skip if either side was already removed by an earlier pair result.
+                if candidate.fingerprint in to_remove or existing.fingerprint in to_remove:
+                    continue
+                if _confidence_value(candidate) >= _confidence_value(existing):
+                    to_remove.add(existing.fingerprint)
+                    by_fingerprint[candidate.fingerprint] = _merge_duplicate(candidate, existing)
+                else:
+                    to_remove.add(candidate.fingerprint)
+                    by_fingerprint[existing.fingerprint] = _merge_duplicate(existing, candidate)
 
     final = [f for f in deduped if f.fingerprint not in to_remove]
     final.sort(key=_severity_confidence_sort_key, reverse=True)
@@ -212,17 +229,41 @@ def _seed_chain_context(seed_chains: list[PotentialChain], findings: list[RawFin
     return "\n".join(lines)
 
 
-def _extract_dedup_payload(result: object) -> DeduplicatedResult | None:
-    if isinstance(result, DeduplicatedResult):
-        return result
+def _split_pipe(s: str, expected: int) -> list[str]:
+    parts = [p.strip() for p in s.split("|", maxsplit=expected - 1)]
+    while len(parts) < expected:
+        parts.append("")
+    return parts
 
+
+def _parse_chain_from_str(entry: str, available_ids: set[str]) -> PotentialChain | None:
+    parts = _split_pipe(entry, 4)
+    title = parts[0]
+    raw_ids = [fid.strip() for fid in parts[1].split(",") if fid.strip()]
+    valid_ids = [fid for fid in raw_ids if fid in available_ids]
+    if len(valid_ids) < 2:
+        return None
+    impact = parts[2] or "Combined exploitation path"
+    severity_str = parts[3].lower().strip()
+    severity_map = {
+        "critical": Severity.CRITICAL,
+        "high": Severity.HIGH,
+        "medium": Severity.MEDIUM,
+        "low": Severity.LOW,
+    }
+    severity = severity_map.get(severity_str, Severity.HIGH)
+    return PotentialChain(title=title, finding_ids=valid_ids, combined_impact=impact, estimated_severity=severity)
+
+
+def _extract_chain_correlation(result: object) -> ChainCorrelationResult | None:
+    if isinstance(result, ChainCorrelationResult):
+        return result
     parsed = getattr(result, "parsed", None)
-    if isinstance(parsed, DeduplicatedResult):
+    if isinstance(parsed, ChainCorrelationResult):
         return parsed
     if isinstance(parsed, dict):
         try:
-            parsed_payload = cast("dict[str, object]", parsed)
-            return DeduplicatedResult.model_validate(parsed_payload)
+            return ChainCorrelationResult.model_validate(cast("dict[str, object]", parsed))
         except Exception:
             return None
     return None
@@ -243,27 +284,35 @@ async def deduplicate_and_correlate(
         import shutil
         import tempfile
 
+        findings_summary = "\n".join(
+            f"- id={f.id} cwe={f.cwe_id} file={f.file_path}:{f.start_line} "
+            f"title={f.title} severity={f.estimated_severity.value}"
+            for f in deduplicated
+        )
         prompt = (
-            "You are SEC-AF's deduplicator/correlator.\n"
-            "Take multiple turns:\n"
-            "1) Validate duplicate groups and tighten merged findings.\n"
-            "2) Validate seed chain candidates and identify multi-step attack chains across findings.\n"
-            "   A multi-step attack chain means one vulnerability enables exploitation of another step.\n"
-            "   You are not limited to the provided seeds; discover additional chains when justified.\n"
-            "3) Return final JSON matching DeduplicatedResult.\n\n"
-            f"Recon context:\n{recon.model_dump_json()}\n\n"
-            f"Deduplicated candidate findings:\n{json.dumps([f.model_dump() for f in deduplicated])}\n\n"
+            "You are SEC-AF's chain correlator.\n"
+            "Identify multi-step attack chains across the findings below.\n"
+            "A chain means one vulnerability enables exploitation of another.\n"
+            "Also flag any remaining duplicate IDs that should be dropped.\n\n"
+            f"Findings:\n{findings_summary}\n\n"
             f"{seed_context}"
         )
         harness_cwd = tempfile.mkdtemp(prefix="secaf-dedup-")
         try:
-            harness_result = await app.harness(
-                prompt, schema=DeduplicatedResult, cwd=harness_cwd, project_dir=repo_path
+            harness_result = await asyncio.wait_for(
+                app.harness(prompt, schema=ChainCorrelationResult, cwd=harness_cwd, project_dir=repo_path),
+                timeout=600.0,
             )
-            parsed = _extract_dedup_payload(harness_result)
+            parsed = _extract_chain_correlation(harness_result)
             if parsed is not None:
-                deduplicated = parsed.findings or deduplicated
-                chains = parsed.chains
+                available_ids = {f.id for f in deduplicated}
+                for chain_str in parsed.chains:
+                    chain = _parse_chain_from_str(chain_str, available_ids)
+                    if chain:
+                        chains.append(chain)
+                if parsed.duplicate_ids:
+                    drop_set = set(parsed.duplicate_ids)
+                    deduplicated = [f for f in deduplicated if f.id not in drop_set]
         except Exception:
             chains = []
         finally:

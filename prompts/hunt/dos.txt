@@ -9,6 +9,13 @@ Use the RECON context below to prioritize analysis by real entry points and know
 TASK:
 Systematically hunt for DoS and resource exhaustion vulnerabilities in this codebase.
 
+WORKFLOW (follow these steps in order):
+1. Read the source files referenced in the RECON context above to understand the codebase.
+2. Search for unbounded loops, regex patterns, resource allocation, pagination gaps, and expensive operations in the source code.
+3. Read the identified files to confirm vulnerabilities with actual code evidence.
+4. For each confirmed vulnerability, record the file path, line number, and relevant code snippet.
+5. Once you have gathered enough evidence, write the final JSON output file as specified in the OUTPUT REQUIREMENTS below.
+
 SCOPE:
 - Prioritize attacker-reachable code paths from documented entry points and API surfaces.
 - Trace request handling, query building, parsing, recursion, and expensive operations for unbounded work.
@@ -34,15 +41,16 @@ OUTPUT:
 - Set hunter_strategy to "dos" for each finding.
 - Keep HuntResult metadata coherent (total_raw, deduplicated_count, chain_count, strategies_run,
   hunt_duration_seconds).
+- Empty arrays are acceptable if no vulnerabilities are confirmed.
 
 {{LANGUAGE_HINTS}}
 {{FRAMEWORK_HINTS}}
 
 CONSTRAINTS:
-- Take multiple turns: explore resource-intensive paths, validate missing bounds, then construct final findings.
 - Prefer high confidence only when unbounded or weakly bounded behavior is proven in code.
 - Do not speculate about operational outages without code evidence.
 - Do not include markdown, prose outside JSON, or code fences in final output.
+- Base all findings on actual file content you read. Do not speculate.
 - DO NOT FLAG:
   - Rate limiting enforced at gateway or middleware
   - Endpoints that already enforce pagination or explicit query limits

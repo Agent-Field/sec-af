@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import pytest
 
 from sec_af.agents.dedup import deduplicate_and_correlate
-from sec_af.schemas.hunt import Confidence, DeduplicatedResult, FindingType, PotentialChain, RawFinding, Severity
+from sec_af.schemas.hunt import ChainCorrelationResult, Confidence, FindingType, RawFinding, Severity
 from sec_af.schemas.recon import (
     ArchitectureMap,
     ConfigReport,
@@ -48,14 +48,20 @@ def _finding(*, finding_id: str, cwe_id: str, cwe_name: str, severity: Severity 
 
 
 @dataclass
+class _HarnessResult:
+    parsed: object
+    is_error: bool = False
+
+
+@dataclass
 class _HarnessApp:
-    response: DeduplicatedResult
+    response: ChainCorrelationResult
     prompt: str = ""
 
     async def harness(self, prompt: str, *, schema: object = None, cwd: str | None = None, **kwargs: object) -> object:
         _ = (schema, cwd, kwargs)
         self.prompt = prompt
-        return self.response
+        return _HarnessResult(parsed=self.response)
 
 
 @pytest.mark.asyncio
@@ -64,7 +70,7 @@ async def test_dedup_prompt_includes_seed_chain_candidates() -> None:
         _finding(finding_id="F1", cwe_id="CWE-918", cwe_name="Server-Side Request Forgery (SSRF)"),
         _finding(finding_id="F3", cwe_id="CWE-798", cwe_name="Use of Hard-coded Credentials"),
     ]
-    app = _HarnessApp(response=DeduplicatedResult(findings=findings, chains=[]))
+    app = _HarnessApp(response=ChainCorrelationResult(chains=[], duplicate_ids=[]))
 
     _ = await deduplicate_and_correlate(findings, _recon(), app, repo_path=".")
 
@@ -84,7 +90,7 @@ async def test_seed_chains_are_used_when_ai_returns_no_chains() -> None:
             finding_id="F2", cwe_id="CWE-200", cwe_name="Exposure of Sensitive Information", severity=Severity.HIGH
         ),
     ]
-    app = _HarnessApp(response=DeduplicatedResult(findings=findings, chains=[]))
+    app = _HarnessApp(response=ChainCorrelationResult(chains=[], duplicate_ids=[]))
 
     result = await deduplicate_and_correlate(findings, _recon(), app, repo_path=".")
 
@@ -104,13 +110,14 @@ async def test_ai_discovered_chains_take_priority_over_seed_chains() -> None:
         ),
         _finding(finding_id="F3", cwe_id="CWE-798", cwe_name="Use of Hard-coded Credentials", severity=Severity.HIGH),
     ]
-    ai_chain = PotentialChain(
-        title="AI-discovered chain: SSRF to data exfiltration",
-        finding_ids=["F1", "F2", "F3"],
-        combined_impact="SSRF reaches metadata; stolen secret enables privileged API access and data exfiltration.",
-        estimated_severity=Severity.CRITICAL,
+    app = _HarnessApp(
+        response=ChainCorrelationResult(
+            chains=[
+                "AI-discovered chain: SSRF to data exfiltration|F1,F2,F3|SSRF reaches metadata; stolen secret enables privileged API access and data exfiltration.|critical"
+            ],
+            duplicate_ids=[],
+        )
     )
-    app = _HarnessApp(response=DeduplicatedResult(findings=findings, chains=[ai_chain]))
 
     result = await deduplicate_and_correlate(findings, _recon(), app, repo_path=".")
 

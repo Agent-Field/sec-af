@@ -202,6 +202,14 @@ async def audit(
             )
             orchestrator._write_checkpoint("prove", verified)
 
+            remediation_raw = await app.call(
+                f"{NODE_ID}.remediation_phase",
+                repo_path=repo_path,
+                verified_findings=[v.model_dump() for v in verified],
+            )
+            remediation_dict = _as_dict(_unwrap(remediation_raw, "remediation_phase"), "remediation_phase")
+            verified = [VerifiedFinding.model_validate(v) for v in remediation_dict["verified"]]
+
             orchestrator.agent_invocations = prove_dict.get("total_selected", 0) + len(hunt.strategies_run) + 3
             result = await orchestrator._generate_output(recon=recon, hunt=hunt, verified=verified)
             app.note("SEC-AF audit complete", tags=["audit", "complete"])

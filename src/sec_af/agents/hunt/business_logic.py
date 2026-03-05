@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 import json
-import shutil
-import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
-from sec_af.agents._utils import extract_harness_result
 from sec_af.config import DepthProfile
 from sec_af.context import framework_hints_for_context, language_hints_for_context
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
+
+from ._scan_enrich import assemble_finding, enrich_locations_parallel, scan_locations
 
 if TYPE_CHECKING:
     from sec_af.schemas.recon import ReconResult
@@ -66,9 +65,10 @@ async def run_business_logic_hunter(
     if not is_business_logic_hunter_enabled(depth):
         return HuntResult(findings=[], strategies_run=[])
 
+    recon_context = _recon_context_block(recon_result)
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
-    prompt = (
-        prompt_template.replace("{{RECON_CONTEXT_JSON}}", _recon_context_block(recon_result))
+    scan_prompt = (
+        prompt_template.replace("{{RECON_CONTEXT_JSON}}", recon_context)
         .replace("{{LANGUAGE_HINTS}}", language_hints_for_context(recon_result))
         .replace("{{FRAMEWORK_HINTS}}", framework_hints_for_context(recon_result))
         + "\n\nCONTEXT:\n"
@@ -81,15 +81,33 @@ async def run_business_logic_hunter(
         + "- Take multiple turns, trace complete workflows, and return final JSON only when complete."
     )
     if depth_prompt:
-        prompt += f"\n- Additional depth guidance: {depth_prompt}"
+        scan_prompt += f"\n- Additional depth guidance: {depth_prompt}"
 
-    agent_name = "hunt-business-logic"
-    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
-    try:
-        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd, project_dir=repo_path)
-        parsed = extract_harness_result(result, HuntResult, "Business logic hunter")
-        if not parsed.strategies_run:
-            parsed.strategies_run = [HuntStrategy.BUSINESS_LOGIC.value]
-        return parsed
-    finally:
-        shutil.rmtree(harness_cwd, ignore_errors=True)
+    locations = await scan_locations(app=app, prompt=scan_prompt, repo_path=repo_path)
+    if not locations:
+        return HuntResult(strategies_run=[HuntStrategy.BUSINESS_LOGIC.value])
+
+    enriched_findings = await enrich_locations_parallel(
+        app=app,
+        locations=locations,
+        finding_type="logic",
+        strategy=HuntStrategy.BUSINESS_LOGIC.value,
+        recon_context=recon_context,
+        repo_path=repo_path,
+    )
+    findings = [
+        assemble_finding(
+            location=location,
+            enriched=enriched,
+            finding_type="logic",
+            strategy=HuntStrategy.BUSINESS_LOGIC.value,
+        )
+        for location, enriched in zip(locations, enriched_findings)
+    ]
+    return HuntResult(
+        findings=findings,
+        total_raw=len(findings),
+        deduplicated_count=len(findings),
+        chain_count=0,
+        strategies_run=[HuntStrategy.BUSINESS_LOGIC.value],
+    )

@@ -13,7 +13,7 @@ from sec_af.schemas.hunt import (
     RawFinding,
     Severity,
 )
-from sec_af.schemas.prove import VerifiedFinding
+from sec_af.schemas.prove import RemediationSuggestion, Verdict, VerifiedFinding
 from sec_af.schemas.recon import (
     ArchitectureMap,
     ConfigReport,
@@ -469,3 +469,61 @@ async def prove_phase(
         "not_verified": max(0, len(hunt.findings) - len(selected)),
         "drop_summary": drop_summary,
     }
+
+
+# ---------------------------------------------------------------------------
+# REMEDIATION PHASE
+# ---------------------------------------------------------------------------
+
+
+@router.reasoner()
+async def remediation_phase(
+    repo_path: str,
+    verified_findings: list[dict[str, Any]],
+    max_concurrent_remediations: int = 3,
+) -> dict[str, Any]:
+    """Run remediation for confirmed/likely findings in parallel via app.call()."""
+    _runtime_router.note("REMEDIATION phase starting", tags=["phase", "remediation"])
+
+    findings = [VerifiedFinding.model_validate(v) for v in verified_findings]
+    needs_remediation = [
+        (idx, f)
+        for idx, f in enumerate(findings)
+        if f.verdict in {Verdict.CONFIRMED, Verdict.LIKELY} and f.remediation is None
+    ]
+
+    if not needs_remediation:
+        _runtime_router.note("No findings need remediation", tags=["phase", "remediation", "done"])
+        return {"verified": [f.model_dump() for f in findings]}
+
+    semaphore = asyncio.Semaphore(max(1, min(max_concurrent_remediations, len(needs_remediation))))
+
+    async def _call_remediation(idx: int, finding: VerifiedFinding) -> tuple[int, dict[str, Any] | None]:
+        async with semaphore:
+            try:
+                raw = await _runtime_router.call(
+                    f"{NODE_ID}.run_remediation",
+                    repo_path=repo_path,
+                    finding=finding.model_dump(),
+                )
+                payload = _as_dict(_unwrap(raw, "run_remediation"), "run_remediation")
+                return (idx, payload)
+            except Exception:
+                return (idx, None)
+
+    results = await asyncio.gather(*[_call_remediation(idx, f) for idx, f in needs_remediation])
+
+    generated = 0
+    for idx, payload in results:
+        if payload is not None:
+            try:
+                findings[idx].remediation = RemediationSuggestion.model_validate(payload)
+                generated += 1
+            except Exception:
+                pass
+
+    _runtime_router.note(
+        f"REMEDIATION phase complete: {generated}/{len(needs_remediation)} generated",
+        tags=["phase", "remediation", "done"],
+    )
+    return {"verified": [f.model_dump() for f in findings]}

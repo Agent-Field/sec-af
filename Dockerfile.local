@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY pyproject.toml README.md ./
 COPY src/ src/
-COPY agentfield-sdk/ /tmp/agentfield-sdk/
+COPY .docker-sdk/ /tmp/agentfield-sdk/
 
 RUN pip install --no-cache-dir --prefix=/install \
     /tmp/agentfield-sdk/ \
@@ -28,8 +28,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     AGENTFIELD_SERVER=http://agentfield:8080 \
     HARNESS_PROVIDER=opencode \
-    HARNESS_MODEL=openrouter/minimax/minimax-m2.5 \
-    AI_MODEL=openrouter/minimax/minimax-m2.5 \
+    HARNESS_MODEL=openrouter/moonshotai/kimi-k2.5 \
+    AI_MODEL=openrouter/moonshotai/kimi-k2.5 \
     PORT=8003 \
     HOME=/home/secaf \
     PYTHONPATH=/app/src \
@@ -50,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Generate minimal opencode config for OpenRouter provider (no MCP servers)
 RUN mkdir -p /home/secaf/.config/opencode && \
-    echo '{"$schema":"https://opencode.ai/config.json","model":"openrouter/minimax/minimax-m2.5","small_model":"openrouter/minimax/minimax-m2.5","provider":{"openrouter":{"options":{"apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"minimax/minimax-m2.5":{},"moonshotai/kimi-k2.5":{}}}}}' \
+    echo '{"$schema":"https://opencode.ai/config.json","model":"openrouter/moonshotai/kimi-k2.5","small_model":"openrouter/moonshotai/kimi-k2.5","provider":{"openrouter":{"options":{"apiKey":"{env:OPENROUTER_API_KEY}"},"models":{"minimax/minimax-m2.5":{},"moonshotai/kimi-k2.5":{}}}}}' \
     > /home/secaf/.config/opencode/opencode.json && \
     chown -R secaf:secaf /home/secaf/.config
 

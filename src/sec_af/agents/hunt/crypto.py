@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import shutil
-import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
-from sec_af.agents._utils import extract_harness_result
 from sec_af.context import framework_hints_for_context, language_hints_for_context, recon_context_for_crypto
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
+
+from ._scan_enrich import assemble_finding, enrich_locations_parallel, scan_locations
 
 if TYPE_CHECKING:
     from sec_af.schemas.recon import ReconResult
@@ -75,12 +74,13 @@ async def run_crypto_hunter(
     if not should_run_crypto_hunter(recon):
         return HuntResult()
 
+    recon_context = recon_context_for_crypto(recon)
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     usage_contexts = _usage_contexts(recon)
     security_critical_candidates = _filter_contexts_by_terms(usage_contexts, _SECURITY_CRITICAL_TERMS)
     non_security_candidates = _filter_contexts_by_terms(usage_contexts, _NON_SECURITY_TERMS)
-    prompt = (
-        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_crypto(recon))
+    scan_prompt = (
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context)
         .replace("{{LANGUAGE_HINTS}}", language_hints_for_context(recon))
         .replace("{{FRAMEWORK_HINTS}}", framework_hints_for_context(recon))
         + "\n\nCONTEXT:\n"
@@ -98,20 +98,32 @@ async def run_crypto_hunter(
         + "- Take multiple turns to explore relevant files before finalizing findings.\n"
         + "- Write final JSON only when analysis is complete."
     )
-    agent_name = "hunt-crypto"
-    harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
-    try:
-        result = await app.harness(prompt=prompt, schema=HuntResult, cwd=harness_cwd, project_dir=repo_path)
-        parsed = extract_harness_result(result, HuntResult, "Crypto hunter")
 
-        if not parsed.strategies_run:
-            parsed.strategies_run = [HuntStrategy.CRYPTO.value]
-        if parsed.total_raw == 0 and parsed.findings:
-            parsed.total_raw = len(parsed.findings)
-        if parsed.deduplicated_count == 0 and parsed.findings:
-            parsed.deduplicated_count = len(parsed.findings)
-        if parsed.chain_count == 0 and parsed.chains:
-            parsed.chain_count = len(parsed.chains)
-        return parsed
-    finally:
-        shutil.rmtree(harness_cwd, ignore_errors=True)
+    locations = await scan_locations(app=app, prompt=scan_prompt, repo_path=repo_path)
+    if not locations:
+        return HuntResult(strategies_run=[HuntStrategy.CRYPTO.value])
+
+    enriched_findings = await enrich_locations_parallel(
+        app=app,
+        locations=locations,
+        finding_type="sast",
+        strategy=HuntStrategy.CRYPTO.value,
+        recon_context=recon_context,
+        repo_path=repo_path,
+    )
+    findings = [
+        assemble_finding(
+            location=location,
+            enriched=enriched,
+            finding_type="sast",
+            strategy=HuntStrategy.CRYPTO.value,
+        )
+        for location, enriched in zip(locations, enriched_findings)
+    ]
+    return HuntResult(
+        findings=findings,
+        total_raw=len(findings),
+        deduplicated_count=len(findings),
+        chain_count=0,
+        strategies_run=[HuntStrategy.CRYPTO.value],
+    )

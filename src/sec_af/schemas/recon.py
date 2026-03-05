@@ -228,3 +228,154 @@ class ReconResult(BaseModel):
     lines_of_code: int = 0
     file_count: int = 0
     recon_duration_seconds: float = 0.0
+
+
+# ---------------------------------------------------------------------------
+# Flat harness schemas for RECON agents
+# ---------------------------------------------------------------------------
+# These schemas are what the LLM actually produces via .harness() calls.
+# They use only flat fields (str, list[str]) — no nested models.
+# Parser functions in agents/recon/_parsers.py convert these to the
+# structured schemas above for downstream use (context.py, etc.).
+# ---------------------------------------------------------------------------
+
+
+class ArchitectureMapRaw(BaseModel):
+    """Flat harness output for architecture mapper. All list[str], no nesting."""
+
+    app_type: str = Field(
+        default="unknown",
+        description="Application type: web_api, cli_tool, library, microservice, monolith",
+    )
+    modules: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per module. Format: 'name | path | language | description'. "
+            "Example: 'auth | src/auth/ | python | Authentication and session management'"
+        ),
+    )
+    entry_points: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per entry point. Format: 'kind | route_or_id | file_path:line | auth_required'. "
+            "Example: 'http | POST /api/login | src/routes.py:42 | false'"
+        ),
+    )
+    trust_boundaries: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per boundary. Format: 'name | source_zone | target_zone | description'. "
+            "Example: 'API Gateway | external | internal | Rate limiting and auth'"
+        ),
+    )
+    services: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per external service. Format: 'name | type | endpoint | auth_mechanism'. "
+            "Example: 'PostgreSQL | database | localhost:5432 | password'"
+        ),
+    )
+    api_endpoints: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per API endpoint. Format: 'method | path | handler | file_path:line | auth_required | rate_limited'. "
+            "Example: 'GET | /api/users | get_users | src/api.py:15 | true | false'"
+        ),
+    )
+
+
+class DataFlowMapRaw(BaseModel):
+    """Flat harness output for data flow mapper. All list[str], no nesting."""
+
+    flows: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per data flow. Format: 'source | sink | sanitized(true/false) | file1, file2, ...'. "
+            "Example: 'request.body | sql.execute | false | src/db.py, src/routes.py'"
+        ),
+    )
+    sanitization_points: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per sanitization point. Format: 'file_path:line | function_name | type | protects_against'. "
+            "Example: 'src/utils.py:42 | sanitize_html | html_encoding | CWE-79'"
+        ),
+    )
+    sinks: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per security-critical sink. Format: 'sink_type | file_path:line | function_name | notes'. "
+            "Example: 'sql_execute | src/db.py:55 | run_query | Direct string concatenation'"
+        ),
+    )
+
+
+class DependencyReportRaw(BaseModel):
+    """Flat harness output for dependency auditor. All list[str], no nesting."""
+
+    sbom: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per dependency. Format: 'name | version | ecosystem | direct(true/false) | license'. "
+            "Example: 'express | 4.18.2 | npm | true | MIT'"
+        ),
+    )
+    known_cves: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per CVE. Format: 'cve_id | package | installed_version | fixed_version | cvss_score | direct | reachable'. "
+            "Example: 'CVE-2023-1234 | lodash | 4.17.15 | 4.17.21 | 7.5 | true | unknown'"
+        ),
+    )
+    outdated: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per outdated dep. Format: 'package | current_version | latest_version | direct(true/false)'. "
+            "Example: 'express | 4.17.0 | 4.18.2 | true'"
+        ),
+    )
+
+
+class ConfigReportRaw(BaseModel):
+    """Flat harness output for config scanner. All list[str], no nesting."""
+
+    secrets: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per secret finding. Format: 'type | file_path:line | match_preview | confidence | is_test(true/false)'. "
+            "Example: 'aws_access_key | .env:3 | AKIA... | high | false'"
+        ),
+    )
+    misconfigs: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per misconfiguration. Format: 'category | file_path:line | key | risk | remediation'. "
+            "Example: 'debug_mode | config.py:15 | DEBUG=True | Exposes stack traces | Set DEBUG=False'"
+        ),
+    )
+
+
+class SecurityContextRaw(BaseModel):
+    """Flat harness output for security context profiler. All flat, no nesting."""
+
+    auth_model: str = Field(
+        description="Authentication model: jwt, session_cookie, oauth2, api_key, none, or other",
+    )
+    auth_details: str = Field(
+        default="",
+        description="Brief description of auth implementation details",
+    )
+    crypto_usage: list[str] = Field(
+        default_factory=list,
+        description=(
+            "One string per crypto usage. Format: 'algorithm | key_size | mode | usage_context | is_weak(true/false)'. "
+            "Example: 'AES | 256 | GCM | data encryption | false'"
+        ),
+    )
+    security_signals: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Framework security features, security headers, and deployment signals. "
+            "One signal per entry. Examples: 'CSRF protection enabled', 'HSTS header present', 'Runs in Docker'"
+        ),
+    )

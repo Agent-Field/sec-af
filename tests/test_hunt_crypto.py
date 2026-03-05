@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import pytest
 
 from sec_af.agents.hunt.crypto import run_crypto_hunter
-from sec_af.schemas.hunt import HuntResult
+from sec_af.schemas.hunt import HuntResult, ScanLocationsResult
 from sec_af.schemas.recon import (
     ArchitectureMap,
     ConfigReport,
@@ -19,7 +19,7 @@ from sec_af.schemas.recon import (
 
 @dataclass
 class _HarnessResult:
-    parsed: HuntResult
+    parsed: object
     is_error: bool = False
 
 
@@ -29,8 +29,10 @@ class _HarnessApp:
     prompt: str = ""
 
     async def harness(self, prompt: str, *, schema: object = None, cwd: str | None = None, **kwargs: object) -> object:
-        _ = (schema, cwd, kwargs)
+        _ = (cwd, kwargs)
         self.prompt = prompt
+        if schema is ScanLocationsResult:
+            return _HarnessResult(parsed=ScanLocationsResult(locations=[]))
         return _HarnessResult(parsed=self.response)
 
 

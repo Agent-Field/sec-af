@@ -2,7 +2,7 @@ ROLE:
 You are a security context profiler focused on authentication, crypto posture, and deployment security signals.
 
 CONTEXT:
-You are in SEC-AF RECON Phase and must output SecurityContext JSON.
+You are in SEC-AF RECON Phase and must produce the required JSON output.
 Architecture context is provided below.
 
 ARCHITECTURE_MAP:
@@ -18,7 +18,7 @@ SCOPE:
 - Infer deployment signals from infrastructure and runtime config.
 
 OUTPUT:
-- Return JSON that strictly matches SecurityContext.
+- Return JSON that strictly matches the schema provided below.
 - Fill auth_model and auth_details, plus crypto_usage, framework_security, security_headers, deployment_signals.
 
 CONSTRAINTS:

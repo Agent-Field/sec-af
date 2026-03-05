@@ -4,7 +4,7 @@ services:
   sec-af:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     container_name: sec-af-agent
     ports:
       - "8003:8003"
@@ -12,8 +12,8 @@ services:
       - AGENTFIELD_SERVER=http://host.docker.internal:9090
       - AGENT_CALLBACK_URL=http://localhost:8003
       - HARNESS_PROVIDER=opencode
-      - HARNESS_MODEL=openrouter/minimax/minimax-m2.5
-      - AI_MODEL=openrouter/minimax/minimax-m2.5
+      - HARNESS_MODEL=openrouter/moonshotai/kimi-k2.5
+      - AI_MODEL=openrouter/moonshotai/kimi-k2.5
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - PYTHONUNBUFFERED=1
     volumes:

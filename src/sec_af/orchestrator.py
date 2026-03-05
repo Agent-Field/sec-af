@@ -31,11 +31,6 @@ from .scoring import compute_exploitability_score
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
 
 
-def _resolve_generate_remediation() -> Any:
-    module = import_module("sec_af.agents.remediation")
-    return getattr(module, "generate_remediation")
-
-
 class BudgetExhausted(RuntimeError):  # noqa: N818
     pass
 
@@ -283,18 +278,6 @@ class AuditOrchestrator:
                 frameworks=self.input.compliance_frameworks or None,
                 ai_gate=self.ai_gate,
             )
-
-        generate_remediation = _resolve_generate_remediation()
-        for finding in verified:
-            if finding.verdict in {Verdict.CONFIRMED, Verdict.LIKELY} and finding.remediation is None:
-                try:
-                    finding.remediation = await generate_remediation(
-                        app=_PhaseHarnessProxy(self, "prove"),
-                        repo_path=str(self.repo_path),
-                        finding=finding,
-                    )
-                except Exception:
-                    pass
 
         verdict_counts: dict[Verdict, int] = {
             Verdict.CONFIRMED: 0,

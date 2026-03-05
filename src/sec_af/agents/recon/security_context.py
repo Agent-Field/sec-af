@@ -5,8 +5,9 @@ import tempfile
 from pathlib import Path
 from typing import Protocol
 from sec_af.agents._utils import extract_harness_result
+from sec_af.agents.recon._parsers import parse_security_context_raw
 
-from sec_af.schemas.recon import ArchitectureMap, SecurityContext
+from sec_af.schemas.recon import ArchitectureMap, SecurityContext, SecurityContextRaw
 
 from .architecture import architecture_context_block
 
@@ -36,7 +37,8 @@ async def run_security_context_profiler(
     agent_name = "recon-security-context"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=SecurityContext, cwd=harness_cwd, project_dir=repo_path)
-        return extract_harness_result(result, SecurityContext, "Security context profiler")
+        result = await app.harness(prompt=prompt, schema=SecurityContextRaw, cwd=harness_cwd, project_dir=repo_path)
+        raw = extract_harness_result(result, SecurityContextRaw, "Security context profiler")
+        return parse_security_context_raw(raw)
     finally:
         shutil.rmtree(harness_cwd, ignore_errors=True)

@@ -1,195 +1,178 @@
-from __future__ import annotations
+"""Minimal isolated harness test — run inside Docker container.
+
+Tests schema output with varying prompt sizes to isolate the failure.
+Usage: docker exec sec-af-agent python3 /app/test_harness.py
+"""
 
 import asyncio
-import importlib
 import json
+import logging
 import os
-from pathlib import Path
-from typing import Any
+import sys
+import tempfile
+import time
 
-from pydantic import BaseModel
+logging.basicConfig(level=logging.INFO, format="%(name)s %(levelname)s %(message)s")
 
+from agentfield.harness._runner import HarnessRunner
+from pydantic import BaseModel, Field
 
-class SimpleResponse(BaseModel):
-    greeting: str
-    number: int
-
-
-def _print_header(title: str) -> None:
-    print("\n" + "=" * 88)
-    print(title)
-    print("=" * 88)
+REPO_PATH = "/workspaces/Damn-Vulnerable-GraphQL-Application"
 
 
-def _preview_file(path: Path, max_chars: int = 500) -> str:
-    if not path.exists():
-        return "<missing>"
-    text = path.read_text(encoding="utf-8", errors="replace")
-    if len(text) <= max_chars:
-        return text
-    return text[:max_chars] + "\n...<truncated>..."
+class EnrichedFinding(BaseModel):
+    title: str = Field(description="Human-readable title for the finding")
+    description: str = Field(description="Detailed description of the vulnerability")
+    cwe_id: str = Field(description="CWE identifier (e.g. 'CWE-89')")
+    severity: str = Field(description='One of: "critical", "high", "medium", "low", "info"')
+    confidence: str = Field(description='One of: "high", "medium", "low"')
+    data_flow_summary: str = Field(description="Natural language summary of the data flow")
 
 
-async def _run_case(
-    *,
-    app: Any,
-    case_name: str,
-    prompt: str,
-    schema: Any,
-    cwd: str,
-) -> None:
-    schema_mod = importlib.import_module("agentfield.harness._schema")
-    runner_mod = importlib.import_module("agentfield.harness._runner")
-    runner_mod_any: Any = runner_mod
+class SimpleOutput(BaseModel):
+    answer: str = Field(description="Your answer as a string")
 
-    output_path = Path(schema_mod.get_output_path(cwd))
-    schema_path = Path(schema_mod.get_schema_path(cwd))
-    output_path.unlink(missing_ok=True)
-    schema_path.unlink(missing_ok=True)
 
-    suffix = schema_mod.build_prompt_suffix(schema, cwd)
-    effective_prompt = prompt + suffix
+SHORT_PROMPT = (
+    "You are a security analyst. Analyze this Python code for SQL injection:\n\n"
+    "```python\n"
+    "def get_user(user_id):\n"
+    "    query = f'SELECT * FROM users WHERE id = {user_id}'\n"
+    "    return db.execute(query)\n"
+    "```\n\n"
+    "Produce a vulnerability finding."
+)
 
-    _print_header(f"CASE: {case_name}")
-    print(f"cwd arg: {cwd}")
-    print(f"cwd realpath: {Path(cwd).resolve()}")
-    print(f"output path (expected): {output_path}")
-    print(f"schema path (large-schema fallback): {schema_path}")
-    print(f"schema file pre-run exists: {schema_path.exists()}")
-    print("\n--- FULL PROMPT SENT (prompt + OUTPUT REQUIREMENTS) ---")
-    print(effective_prompt)
-    print("--- END FULL PROMPT ---")
+LARGE_CONTEXT = "RECON CONTEXT:\n" + json.dumps(
+    {
+        "architecture": {
+            "app_type": "web_api",
+            "modules": [f"module_{i} | src/mod{i}/ | python | Module {i} description" for i in range(30)],
+            "entry_points": [f"http | GET /api/endpoint{i} | src/routes.py:{i * 10} | false" for i in range(40)],
+            "trust_boundaries": [f"boundary_{i} | zone_a | zone_b | Description {i}" for i in range(10)],
+            "services": [f"service_{i} | database | localhost:{5432 + i} | password" for i in range(5)],
+            "api_endpoints": [
+                f"GET | /api/v1/resource{i} | handler_{i} | src/api.py:{i * 5} | true | false" for i in range(50)
+            ],
+        },
+        "data_flows": {
+            "flows": ["request.body | sql.execute | false | src/db.py, src/routes.py" for _ in range(20)],
+            "sanitization_points": [],
+            "sinks": [f"sql_execute | src/db.py:{i * 10} | run_query | Direct concatenation" for i in range(15)],
+        },
+        "dependencies": {
+            "sbom": [f"package_{i} | 1.{i}.0 | pip | true | MIT" for i in range(40)],
+            "known_cves": [
+                f"CVE-2023-{1000 + i} | package_{i} | 1.{i}.0 | 1.{i + 1}.0 | 7.5 | true | unknown" for i in range(5)
+            ],
+        },
+    },
+    indent=2,
+)
 
-    cleanup_events: list[dict[str, Any]] = []
-    original_cleanup = runner_mod_any.cleanup_temp_files
+LONG_PROMPT = (
+    "ROLE:\nYou are Step 2 FindingEnricher for SEC-AF HUNT phase.\n\n"
+    "TASK:\nEnrich one scanned vulnerability location into one complete finding.\n\n"
+    f"{LARGE_CONTEXT}\n\n"
+    "LOCATION:\n"
+    "- File path: core/views.py\n"
+    "- Start line: 85\n"
+    "- Pattern type: sql_injection\n"
+    "- Code snippet:\n"
+    "    query = f'SELECT * FROM users WHERE id = {user_id}'\n"
+    "    result = db.execute(query)\n\n"
+    "WORKFLOW:\n"
+    "1. Read the file at the file path above.\n"
+    "2. Analyze the code for the vulnerability.\n"
+    "3. Write the final JSON output file.\n"
+)
 
-    def debug_cleanup(cwd_arg: str) -> None:
-        event = {
-            "cwd_arg": cwd_arg,
-            "cwd_realpath": str(Path(cwd_arg).resolve()),
-            "output_exists_before_cleanup": output_path.exists(),
-            "output_size_before_cleanup": output_path.stat().st_size if output_path.exists() else None,
-            "schema_exists_before_cleanup": schema_path.exists(),
-            "schema_size_before_cleanup": schema_path.stat().st_size if schema_path.exists() else None,
-            "output_preview_before_cleanup": _preview_file(output_path),
-        }
-        cleanup_events.append(event)
-        print("\n[debug] cleanup_temp_files invoked with:")
-        print(json.dumps(event, indent=2))
-        original_cleanup(cwd_arg)
 
-    runner_mod_any.cleanup_temp_files = debug_cleanup
+async def run_test(name, prompt, schema, project_dir=REPO_PATH):
+    print(f"\n{'=' * 60}")
+    print(f"TEST: {name}")
+    print(f"  prompt: {len(prompt)} chars (~{len(prompt) // 4} tokens)")
+    schema_json = json.dumps(schema.model_json_schema())
+    print(f"  schema: {len(schema_json)} chars")
+
+    runner = HarnessRunner()
+    start = time.monotonic()
     try:
-        result = await app.harness(
-            prompt,
+        result = await runner.run(
+            prompt=prompt,
             schema=schema,
-            cwd=cwd,
+            provider="opencode",
+            model="openrouter/moonshotai/kimi-k2.5",
+            project_dir=project_dir,
+            cwd=tempfile.mkdtemp(prefix="test-harness-"),
+            schema_max_retries=0,
         )
-    finally:
-        runner_mod_any.cleanup_temp_files = original_cleanup
-
-    print("\n--- HARNESS RESULT ---")
-    print(f"is_error: {result.is_error}")
-    print(f"error_message: {result.error_message!r}")
-    print(f"parsed_type: {type(result.parsed).__name__ if result.parsed is not None else None}")
-    print(f"session_id: {result.session_id!r}")
-    print(f"num_turns: {result.num_turns}")
-    print(f"cost_usd: {result.cost_usd}")
-    print(f"duration_ms: {result.duration_ms}")
-    print(f"raw_result_preview: {(result.result or '')[:300]!r}")
-
-    if result.parsed is not None:
-        if hasattr(result.parsed, "model_dump"):
-            parsed_data = result.parsed.model_dump()
-        else:
-            parsed_data = str(result.parsed)
-        print("parsed preview:")
-        print(json.dumps(parsed_data, indent=2)[:900])
-
-    if result.messages:
-        print(f"messages_count: {len(result.messages)}")
-        print("last_message:")
-        print(json.dumps(result.messages[-1], indent=2, default=str)[:1200])
-
-    print("\n--- OUTPUT FILE STATE AFTER RUN RETURNS ---")
-    print(f"output exists: {output_path.exists()}")
-    print(f"schema exists: {schema_path.exists()}")
-    if cleanup_events:
-        print(f"cleanup events captured: {len(cleanup_events)}")
-    else:
-        print("cleanup events captured: 0")
+        elapsed = time.monotonic() - start
+        print(f"  elapsed: {elapsed:.1f}s")
+        print(f"  is_error: {result.is_error}")
+        print(f"  error_message: {result.error_message}")
+        print(f"  num_turns: {result.num_turns}")
+        if result.parsed:
+            print(f"  PARSED OK: {json.dumps(result.parsed.model_dump(), indent=2)[:500]}")
+        if result.result:
+            print(f"  stdout[0:300]: {result.result[:300]}")
+        return not result.is_error
+    except Exception as e:
+        elapsed = time.monotonic() - start
+        print(f"  EXCEPTION after {elapsed:.1f}s: {e}")
+        return False
 
 
-async def main() -> None:
-    agentfield_mod = importlib.import_module("agentfield")
-    recon_mod = importlib.import_module("sec_af.schemas.recon")
+async def main():
+    if not os.path.isdir(REPO_PATH):
+        print(f"ERROR: {REPO_PATH} not found. Run a scan first to clone it.")
+        sys.exit(1)
 
-    HarnessConfig = getattr(agentfield_mod, "HarnessConfig")
-    Agent = getattr(agentfield_mod, "Agent")
-    ArchitectureMap = getattr(recon_mod, "ArchitectureMap")
-    ReconResult = getattr(recon_mod, "ReconResult")
+    test_arg = sys.argv[1] if len(sys.argv) > 1 else "all"
+    results = {}
 
-    provider = os.getenv("HARNESS_PROVIDER", "claude-code")
-    model = os.getenv("HARNESS_MODEL", "claude-sonnet-4-20250514")
-    cwd = os.getenv("HARNESS_CWD", "/tmp/dvga")
+    if test_arg in ("1", "all"):
+        results["simple_short"] = await run_test("SimpleOutput + short prompt", "What is 2+2?", SimpleOutput)
 
-    if not Path(cwd).exists():
-        raise FileNotFoundError(f"HARNESS_CWD does not exist: {cwd}")
+    if test_arg in ("2", "all"):
+        results["enriched_short"] = await run_test("EnrichedFinding + SHORT prompt", SHORT_PROMPT, EnrichedFinding)
 
-    os.environ.setdefault("HARNESS_PROVIDER", provider)
-    os.environ.setdefault("HARNESS_MODEL", model)
+    if test_arg in ("3", "all"):
+        results["enriched_long"] = await run_test("EnrichedFinding + LONG prompt (~20KB)", LONG_PROMPT, EnrichedFinding)
 
-    _print_header("HARNESS DEBUG CONFIG")
-    print(f"provider: {provider}")
-    print(f"model: {model}")
-    print("permission_mode: auto")
-    print(f"cwd: {cwd}")
-    print(f"cwd realpath: {Path(cwd).resolve()}")
+    if test_arg in ("4", "all"):
+        # Test 4: CONCURRENT enrichment calls (simulates real hunt phase)
+        print(f"\n{'=' * 60}")
+        print("TEST: CONCURRENT x4 EnrichedFinding + LONG prompt")
+        concurrent_start = time.monotonic()
+        variants = [
+            ("sql_injection", "core/views.py", "85"),
+            ("auth_bypass", "core/auth.py", "42"),
+            ("data_exposure", "core/models.py", "110"),
+            ("dos_regex", "core/helpers.py", "23"),
+        ]
+        tasks = []
+        for pattern, fpath, line in variants:
+            variant_prompt = (
+                LONG_PROMPT.replace("sql_injection", pattern).replace("core/views.py", fpath).replace("85", line)
+            )
+            tasks.append(run_test(f"CONCURRENT-{pattern}", variant_prompt, EnrichedFinding))
+        concurrent_results = await asyncio.gather(*tasks, return_exceptions=True)
+        elapsed = time.monotonic() - concurrent_start
+        print(f"\n  CONCURRENT total elapsed: {elapsed:.1f}s")
+        for i, (pattern, _, _) in enumerate(variants):
+            r = concurrent_results[i]
+            if isinstance(r, Exception):
+                results[f"concurrent_{pattern}"] = False
+                print(f"  FAIL (exception): concurrent_{pattern}: {r}")
+            else:
+                results[f"concurrent_{pattern}"] = r
+                print(f"  {'PASS' if r else 'FAIL'}: concurrent_{pattern}")
 
-    config = HarnessConfig(
-        provider=provider,
-        model=model,
-        permission_mode="auto",
-    )
-    app = Agent(node_id="harness-debug", harness_config=config, auto_register=False)
-
-    simple_prompt = (
-        'Return JSON with greeting="Hello from harness debug" and number=42. Follow the OUTPUT REQUIREMENTS exactly.'
-    )
-    await _run_case(
-        app=app,
-        case_name="simple-schema",
-        prompt=simple_prompt,
-        schema=SimpleResponse,
-        cwd=cwd,
-    )
-
-    complex_prompt = (
-        "Analyze repository architecture at high level and return an ArchitectureMap. "
-        "Use realistic modules, services, trust boundaries, and API endpoints. "
-        "Follow the OUTPUT REQUIREMENTS exactly."
-    )
-    await _run_case(
-        app=app,
-        case_name="complex-schema-ArchitectureMap",
-        prompt=complex_prompt,
-        schema=ArchitectureMap,
-        cwd=cwd,
-    )
-
-    deep_prompt = (
-        "Produce a full security recon result for this repository. "
-        "Return a complete ReconResult JSON with architecture, data flows, dependencies, "
-        "config findings, and security context. Keep content concise but valid. "
-        "Follow the OUTPUT REQUIREMENTS exactly."
-    )
-    await _run_case(
-        app=app,
-        case_name="deeply-nested-schema-ReconResult",
-        prompt=deep_prompt,
-        schema=ReconResult,
-        cwd=cwd,
-    )
+    print(f"\n{'=' * 60}")
+    print("SUMMARY:")
+    for name, passed in results.items():
+        print(f"  {'PASS' if passed else 'FAIL'}: {name}")
 
 
 if __name__ == "__main__":

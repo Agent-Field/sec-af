@@ -5,8 +5,9 @@ import tempfile
 from pathlib import Path
 from typing import Protocol
 from sec_af.agents._utils import extract_harness_result
+from sec_af.agents.recon._parsers import parse_data_flow_raw
 
-from sec_af.schemas.recon import ArchitectureMap, DataFlowMap
+from sec_af.schemas.recon import ArchitectureMap, DataFlowMap, DataFlowMapRaw
 
 from .architecture import architecture_context_block
 
@@ -36,7 +37,8 @@ async def run_data_flow_mapper(
     agent_name = "recon-data-flow"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=DataFlowMap, cwd=harness_cwd, project_dir=repo_path)
-        return extract_harness_result(result, DataFlowMap, "Data flow mapper")
+        result = await app.harness(prompt=prompt, schema=DataFlowMapRaw, cwd=harness_cwd, project_dir=repo_path)
+        raw = extract_harness_result(result, DataFlowMapRaw, "Data flow mapper")
+        return parse_data_flow_raw(raw)
     finally:
         shutil.rmtree(harness_cwd, ignore_errors=True)

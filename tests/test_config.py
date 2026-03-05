@@ -113,9 +113,7 @@ def test_provider_env_only_includes_present_keys(monkeypatch: pytest.MonkeyPatch
 
     env = AIIntegrationConfig.from_env().provider_env()
 
-    assert env == {
-        "OPENAI_API_KEY": "test-openai",
-        "GITHUB_TOKEN": "test-gh",
-    }
+    assert env["OPENAI_API_KEY"] == "test-openai"
+    assert env["GITHUB_TOKEN"] == "test-gh"
     assert "OPENROUTER_API_KEY" not in env
-    assert all(key in os.environ for key in env)
+    assert "XDG_DATA_HOME" in env

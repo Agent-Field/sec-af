@@ -6,8 +6,9 @@ import tempfile
 from pathlib import Path
 from typing import Protocol
 from sec_af.agents._utils import extract_harness_result
+from sec_af.agents.recon._parsers import parse_architecture_raw
 
-from sec_af.schemas.recon import ArchitectureMap
+from sec_af.schemas.recon import ArchitectureMap, ArchitectureMapRaw
 
 
 class HarnessCapable(Protocol):
@@ -25,14 +26,15 @@ async def run_architecture_mapper(app: HarnessCapable, repo_path: str) -> Archit
         prompt_template
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
-        + "- Take multiple turns to explore the codebase first, then build your analysis.\n"
-        + "- Write final JSON only when analysis is complete."
+        + "- Start by listing files in the repository path above.\n"
+        + "- After gathering evidence, write the JSON output file using your Write tool."
     )
     agent_name = "recon-architecture"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")
     try:
-        result = await app.harness(prompt=prompt, schema=ArchitectureMap, cwd=harness_cwd, project_dir=repo_path)
-        return extract_harness_result(result, ArchitectureMap, "Architecture mapper")
+        result = await app.harness(prompt=prompt, schema=ArchitectureMapRaw, cwd=harness_cwd, project_dir=repo_path)
+        raw = extract_harness_result(result, ArchitectureMapRaw, "Architecture mapper")
+        return parse_architecture_raw(raw)
     finally:
         shutil.rmtree(harness_cwd, ignore_errors=True)
 

@@ -46,3 +46,4 @@ results/
 
 # Worktrees
 .worktrees/
+.docker-sdk/

@@ -16,9 +16,15 @@ TARGET CWES:
 RECON CONTEXT SUMMARY:
 {{RECON_CONTEXT}}
 
+WORKFLOW (follow these steps in order):
+1. Read the source files referenced in the RECON context above to understand the codebase.
+2. Search for authentication checks, authorization guards, session handling, and permission validation in the source code.
+3. Read the identified files to confirm vulnerabilities with actual code evidence.
+4. For each confirmed vulnerability, record the file path, line number, and relevant code snippet.
+5. Once you have gathered enough evidence, write the final JSON output file as specified in the OUTPUT REQUIREMENTS below.
+
 ANALYSIS REQUIREMENTS:
-1. Take multiple turns. Explore the codebase first, then draft findings after collecting evidence.
-2. Prioritize concrete code locations showing missing, bypassed, or inconsistent auth/authz checks.
+1. Prioritize concrete code locations showing missing, bypassed, or inconsistent auth/authz checks.
 3. Focus on these CWE classes:
    - CWE-287 Improper Authentication
    - CWE-306 Missing Authentication for Critical Function
@@ -49,3 +55,5 @@ OUTPUT FORMAT:
 - Set `strategies_run` to ["auth"].
 - Do not return markdown.
 - Do not include explanations outside JSON.
+- Empty arrays are acceptable if no vulnerabilities are confirmed.
+- Base all findings on actual file content you read. Do not speculate.
