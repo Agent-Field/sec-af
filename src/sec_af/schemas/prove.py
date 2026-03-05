@@ -64,14 +64,6 @@ class ExploitHypothesis(BaseModel):
     expected_outcome: str = Field(description="What would happen if exploit succeeds")
 
 
-class RemediationSuggestion(BaseModel):
-    """Flat schema for AI-generated remediation. 3 fields."""
-
-    fix_description: str = Field(description="Natural language description of the fix")
-    patch_diff: str = Field(description="Unified diff format patch for the fix")
-    confidence: str = Field(description='One of: "high", "medium", "low"')
-
-
 class VerdictDecision(BaseModel):
     """Flat schema for verdict sub-agent. Uses .ai() not .harness(). 4 fields."""
 
@@ -79,6 +71,14 @@ class VerdictDecision(BaseModel):
     evidence_level: int = Field(description="1-6 scale: 1=STATIC_MATCH to 6=FULL_EXPLOIT")
     rationale: str
     confidence: str = Field(description='One of: "high", "medium", "low"')
+
+
+class RemediationSuggestion(BaseModel):
+    """Flat schema for AI-generated remediation suggestion. 3 fields."""
+
+    fix_description: str = Field(description="Natural language description of the recommended fix")
+    patch_diff: str = Field(description="Unified diff format patch showing the code changes needed")
+    confidence: str = Field(description='Confidence in the fix: "high", "medium", or "low"')
 
 
 class DataFlowStep(BaseModel):
