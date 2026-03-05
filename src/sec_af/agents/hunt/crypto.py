@@ -21,6 +21,33 @@ class HarnessCapable(Protocol):
 
 PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "crypto.txt"
 
+_SECURITY_CRITICAL_TERMS = (
+    "password",
+    "passwd",
+    "credential",
+    "auth",
+    "token",
+    "session",
+    "encrypt",
+    "decrypt",
+    "signature",
+    "sign",
+    "verify",
+    "jwt",
+    "tls",
+    "ssl",
+    "key",
+)
+
+_NON_SECURITY_TERMS = (
+    "checksum",
+    "etag",
+    "cache",
+    "fingerprint",
+    "dedup",
+    "integrity",
+)
+
 
 def should_run_crypto_hunter(recon: ReconResult) -> bool:
     return bool(recon.security_context.crypto_usage)
@@ -41,10 +68,9 @@ async def run_crypto_hunter(
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Hunt strategy: crypto\n"
-        + "- Early stop rule: if you inspect "
-        + f"{max_files_without_signal} files without credible crypto misuse, "
-        + "stop and return empty findings.\n"
-        + "- Focus CWEs: CWE-326, CWE-327, CWE-328, CWE-330, CWE-916\n"
+        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible crypto misuse, stop and return empty findings.\n"
+        + "- Focus CWEs: CWE-326, CWE-327, CWE-328, CWE-330, CWE-916, CWE-259, CWE-321, CWE-798\n"
+        + "- Prioritize weak crypto findings only when used in security-sensitive contexts; avoid checksum/cache-only noise.\n"
         + "- Take multiple turns to explore relevant files before finalizing findings.\n"
         + "- Write final JSON only when analysis is complete."
     )
