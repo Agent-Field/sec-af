@@ -9,6 +9,7 @@ from uuid import uuid4
 from pydantic import BaseModel, Field
 
 from .recon import DataFlowStep
+from .views import FindingForDedup, FindingForVerifier
 
 
 class FindingType(str, Enum):
@@ -108,6 +109,35 @@ class RawFinding(BaseModel):
     data_flow: list[DataFlowStep] | None = None
     related_files: list[str] = Field(default_factory=list)
     fingerprint: str = Field(default_factory=lambda: str(uuid4()))
+
+    def for_verifier(self) -> FindingForVerifier:
+        if self.data_flow:
+            data_flow_summary = "\n".join(f"{step.file_path}:{step.line} {step.operation}" for step in self.data_flow)
+        else:
+            data_flow_summary = ""
+        return FindingForVerifier(
+            id=self.id,
+            title=self.title,
+            file_path=self.file_path,
+            start_line=self.start_line,
+            end_line=self.end_line,
+            code_snippet=self.code_snippet,
+            cwe_id=self.cwe_id,
+            function_name=self.function_name,
+            data_flow_summary=data_flow_summary,
+        )
+
+    def for_dedup(self) -> FindingForDedup:
+        return FindingForDedup(
+            id=self.id,
+            fingerprint=self.fingerprint,
+            title=self.title,
+            file_path=self.file_path,
+            start_line=self.start_line,
+            cwe_id=self.cwe_id,
+            finding_type=self.finding_type.value,
+            estimated_severity=self.estimated_severity.value,
+        )
 
 
 class PotentialChain(BaseModel):

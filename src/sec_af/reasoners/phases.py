@@ -386,7 +386,7 @@ async def prove_phase(
             return await _runtime_router.call(
                 f"{NODE_ID}.run_verifier",
                 repo_path=repo_path,
-                finding=finding.model_dump(),
+                finding=finding.for_verifier().model_dump(),
                 depth=depth,
             )
 
@@ -463,7 +463,7 @@ async def prove_phase(
 
     _runtime_router.note(f"PROVE phase complete: {len(verified)} verified", tags=["phase", "prove", "done"])
     return {
-        "verified": [v.model_dump() for v in verified],
+        "verified": [v.model_dump(exclude_none=True) for v in verified],
         "total_selected": len(selected),
         "total_findings": len(hunt.findings),
         "not_verified": max(0, len(hunt.findings) - len(selected)),
@@ -494,7 +494,7 @@ async def remediation_phase(
 
     if not needs_remediation:
         _runtime_router.note("No findings need remediation", tags=["phase", "remediation", "done"])
-        return {"verified": [f.model_dump() for f in findings]}
+        return {"verified": [f.model_dump(exclude_none=True) for f in findings]}
 
     semaphore = asyncio.Semaphore(max(1, min(max_concurrent_remediations, len(needs_remediation))))
 
@@ -526,4 +526,4 @@ async def remediation_phase(
         f"REMEDIATION phase complete: {generated}/{len(needs_remediation)} generated",
         tags=["phase", "remediation", "done"],
     )
-    return {"verified": [f.model_dump() for f in findings]}
+    return {"verified": [f.model_dump(exclude_none=True) for f in findings]}
