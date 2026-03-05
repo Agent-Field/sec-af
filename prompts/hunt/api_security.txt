@@ -6,7 +6,7 @@ You are in SEC-AF HUNT Phase and must return HuntResult JSON with API-focused fi
 Use RECON API surface and entry points below as primary scope.
 
 API_SECURITY_CONTEXT:
-{{API_SECURITY_CONTEXT_JSON}}
+{{RECON_CONTEXT}}
 
 TASK:
 Analyze API endpoints and supporting middleware/controllers for:

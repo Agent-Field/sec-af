@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-import json
 import shutil
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
-from sec_af.agents._utils import extract_harness_result
 
+from sec_af.agents._utils import extract_harness_result
 from sec_af.config import DepthProfile
+from sec_af.context import recon_context_for_logic
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
@@ -38,9 +38,8 @@ def is_logic_hunter_enabled(depth: str | DepthProfile) -> bool:
 
 
 def _build_prompt(prompt_template: str, recon: ReconResult, repo_path: str) -> str:
-    recon_json = json.dumps(recon.model_dump(), indent=2)
     return (
-        prompt_template.replace("{{RECON_RESULT_JSON}}", recon_json)
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_logic(recon))
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Strategy: logic_bugs\n"
@@ -64,7 +63,9 @@ async def run_logic_hunter(
     prompt = (
         _build_prompt(prompt_template, recon, repo_path)
         + "\n\nEXECUTION CONSTRAINTS:\n"
-        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible logic flaws, stop and return empty findings.\n"
+        + "- Early stop rule: if you inspect "
+        + f"{max_files_without_signal} files without credible logic flaws, "
+        + "stop and return empty findings.\n"
     )
     agent_name = "hunt-logic"
     harness_cwd = tempfile.mkdtemp(prefix=f"secaf-{agent_name}-")

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import json
 import shutil
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
-from sec_af.agents._utils import extract_harness_result
 
+from sec_af.agents._utils import extract_harness_result
+from sec_af.context import recon_context_for_crypto
 from sec_af.schemas.hunt import HuntResult, HuntStrategy
 
 if TYPE_CHECKING:
@@ -26,10 +26,6 @@ def should_run_crypto_hunter(recon: ReconResult) -> bool:
     return bool(recon.security_context.crypto_usage)
 
 
-def _crypto_usage_context_block(recon: ReconResult) -> str:
-    return json.dumps([usage.model_dump() for usage in recon.security_context.crypto_usage], indent=2)
-
-
 async def run_crypto_hunter(
     app: HarnessCapable,
     repo_path: str,
@@ -41,11 +37,13 @@ async def run_crypto_hunter(
 
     prompt_template = PROMPT_PATH.read_text(encoding="utf-8")
     prompt = (
-        prompt_template.replace("{{CRYPTO_USAGE_JSON}}", _crypto_usage_context_block(recon))
+        prompt_template.replace("{{RECON_CONTEXT}}", recon_context_for_crypto(recon))
         + "\n\nCONTEXT:\n"
         + f"- Repository path: {repo_path}\n"
         + "- Hunt strategy: crypto\n"
-        + f"- Early stop rule: if you inspect {max_files_without_signal} files without credible crypto misuse, stop and return empty findings.\n"
+        + "- Early stop rule: if you inspect "
+        + f"{max_files_without_signal} files without credible crypto misuse, "
+        + "stop and return empty findings.\n"
         + "- Focus CWEs: CWE-326, CWE-327, CWE-328, CWE-330, CWE-916\n"
         + "- Take multiple turns to explore relevant files before finalizing findings.\n"
         + "- Write final JSON only when analysis is complete."
