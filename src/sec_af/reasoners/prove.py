@@ -10,6 +10,7 @@ from sec_af.agents.prove.tracer import run_tracer as _run_tracer
 from sec_af.agents.prove.verifier import run_verifier as _run_verifier
 from sec_af.agents.prove.verdict import run_verdict_agent as _run_verdict_agent
 from sec_af.schemas.hunt import Confidence, FindingType, RawFinding, Severity
+from sec_af.scoring import apply_cwe_severity_floor
 from sec_af.schemas.prove import (
     DataFlowTrace,
     ExploitHypothesis,
@@ -42,7 +43,7 @@ def _coerce_verifier_finding(finding: dict[str, Any]) -> RawFinding:
             end_line=view.end_line,
             function_name=view.function_name,
             code_snippet=view.code_snippet,
-            estimated_severity=Severity.MEDIUM,
+            estimated_severity=apply_cwe_severity_floor(view.cwe_id, Severity.MEDIUM),
             confidence=Confidence.MEDIUM,
             fingerprint=view.id,
         )

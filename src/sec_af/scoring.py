@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from sec_af.schemas.hunt import Severity
 from sec_af.schemas.prove import EvidenceLevel, VerifiedFinding
 
 SEVERITY_WEIGHTS: dict[str, float] = {
@@ -26,6 +27,62 @@ REACHABILITY_MULTIPLIERS: dict[str, float] = {
     "requires_admin": 0.3,
 }
 
+# CWE families with minimum severity floors.
+# LLMs often underestimate severity for well-known vulnerability classes.
+# This ensures critical CWEs are never reported below a sane minimum.
+_SEVERITY_ORDER: dict[str, int] = {
+    "critical": 4,
+    "high": 3,
+    "medium": 2,
+    "low": 1,
+    "info": 0,
+}
+
+CWE_SEVERITY_FLOOR: dict[str, str] = {
+    # Remote Code Execution / Command Injection — always critical
+    "CWE-78": "critical",
+    "CWE-77": "critical",
+    "CWE-94": "critical",
+    "CWE-95": "critical",
+    "CWE-96": "critical",
+    # SQL Injection — always critical
+    "CWE-89": "critical",
+    # Deserialization — always critical
+    "CWE-502": "critical",
+    # SSRF — at least high
+    "CWE-918": "high",
+    # Authentication Bypass — at least high
+    "CWE-287": "high",
+    "CWE-290": "high",
+    "CWE-306": "high",
+    # Hardcoded Credentials — at least high
+    "CWE-798": "high",
+    # Path Traversal — at least high
+    "CWE-22": "high",
+    # XXE — at least high
+    "CWE-611": "high",
+    # XSS — at least medium (already is, but explicit)
+    "CWE-79": "medium",
+    # Broken Access Control — at least high
+    "CWE-840": "high",
+    "CWE-862": "high",
+    "CWE-863": "high",
+}
+
+
+def apply_cwe_severity_floor(cwe_id: str, current_severity: Severity) -> Severity:
+    """Upgrade severity if the CWE has a known minimum floor.
+
+    LLMs consistently underrate severity for injection and RCE classes.
+    This provides a hard floor so CWE-78 can never be reported as "medium".
+    """
+    floor_label = CWE_SEVERITY_FLOOR.get(cwe_id)
+    if floor_label is None:
+        return current_severity
+    if _SEVERITY_ORDER.get(floor_label, 0) > _SEVERITY_ORDER.get(current_severity.value, 0):
+        return Severity(floor_label)
+    return current_severity
+
 
 def _reachability_multiplier(finding: VerifiedFinding) -> float:
     normalized_tags = {tag.lower() for tag in finding.tags}
@@ -37,6 +94,12 @@ def _reachability_multiplier(finding: VerifiedFinding) -> float:
     ):
         if key in normalized_tags:
             return REACHABILITY_MULTIPLIERS[key]
+    # Default: assume externally reachable when tags are empty (no reachability
+    # data available).  The previous default of "requires_auth" (0.5) severely
+    # penalised every finding when reachability assessment is not wired into the
+    # DAG path — causing critical CWEs to score 2.5/10.
+    if not normalized_tags:
+        return REACHABILITY_MULTIPLIERS["externally_reachable"]
     return REACHABILITY_MULTIPLIERS["requires_auth"]
 
 

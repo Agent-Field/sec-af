@@ -27,7 +27,7 @@ from .schemas.input import AuditInput  # noqa: TC001
 from .schemas.output import AttackChain, AuditProgress, SecurityAuditResult
 from .schemas.prove import EvidenceLevel, Location, Verdict, VerifiedFinding
 from .schemas.recon import DataFlowMap, ReconResult, SecurityContext
-from .scoring import compute_exploitability_score
+from .scoring import apply_cwe_severity_floor, compute_exploitability_score
 
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
 
@@ -380,6 +380,7 @@ class AuditOrchestrator:
             ]
 
         for finding in verified:
+            finding.severity = apply_cwe_severity_floor(finding.cwe_id, finding.severity)
             finding.exploitability_score = compute_exploitability_score(finding)
             finding.sarif_security_severity = finding.exploitability_score
             finding.compliance = await get_compliance_mappings_hybrid(

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Protocol
 from sec_af.compliance.mapping import get_compliance_mappings
 from sec_af.config import DepthProfile
 from sec_af.schemas.hunt import Confidence, HuntResult, RawFinding, Severity
-from sec_af.scoring import compute_exploitability_score
+from sec_af.scoring import apply_cwe_severity_floor, compute_exploitability_score
 
 from .chain_builder import run_chain_builder
 from .verifier import fallback as verifier_fallback
@@ -63,6 +63,7 @@ def _priority_sort(findings: list[RawFinding]) -> list[RawFinding]:
 
 
 def _apply_metadata(finding: VerifiedFinding) -> VerifiedFinding:
+    finding.severity = apply_cwe_severity_floor(finding.cwe_id, finding.severity)
     finding.compliance = get_compliance_mappings(finding.cwe_id)
     finding.exploitability_score = compute_exploitability_score(finding)
     finding.sarif_security_severity = finding.exploitability_score
