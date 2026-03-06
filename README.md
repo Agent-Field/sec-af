@@ -109,36 +109,7 @@ SEC-AF is built on the [Composite Intelligence](https://github.com/Agent-Field/a
 
 ### Architecture: Reasoner Call Graph (DAG)
 
-Every phase is a `@reasoner` that calls sub-reasoners through the AgentField control plane. This creates a visible, traceable DAG:
-
-```
-audit (root reasoner)
-├── recon_phase
-│   ├── run_architecture_mapper      ─┐
-│   ├── run_dependency_auditor       ─┤ parallel (asyncio.gather)
-│   ├── run_config_scanner           ─┘
-│   ├── run_data_flow_mapper         ─┐ parallel (standard/thorough only)
-│   └── run_security_context_profiler─┘
-├── hunt_phase
-│   ├── run_injection_hunter         ─┐
-│   ├── run_dos_hunter               │
-│   ├── run_ssrf_hunter              │
-│   ├── run_auth_hunter              │
-│   ├── run_data_exposure_hunter     ─┤ parallel (semaphore=4)
-│   ├── run_xss_hunter               │ with incremental dedup
-│   ├── run_config_secrets_hunter    │
-│   ├── run_crypto_hunter            │
-│   ├── run_supply_chain_hunter      │
-│   ├── run_business_logic_hunter    │
-│   └── run_api_security_hunter      ─┘
-│   └── run_deduplicator             ← semantic dedup after all hunters
-├── prove_phase
-│   └── run_verifier × N             ← parallel (semaphore=3), adversarial
-└── remediation_phase
-    └── run_remediation × M          ← parallel (semaphore=3)
-```
-
-Each arrow is a `_runtime_router.call()` or `app.call()` that routes through the control plane, forming a real execution graph with full observability.
+Every phase is a `@reasoner` that calls sub-reasoners through the AgentField control plane totaling around ~200-300 agents working synchronously for a given query:
 
 <p align="center">
   <img src="assets/architecture.png" alt="SEC-AF Signal Cascade Pipeline — RECON → HUNT → DEDUP → PROVE → OUTPUT" width="100%" />
