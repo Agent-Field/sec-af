@@ -142,7 +142,7 @@ The 9 missed scenarios are primarily **GraphQL protocol-level attacks**: batch q
 
 ## How It Works
 
-SEC-AF is built on the [Composite Intelligence](https://github.com/Agent-Field/agentfield) philosophy: instead of relying on a single monolithic LLM call, it composes many focused, guided LLM calls into a **reasoner DAG** where the architecture itself encodes intelligence. Each LLM call handles a small, well-defined task with a flat Pydantic schema (2-4 attributes). The orchestrator manages context flow, parallelism, and dynamic routing.
+SEC-AF is built on the [Composite Intelligence](https://github.com/Agent-Field/agentfield) philosophy: instead of relying on a single monolithic LLM call, it composes many focused, guided LLM calls into a **reasoner DAG** where the architecture itself encodes intelligence (for a deeper dive on this pattern, see [The Atomic Unit of Intelligence](https://www.santoshkumarradha.com/writing/atomic-unit-of-intelligence)). Each LLM call handles a small, well-defined task with a flat Pydantic schema (2-4 attributes). The orchestrator manages context flow, parallelism, and dynamic routing.
 
 ### Architecture: Reasoner Call Graph (DAG)
 
@@ -165,7 +165,7 @@ Each phase narrows the signal. Raw findings are filtered through progressively s
 
 ### Why Multi-Reasoner Architecture
 
-Most AI security tools run one big prompt and hope the LLM gets it right. SEC-AF decomposes the problem into ~258 focused agent calls, each with a flat schema (2-4 fields) and a narrow task. The architecture encodes the reasoning strategy, not the prompt.
+Most AI security tools run one big prompt and hope the LLM gets it right. SEC-AF decomposes the problem into ~258 focused agent calls, each with a flat schema (2-4 fields) and a narrow task. The architecture encodes the reasoning strategy, not the prompt (see [The Atomic Unit of Intelligence](https://www.santoshkumarradha.com/writing/atomic-unit-of-intelligence) for why this matters).
 
 - **Many focused agents > one powerful agent.** A single LLM call can't simultaneously map architecture, trace data flows, hunt for injection, verify exploitability, and suggest fixes. SEC-AF gives each of those to a separate reasoner that does one thing well. The orchestrator handles composition, parallelism, and context routing.
 - **Adversarial verification, not confirmation bias.** The PROVE phase runs 4 sub-agents per finding with opposing goals: the tracer reconstructs the data flow, the sanitization analyzer looks for blocks, the exploit hypothesizer constructs an attack, and the verdict agent weighs all the evidence. This tension between agents produces higher confidence than asking a single model "is this exploitable?"
