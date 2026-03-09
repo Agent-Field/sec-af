@@ -7,6 +7,7 @@
 [![Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-16a34a?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![Built with AgentField](https://img.shields.io/badge/Built%20with-AgentField-0A66C2?style=for-the-badge)](https://github.com/Agent-Field/agentfield)
+[![More from Agent-Field](https://img.shields.io/badge/More_from-Agent--Field-111827?style=for-the-badge&logo=github)](https://github.com/Agent-Field)
 
 <p>
   <a href="#what-you-get-back">Output</a> •
@@ -197,6 +198,8 @@ Most AI security tools run one big prompt and hope the LLM gets it right. SEC-AF
 
 **Where others are stronger**: Semgrep and CodeQL have years of battle-tested rule coverage across 35+ languages. Snyk has deep IDE/SCA integration. Nullify adds runtime cloud context and auto-remediation campaigns. SEC-AF is newer and currently strongest on AI-driven code-level analysis.
 
+> **Same architecture, different domain:** [Contract-AF](https://github.com/Agent-Field/contract-af) applies adversarial HUNT→PROVE to legal contracts — agents spawn agents to find clause interactions solo LLMs miss.
+
 ### Why Multi-Agent Architecture Matters
 
 Traditional security scanners are monolithic: one engine, one pass, one set of rules. SEC-AF's multi-reasoner architecture provides structural advantages:
@@ -379,9 +382,19 @@ ruff check src tests
 
 ---
 
+### Also built on AgentField
+
+> **[SWE-AF](https://github.com/Agent-Field/af-swe-claude)** — Autonomous engineering team. One API call ships planned, coded, tested, reviewed code. Scored 95/100.
+>
+> **[Contract-AF](https://github.com/Agent-Field/contract-af)** — Legal contract risk analyzer. Agents spawn agents at runtime. Adversarial review catches what solo LLMs miss.
+
+[All repos →](https://github.com/Agent-Field)
+
+---
+
 <div align="center">
 
-SEC-AF is built on [AgentField](https://github.com/Agent-Field/agentfield), open infrastructure for production-grade autonomous agents.
+SEC-AF is built on [AgentField](https://github.com/Agent-Field/agentfield), open infrastructure for production-grade autonomous agents. [See what else we're building →](https://github.com/Agent-Field)
 
 **[Apache-2.0](LICENSE)**
 
