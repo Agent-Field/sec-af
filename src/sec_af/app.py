@@ -36,8 +36,8 @@ app = Agent(
     node_id=NODE_ID,
     version="0.1.0",
     description="AI-Native Security Analysis and Red-Teaming Agent",
-    agentfield_server=os.getenv("AGENTFIELD_SERVER", "http://localhost:8080"),
-    callback_url=os.getenv("AGENT_CALLBACK_URL", "http://127.0.0.1:8003"),
+    agentfield_server=os.getenv("AGENTFIELD_URL", os.getenv("AGENTFIELD_SERVER", "http://localhost:8080")),
+    callback_url=os.getenv("AGENT_CALLBACK_URL", "http://127.0.0.1:8080"),
     api_key=os.getenv("AGENTFIELD_API_KEY"),
     harness_config=HarnessConfig(
         provider=_ai_config.provider,
@@ -238,7 +238,7 @@ app.include_router(reasoner_router)
 
 def main() -> None:
     """Entry point for the SEC-AF agent."""
-    app.run(port=8003, host="0.0.0.0")
+    app.run(port=int(os.getenv("PORT", "8080")), host="0.0.0.0")
 
 
 if __name__ == "__main__":
