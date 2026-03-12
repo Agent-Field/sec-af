@@ -26,6 +26,14 @@ Other tools flag patterns. SEC-AF **proves exploitability**: every finding ships
   <img src="assets/hero-b-swarm.png" alt="SEC-AF — AI-native security auditor" width="100%" />
 </p>
 
+## One-Call DX
+
+```bash
+curl -X POST http://localhost:8080/api/v1/execute/async/sec-af.audit \
+  -H "Content-Type: application/json" \
+  -d '{"input": {"repo_url": "https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application"}}'
+```
+
 ## What You Get Back
 
 This is a real finding from SEC-AF auditing [DVGA](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) (a deliberately vulnerable GraphQL app):
