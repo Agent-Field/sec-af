@@ -7,6 +7,7 @@
 [![Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-16a34a?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![Built with AgentField](https://img.shields.io/badge/Built%20with-AgentField-0A66C2?style=for-the-badge)](https://github.com/Agent-Field/agentfield)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/sec-af)
 [![More from Agent-Field](https://img.shields.io/badge/More_from-Agent--Field-111827?style=for-the-badge&logo=github)](https://github.com/Agent-Field)
 
 <p>
@@ -219,6 +220,14 @@ Traditional security scanners are monolithic: one engine, one pass, one set of r
 - **Cost efficiency**: Context pruning and schema views mean each LLM call receives only the context it needs. A full standard-depth audit with 30 verified findings costs an estimated ~$0.18–$0.90 in LLM calls (Kimi K2.5 via OpenRouter).
 
 ## Quick Start
+
+### One-Click Deploy (Railway)
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/sec-af)
+
+Deploys the AgentField control plane + SEC-AF agent. You'll need an `OPENROUTER_API_KEY`.
+
+### Local (Docker Compose)
 
 ```bash
 git clone https://github.com/Agent-Field/sec-af.git && cd sec-af
