@@ -221,10 +221,12 @@ Traditional security scanners are monolithic: one engine, one pass, one set of r
 ## Quick Start
 
 ```bash
+git clone https://github.com/Agent-Field/sec-af.git && cd sec-af
+cp .env.example .env          # Add OPENROUTER_API_KEY
 docker compose up --build
 ```
 
-Starts AgentField control plane (`http://localhost:8080`) + SEC-AF agent (`http://localhost:8003`).
+Starts AgentField control plane (`http://localhost:8080`) + SEC-AF agent.
 
 Trigger an audit:
 
