@@ -9,12 +9,10 @@ services:
       - AGENTFIELD_STORAGE_MODE=local
     volumes:
       - agentfield-data:/data
+      - workspaces:/workspaces
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
+      test: ["NONE"]
+      disable: true
     restart: unless-stopped
 
   sec-af:
@@ -26,16 +24,17 @@ services:
     environment:
       - AGENTFIELD_SERVER=http://agentfield:8080
       - AGENTFIELD_API_KEY=${AGENTFIELD_API_KEY:-}
+      - PORT=8003
       - AGENT_CALLBACK_URL=http://sec-af:8003
       - HARNESS_PROVIDER=opencode
       - HARNESS_MODEL=${HARNESS_MODEL:-openrouter/moonshotai/kimi-k2.5}
       - AI_MODEL=${AI_MODEL:-openrouter/moonshotai/kimi-k2.5}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
     volumes:
-      - ${SCAN_REPOS_PATH:-./workspaces}:/workspaces
+      - workspaces:/workspaces
     depends_on:
       agentfield:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
       interval: 30s
@@ -46,3 +45,4 @@ services:
 
 volumes:
   agentfield-data:
+  workspaces:
