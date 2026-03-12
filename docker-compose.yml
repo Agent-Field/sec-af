@@ -1,6 +1,6 @@
 services:
   agentfield:
-    image: ghcr.io/agent-field/agentfield:latest
+    image: agentfield/control-plane:latest
     ports:
       - "8080:8080"
     environment:
