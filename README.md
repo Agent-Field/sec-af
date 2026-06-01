@@ -29,6 +29,14 @@ Other tools flag patterns. SEC-AF **proves exploitability**: every finding ships
 
 ## One-Call DX
 
+Trigger it with the `af` CLI (requires af ≥ 0.1.86) — it streams live progress and prints the result:
+
+```bash
+af call sec-af.audit --in '{"repo_url": "https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application"}'
+```
+
+Prefer raw HTTP? Hit the API directly with curl:
+
 ```bash
 curl -X POST http://localhost:8080/api/v1/execute/async/sec-af.audit \
   -H "Content-Type: application/json" \
