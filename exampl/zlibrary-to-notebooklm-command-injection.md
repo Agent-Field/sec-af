@@ -5,9 +5,10 @@
 | | |
 |---|---|
 | **Title** | OS Command Injection via attacker-controlled book filename in `scripts/upload.py` |
-| **Severity** | High |
+| **Severity** | Critical (SEC-AF CWE-78 RCE floor) |
 | **Verdict** | `confirmed` — full source → sink data flow, no sanitisation |
 | **Evidence level** | 5 / 6 |
+| **Exploitability** | 9.0 / 10 (critical × evidence-5 × externally-reachable) |
 | **CWE** | [CWE-78](https://cwe.mitre.org/data/definitions/78.html) (OS Command Injection) |
 | **OWASP** | A03:2021 — Injection |
 | **Sinks** | 7 × `subprocess.run(..., shell=True)` (1 in `convert_to_txt`, 6 in `upload_to_notebooklm`) |
