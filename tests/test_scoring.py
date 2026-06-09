@@ -92,7 +92,11 @@ def test_compute_exploitability_score_defaults_reachability_when_missing() -> No
         severity=Severity.LOW,
         evidence_level=EvidenceLevel.SANITIZATION_BYPASSABLE,
     )
-    assert compute_exploitability_score(finding) == 1.05
+    # With no reachability tags, scoring.py deliberately assumes the worst case
+    # (externally_reachable, x1.0) instead of under-scoring with requires_auth
+    # (x0.5) - see the comment in scoring._reachability_multiplier.
+    # LOW (3.0) x SANITIZATION_BYPASSABLE (0.7) x externally_reachable (1.0) = 2.1
+    assert compute_exploitability_score(finding) == 2.1
 
 
 def test_compute_exploitability_score_is_deterministic() -> None:
@@ -111,8 +115,8 @@ def test_compute_exploitability_score_is_deterministic() -> None:
         ({"internally_reachable"}, 3.5),
         ({"requires_auth"}, 2.5),
         ({"requires_admin"}, 1.5),
-        ({"custom_tag"}, 2.5),
-        (set(), 2.5),
+        ({"custom_tag"}, 2.5),  # non-reachability tag -> requires_auth fallback (x0.5)
+        (set(), 5.0),  # empty tag set -> externally_reachable default (x1.0)
     ],
 )
 def test_reachability_multipliers_and_default_behavior(tags: set[str], expected: float) -> None:
