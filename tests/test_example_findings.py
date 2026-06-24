@@ -14,8 +14,8 @@ import pathlib
 
 import pytest
 
-from sec_af.scoring import apply_cwe_severity_floor, compute_exploitability_score
 from sec_af.schemas.prove import EvidenceLevel, Verdict, VerifiedFinding
+from sec_af.scoring import apply_cwe_severity_floor, compute_exploitability_score
 
 _EXAMPLE_DIR = pathlib.Path(__file__).resolve().parents[1] / "exampl"
 _FINDING_FIXTURES = sorted(_EXAMPLE_DIR.glob("*.finding.json"))
