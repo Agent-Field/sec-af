@@ -1,0 +1,39 @@
+name: sec-af
+version: 0.1.0
+description: Security review agent node (scans repositories for vulnerabilities)
+author: Agent-Field
+
+entrypoint:
+  start: python -m sec_af.app
+  healthcheck: /health
+
+agent_node:
+  node_id: sec-af
+  default_port: 8080
+
+user_environment:
+  required:
+    - name: OPENROUTER_API_KEY
+      description: LLM provider key (OpenRouter)
+      type: secret
+      scope: global
+  optional:
+    - name: AGENTFIELD_SERVER
+      description: Control-plane URL
+      default: http://localhost:8080
+    - name: AGENTFIELD_API_KEY
+      description: Control-plane API key (if auth is enabled)
+      type: secret
+      scope: global
+    - name: HARNESS_PROVIDER
+      description: Coding-agent harness provider
+      default: opencode
+    - name: HARNESS_MODEL
+      description: Model the harness uses
+      default: openrouter/moonshotai/kimi-k2.5
+    - name: AI_MODEL
+      description: Model for direct AI calls
+      default: openrouter/moonshotai/kimi-k2.5
+    - name: SCAN_REPOS_PATH
+      description: Local path where repos to scan are mounted
+      default: ./workspaces
