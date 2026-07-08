@@ -30,7 +30,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPTS_DIR = Path(__file__).resolve().parents[4] / "prompts" / "hunt"
+PROMPTS_DIR = Path(__file__).resolve().parents[2] / "prompts" / "hunt"
 SCAN_PROMPT_PATH = PROMPTS_DIR / "scan_locations.txt"
 ENRICH_PROMPT_PATH = PROMPTS_DIR / "enrich_finding.txt"
 

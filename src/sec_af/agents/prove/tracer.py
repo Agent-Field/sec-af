@@ -24,7 +24,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "prove" / "tracer.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "prove" / "tracer.txt"
 
 
 def _finding_data_flow(finding: RawFinding) -> str:

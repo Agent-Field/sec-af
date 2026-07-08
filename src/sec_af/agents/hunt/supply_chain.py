@@ -18,7 +18,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "supply_chain.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "hunt" / "supply_chain.txt"
 
 
 def should_run_supply_chain_hunter(recon: ReconResult) -> bool:

@@ -17,7 +17,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "recon" / "architecture.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "recon" / "architecture.txt"
 
 
 async def run_architecture_mapper(app: HarnessCapable, repo_path: str) -> ArchitectureMap:

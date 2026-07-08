@@ -21,7 +21,7 @@ class AICapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "prove" / "verdict.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "prove" / "verdict.txt"
 
 
 def _build_context(data_flow: DataFlowTrace, sanitization: SanitizationResult, exploit: ExploitHypothesis) -> str:

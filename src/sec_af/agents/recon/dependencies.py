@@ -16,7 +16,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "recon" / "dependencies.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "recon" / "dependencies.txt"
 
 
 async def run_dependency_auditor(app: HarnessCapable, repo_path: str) -> DependencyReport:

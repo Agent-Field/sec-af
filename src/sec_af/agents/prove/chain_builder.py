@@ -39,7 +39,7 @@ class ChainAnalysisPayload(TypedDict):
     chains: list[VerifiedChainPayload]
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "prove" / "chain_builder.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "prove" / "chain_builder.txt"
 
 
 def _build_prompt(

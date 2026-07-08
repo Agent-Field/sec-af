@@ -19,7 +19,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "ssrf.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "hunt" / "ssrf.txt"
 
 
 def _recon_context_block(recon_result: ReconResult) -> str:

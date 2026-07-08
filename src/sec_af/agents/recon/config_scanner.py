@@ -16,7 +16,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "recon" / "config_scanner.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "recon" / "config_scanner.txt"
 
 
 async def run_config_scanner(app: HarnessCapable, repo_path: str) -> ConfigReport:

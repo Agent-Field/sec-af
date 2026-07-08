@@ -24,7 +24,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "remediation.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "remediation.txt"
 
 
 def _build_prompt(template: str, finding: RawFinding, verdict: str, rationale: str) -> str:
