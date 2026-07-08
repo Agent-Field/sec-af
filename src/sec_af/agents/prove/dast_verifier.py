@@ -23,7 +23,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "prove" / "dast_verifier.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "prove" / "dast_verifier.txt"
 
 
 def _build_prompt(template: str, finding: RawFinding, exploit_payload: str, depth: str) -> str:

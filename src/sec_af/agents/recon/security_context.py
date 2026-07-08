@@ -18,7 +18,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "recon" / "security_context.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "recon" / "security_context.txt"
 
 
 async def run_security_context_profiler(

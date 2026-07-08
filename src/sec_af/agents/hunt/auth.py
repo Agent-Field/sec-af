@@ -11,7 +11,7 @@ from ._scan_enrich import assemble_finding, enrich_locations_parallel, scan_loca
 if TYPE_CHECKING:
     from sec_af.schemas.recon import ReconResult
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "auth.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "hunt" / "auth.txt"
 _TARGET_CWES = ["CWE-287", "CWE-306", "CWE-862", "CWE-863", "CWE-352"]
 
 

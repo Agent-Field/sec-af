@@ -14,7 +14,7 @@ from typing import Protocol
 from pydantic import BaseModel, Field
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "policy_eval.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[0] / "prompts" / "policy_eval.txt"
 
 
 class PolicyEvalResult(BaseModel):

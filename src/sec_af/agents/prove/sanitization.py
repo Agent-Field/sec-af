@@ -24,7 +24,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "prove" / "sanitization.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "prove" / "sanitization.txt"
 
 
 def _trace_context(trace: DataFlowTrace) -> str:

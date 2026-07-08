@@ -18,7 +18,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "crypto.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "hunt" / "crypto.txt"
 
 _SECURITY_CRITICAL_TERMS = (
     "password",

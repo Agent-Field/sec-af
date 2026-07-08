@@ -21,7 +21,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "prove" / "cross_service.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "prove" / "cross_service.txt"
 
 
 def _build_prompt(template: str, services: list[str], findings_summary: str, depth: str) -> str:

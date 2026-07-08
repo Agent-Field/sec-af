@@ -18,7 +18,7 @@ class HarnessCapable(Protocol):
     ) -> object: ...
 
 
-PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "hunt" / "config_secrets.txt"
+PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "hunt" / "config_secrets.txt"
 
 
 async def run_config_secrets_hunter(
