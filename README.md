@@ -229,6 +229,23 @@ Traditional security scanners are monolithic: one engine, one pass, one set of r
 
 ## Quick Start
 
+### Install into AgentField (`af install`)
+
+Already running an [AgentField](https://github.com/Agent-Field/agentfield) control plane? Install SEC-AF straight from GitHub — no clone, no local setup:
+
+```bash
+af install https://github.com/Agent-Field/sec-af
+af run sec-af
+```
+
+`af install` clones the repo, provisions an isolated Python environment, and registers the `sec-af` node with your control plane. On first `af run` you're prompted for the required `OPENROUTER_API_KEY` — stored encrypted and reused across every node, so you enter it only once. Then run an audit:
+
+```bash
+af call sec-af.audit --in '{"repo_url": "https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application"}'
+```
+
+New to AgentField? Install the control plane first with `curl -fsSL https://agentfield.ai/install.sh | bash`, or use the Docker / Railway options below.
+
 ### One-Click Deploy (Railway)
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/sec-af)
