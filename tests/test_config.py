@@ -62,6 +62,7 @@ def test_ai_integration_config_uses_sec_af_env_precedence(monkeypatch: pytest.Mo
     monkeypatch.setenv("SEC_AF_AI_INITIAL_BACKOFF_SECONDS", "1.5")
     monkeypatch.setenv("SEC_AF_AI_MAX_BACKOFF_SECONDS", "12")
     monkeypatch.setenv("SEC_AF_OPENCODE_BIN", "/usr/local/bin/opencode")
+    monkeypatch.setenv("SEC_AF_AFORGE_BIN", "/usr/local/bin/aforge")
 
     config = AIIntegrationConfig.from_env()
 
@@ -73,6 +74,7 @@ def test_ai_integration_config_uses_sec_af_env_precedence(monkeypatch: pytest.Mo
     assert config.initial_backoff_seconds == 1.5
     assert config.max_backoff_seconds == 12
     assert config.opencode_bin == "/usr/local/bin/opencode"
+    assert config.aforge_bin == "/usr/local/bin/aforge"
 
 
 def test_ai_integration_config_falls_back_to_harness_and_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -88,6 +90,8 @@ def test_ai_integration_config_falls_back_to_harness_and_defaults(monkeypatch: p
         "SEC_AF_AI_INITIAL_BACKOFF_SECONDS",
         "SEC_AF_AI_MAX_BACKOFF_SECONDS",
         "SEC_AF_OPENCODE_BIN",
+        "SEC_AF_AFORGE_BIN",
+        "AFORGE_BIN",
     ):
         monkeypatch.delenv(key, raising=False)
 
@@ -101,6 +105,7 @@ def test_ai_integration_config_falls_back_to_harness_and_defaults(monkeypatch: p
     assert config.initial_backoff_seconds == 2.0
     assert config.max_backoff_seconds == 8.0
     assert config.opencode_bin == "opencode"
+    assert config.aforge_bin == "aforge"
 
 
 def test_provider_env_only_includes_present_keys(monkeypatch: pytest.MonkeyPatch) -> None:

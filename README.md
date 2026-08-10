@@ -143,7 +143,7 @@ The pipeline adapts at runtime based on what it discovers. An AI gate examines r
 
 **6. Guided autonomy for coding agents**
 
-SEC-AF runs on top of coding agents (Claude Code, OpenCode, Codex) via the AgentField harness. Rather than giving the agent a single massive prompt, each reasoner provides phase-aware guided autonomy: the agent receives a narrow task definition, a flat output schema (2-4 fields), and strategy-specific context. The agent has full autonomy within these boundaries — it can read files, trace code, and reason freely — but the harness constrains the _shape_ of its output. This prevents the common failure mode where autonomous agents go off-task or produce unstructured results.
+SEC-AF runs on top of coding agents (Aforge, Claude Code, OpenCode, Codex) via the AgentField harness. Rather than giving the agent a single massive prompt, each reasoner provides phase-aware guided autonomy: the agent receives a narrow task definition, a flat output schema (2-4 fields), and strategy-specific context. The agent has full autonomy within these boundaries — it can read files, trace code, and reason freely — but the harness constrains the _shape_ of its output. This prevents the common failure mode where autonomous agents go off-task or produce unstructured results.
 
 **7. Composable reasoner DAG with full observability**
 
@@ -477,12 +477,30 @@ jobs:
 | `SEC_AF_MAX_TURNS` | No | `50` | Max harness turns per call |
 | `AGENTFIELD_API_KEY` | No | unset | API key for secured environments |
 | `SEC_AF_WORKSPACES_DIR` | No | `/workspaces` | Directory for cloned repos (falls back to `~/.sec-af/workspaces` if not writable) |
-| `HARNESS_PROVIDER` | No | `opencode` | Harness backend provider |
+| `HARNESS_PROVIDER` | No | `opencode` | Harness backend provider (`aforge`, `claude-code`, `codex`, `gemini`, or `opencode`) |
+| `SEC_AF_AFORGE_BIN` | No | `aforge` | Path to an aforge-v2 binary for the `aforge` provider |
 | `SEC_AF_AI_MAX_RETRIES` | No | `3` | Retry count for model calls |
 
 </details>
 
 ## Development Setup
+
+### Benchmark with unreleased aforge-v2
+
+```bash
+cd /path/to/aforge-v2
+go build -o /absolute/path/to/bin/aforge ./cmd/aforge
+
+export OPENROUTER_API_KEY=sk-or-v1-...
+export HARNESS_PROVIDER=aforge
+export SEC_AF_AFORGE_BIN=/absolute/path/to/bin/aforge
+python -m sec_af.app
+```
+
+This uses the same SEC-AF prompts and schemas as OpenCode; only the AgentField
+harness provider changes. The draft pins the exact AgentField harness commit
+used for benchmarking; replace that pin with the released SDK before merging.
+The current Docker image does not bundle the unreleased Aforge binary.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
