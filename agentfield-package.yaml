@@ -27,8 +27,10 @@ user_environment:
       type: secret
       scope: global
     - name: HARNESS_PROVIDER
-      description: Coding-agent harness provider
+      description: Coding-agent harness provider (aforge | claude-code | codex | gemini | opencode)
       default: opencode
+    - name: SEC_AF_AFORGE_BIN
+      description: Optional path to the aforge-v2 binary (defaults to aforge on PATH)
     - name: HARNESS_MODEL
       description: Model the harness uses
       default: openrouter/moonshotai/kimi-k2.5
