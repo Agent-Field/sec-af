@@ -97,7 +97,7 @@ def test_ai_integration_config_falls_back_to_harness_and_defaults(monkeypatch: p
 
     config = AIIntegrationConfig.from_env()
 
-    assert config.provider == "opencode"
+    assert config.provider == "aforge"
     assert config.harness_model == "minimax/minimax-m2.5"
     assert config.ai_model == "minimax/minimax-m2.5"
     assert config.max_turns == 50
@@ -106,6 +106,7 @@ def test_ai_integration_config_falls_back_to_harness_and_defaults(monkeypatch: p
     assert config.max_backoff_seconds == 8.0
     assert config.opencode_bin == "opencode"
     assert config.aforge_bin == "aforge"
+    assert config.provider_env()["AGENTFIELD_AFORGE_COMMAND"] == "exec"
 
 
 def test_provider_env_only_includes_present_keys(monkeypatch: pytest.MonkeyPatch) -> None:

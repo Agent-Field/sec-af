@@ -1,3 +1,7 @@
+ARG AFORGE_IMAGE=ghcr.io/agent-field/aforge-v2:chat-v2-exec
+FROM ${AFORGE_IMAGE} AS aforge
+
+
 FROM python:3.11-slim AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -14,7 +18,7 @@ COPY pyproject.toml README.md ./
 COPY src/ src/
 
 RUN pip install --no-cache-dir --prefix=/install \
-    "agentfield @ git+https://github.com/Agent-Field/agentfield.git@72f3d00baf58efc4fec3f7ee16e69c7cb8f99ff9#subdirectory=sdk/python" \
+    "agentfield @ git+https://github.com/Agent-Field/agentfield.git@bfd34426d1bdec3cbbfa946682a22ef0a1b91503#subdirectory=sdk/python" \
     "pydantic>=2.0" \
     "httpx>=0.27" \
     "python-dotenv>=1.0" && \
@@ -25,7 +29,8 @@ FROM python:3.11-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    HARNESS_PROVIDER=opencode \
+    HARNESS_PROVIDER=aforge \
+    AGENTFIELD_AFORGE_COMMAND=exec \
     HARNESS_MODEL=openrouter/minimax/minimax-m2.5 \
     AI_MODEL=openrouter/minimax/minimax-m2.5 \
     PORT=8080 \
@@ -53,6 +58,7 @@ RUN mkdir -p /home/secaf/.config/opencode && \
     chown -R secaf:secaf /home/secaf/.config
 
 COPY --from=builder /install /usr/local
+COPY --from=aforge /aforge /usr/local/bin/aforge
 COPY src/ /app/src/
 
 USER secaf
