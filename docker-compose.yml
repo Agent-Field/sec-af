@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
       args:
         AFORGE_BASE_URL: ${AFORGE_BASE_URL:-https://agentfield.ai/downloads/aforge}
-        AFORGE_VERSION: ${AFORGE_VERSION:-build-9b3ff482de3f}
+        AFORGE_VERSION: ${AFORGE_VERSION:-v0.1.0}
     ports:
       - "8003:8003"
     environment:

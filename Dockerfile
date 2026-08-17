@@ -2,7 +2,7 @@
 # copied out of a container image, so the build depends only on the public
 # download host. Both ARGs are overridable (e.g. to point at a staging mirror).
 ARG AFORGE_BASE_URL=https://agentfield.ai/downloads/aforge
-ARG AFORGE_VERSION=build-9b3ff482de3f
+ARG AFORGE_VERSION=v0.1.0
 
 FROM debian:bookworm-slim AS aforge
 

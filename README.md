@@ -493,11 +493,11 @@ SHA-256 against the release `checksums.txt` before installing it.
 | Build arg | Default | Description |
 |---|---|---|
 | `AFORGE_BASE_URL` | `https://agentfield.ai/downloads/aforge` | Root of the AForge download host |
-| `AFORGE_VERSION` | `build-9b3ff482de3f` | Released AForge build to install |
+| `AFORGE_VERSION` | `v0.1.0` | Released AForge version to install |
 
 ```bash
 docker build -t sec-af .
-docker build --build-arg AFORGE_VERSION=build-xxxxxxxxxxxx -t sec-af .
+docker build --build-arg AFORGE_VERSION=vX.Y.Z -t sec-af .
 ```
 
 </details>
