@@ -1,5 +1,38 @@
-ARG AFORGE_IMAGE=ghcr.io/agent-field/aforge-v2:chat-v2-exec
-FROM ${AFORGE_IMAGE} AS aforge
+# AForge CLI is fetched as a released, checksum-verified binary rather than
+# copied out of a container image, so the build depends only on the public
+# download host. Both ARGs are overridable (e.g. to point at a staging mirror).
+ARG AFORGE_BASE_URL=https://agentfield.ai/downloads/aforge
+ARG AFORGE_VERSION=build-9b3ff482de3f
+
+FROM debian:bookworm-slim AS aforge
+
+ARG AFORGE_BASE_URL
+ARG AFORGE_VERSION
+# Provided automatically by BuildKit; defaults to amd64 for legacy builders.
+ARG TARGETARCH
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /out
+
+# Download the gzipped release binary, decompress it, and verify the
+# *decompressed* SHA-256 against the release checksums.txt before use.
+RUN set -eux; \
+    arch="${TARGETARCH:-amd64}"; \
+    curl -fsSL "${AFORGE_BASE_URL}/${AFORGE_VERSION}/aforge-linux-${arch}.gz" -o aforge.gz; \
+    gunzip -c aforge.gz > aforge; \
+    rm aforge.gz; \
+    curl -fsSL "${AFORGE_BASE_URL}/${AFORGE_VERSION}/checksums.txt" -o checksums.txt; \
+    tr -d '\r' < checksums.txt \
+        | grep " aforge-linux-${arch}$" \
+        | sed 's/  aforge-linux-.*/  aforge/' > aforge.sha256; \
+    test -s aforge.sha256; \
+    sha256sum -c aforge.sha256; \
+    rm checksums.txt aforge.sha256; \
+    chmod +x aforge
 
 
 FROM python:3.11-slim AS builder
@@ -58,7 +91,7 @@ RUN mkdir -p /home/secaf/.config/opencode && \
     chown -R secaf:secaf /home/secaf/.config
 
 COPY --from=builder /install /usr/local
-COPY --from=aforge /aforge /usr/local/bin/aforge
+COPY --from=aforge /out/aforge /usr/local/bin/aforge
 COPY src/ /app/src/
 
 USER secaf
