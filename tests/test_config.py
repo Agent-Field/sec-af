@@ -4,6 +4,7 @@ import os
 from typing import Any, cast
 
 import pytest
+from agentfield import HarnessConfig
 
 from sec_af.config import AIIntegrationConfig, AuditConfig, BudgetConfig, DepthProfile
 from sec_af.schemas.input import AuditInput
@@ -123,3 +124,29 @@ def test_provider_env_only_includes_present_keys(monkeypatch: pytest.MonkeyPatch
     assert env["GITHUB_TOKEN"] == "test-gh"
     assert "OPENROUTER_API_KEY" not in env
     assert "XDG_DATA_HOME" in env
+
+
+def test_audit_config_defaults_to_aforge_provider(sample_audit_input: AuditInput) -> None:
+    config = AuditConfig.from_input(sample_audit_input, repo_path="/tmp/sec-af-repo")
+
+    assert config.provider == "aforge"
+
+
+def test_pinned_agentfield_sdk_exposes_the_aforge_surface(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The pinned AgentField SDK must accept the aforge harness settings app.py sends it."""
+    for key in ("SEC_AF_PROVIDER", "HARNESS_PROVIDER", "SEC_AF_AFORGE_BIN", "AFORGE_BIN"):
+        monkeypatch.delenv(key, raising=False)
+
+    config = AIIntegrationConfig.from_env()
+    harness_config = HarnessConfig(
+        provider=config.provider,
+        model=config.harness_model,
+        max_turns=config.max_turns,
+        env=config.provider_env(),
+        opencode_bin=config.opencode_bin,
+        aforge_bin=config.aforge_bin,
+        permission_mode="auto",
+    )
+
+    assert harness_config.provider == "aforge"
+    assert harness_config.aforge_bin == "aforge"
