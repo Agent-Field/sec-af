@@ -478,9 +478,27 @@ jobs:
 | `AGENTFIELD_API_KEY` | No | unset | API key for secured environments |
 | `SEC_AF_WORKSPACES_DIR` | No | `/workspaces` | Directory for cloned repos (falls back to `~/.sec-af/workspaces` if not writable) |
 | `HARNESS_PROVIDER` | No | `aforge` | Harness backend provider; set `opencode` for rollback |
-| `AGENTFIELD_AFORGE_COMMAND` | No | `exec` | AForge headless command (`do` remains an explicit override) |
-| `SEC_AF_AFORGE_BIN` | No | `aforge` | Path to an aforge-v2 binary for the `aforge` provider |
+| `AGENTFIELD_AFORGE_COMMAND` | No | `exec` | Reserved. Forwarded to the harness environment; the AgentField SDK always runs `aforge exec` today, so this is a no-op until the SDK exposes a command selector |
+| `SEC_AF_AFORGE_BIN` | No | `aforge` | Path to an AForge binary for the `aforge` provider (also honours `AFORGE_BIN`) |
 | `SEC_AF_AI_MAX_RETRIES` | No | `3` | Retry count for model calls |
+
+</details>
+
+<details>
+<summary><strong>Build arguments</strong></summary>
+
+The image downloads the released AForge CLI at build time and verifies its
+SHA-256 against the release `checksums.txt` before installing it.
+
+| Build arg | Default | Description |
+|---|---|---|
+| `AFORGE_BASE_URL` | `https://agentfield.ai/downloads/aforge` | Root of the AForge download host |
+| `AFORGE_VERSION` | `build-9b3ff482de3f` | Released AForge build to install |
+
+```bash
+docker build -t sec-af .
+docker build --build-arg AFORGE_VERSION=build-xxxxxxxxxxxx -t sec-af .
+```
 
 </details>
 
@@ -491,12 +509,13 @@ jobs:
 ```bash
 export OPENROUTER_API_KEY=sk-or-v1-...
 export HARNESS_PROVIDER=aforge
-export AGENTFIELD_AFORGE_COMMAND=exec
 python -m sec_af.app
 ```
 
-The container includes AForge and uses its `exec` interface by default. To
-temporarily roll back without changing code, set `HARNESS_PROVIDER=opencode`.
+The container ships the AForge CLI at `/usr/local/bin/aforge` and drives it
+through `aforge exec` by default. To temporarily roll back without changing
+code, set `HARNESS_PROVIDER=opencode`. Running outside the container requires
+an `aforge` binary on `PATH` (or `SEC_AF_AFORGE_BIN` pointing at one).
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
