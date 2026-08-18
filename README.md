@@ -478,7 +478,7 @@ jobs:
 | `AGENTFIELD_API_KEY` | No | unset | API key for secured environments |
 | `SEC_AF_WORKSPACES_DIR` | No | `/workspaces` | Directory for cloned repos (falls back to `~/.sec-af/workspaces` if not writable) |
 | `HARNESS_PROVIDER` | No | `aforge` | Harness backend provider; set `opencode` for rollback |
-| `AGENTFIELD_AFORGE_COMMAND` | No | `exec` | Reserved. Forwarded to the harness environment; the AgentField SDK always runs `aforge exec` today, so this is a no-op until the SDK exposes a command selector |
+| `AGENTFIELD_AFORGE_COMMAND` | No | `exec` | AForge headless command the SDK runs: `exec` (default) or `do`. Read by agentfield>=0.1.130 |
 | `SEC_AF_AFORGE_BIN` | No | `aforge` | Path to an AForge binary for the `aforge` provider (also honours `AFORGE_BIN`) |
 | `SEC_AF_AI_MAX_RETRIES` | No | `3` | Retry count for model calls |
 

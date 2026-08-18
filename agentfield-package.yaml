@@ -30,7 +30,7 @@ user_environment:
       description: Coding-agent harness provider (aforge | claude-code | codex | gemini | opencode)
       default: aforge
     - name: AGENTFIELD_AFORGE_COMMAND
-      description: Reserved. AForge headless command; the SDK always runs `aforge exec` today, so this is a no-op until it exposes a selector
+      description: AForge headless command the SDK runs (`exec` or `do`); agentfield>=0.1.130 reads it, default `exec`
       default: exec
     - name: SEC_AF_AFORGE_BIN
       description: Optional path to the AForge binary (defaults to aforge on PATH)
