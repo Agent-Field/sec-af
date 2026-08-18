@@ -143,7 +143,7 @@ The pipeline adapts at runtime based on what it discovers. An AI gate examines r
 
 **6. Guided autonomy for coding agents**
 
-SEC-AF runs on top of coding agents (Claude Code, OpenCode, Codex) via the AgentField harness. Rather than giving the agent a single massive prompt, each reasoner provides phase-aware guided autonomy: the agent receives a narrow task definition, a flat output schema (2-4 fields), and strategy-specific context. The agent has full autonomy within these boundaries — it can read files, trace code, and reason freely — but the harness constrains the _shape_ of its output. This prevents the common failure mode where autonomous agents go off-task or produce unstructured results.
+SEC-AF runs on top of coding agents (AForge, Claude Code, OpenCode, Codex) via the AgentField harness. Rather than giving the agent a single massive prompt, each reasoner provides phase-aware guided autonomy: the agent receives a narrow task definition, a flat output schema (2-4 fields), and strategy-specific context. The agent has full autonomy within these boundaries — it can read files, trace code, and reason freely — but the harness constrains the _shape_ of its output. This prevents the common failure mode where autonomous agents go off-task or produce unstructured results.
 
 **7. Composable reasoner DAG with full observability**
 
@@ -477,12 +477,45 @@ jobs:
 | `SEC_AF_MAX_TURNS` | No | `50` | Max harness turns per call |
 | `AGENTFIELD_API_KEY` | No | unset | API key for secured environments |
 | `SEC_AF_WORKSPACES_DIR` | No | `/workspaces` | Directory for cloned repos (falls back to `~/.sec-af/workspaces` if not writable) |
-| `HARNESS_PROVIDER` | No | `opencode` | Harness backend provider |
+| `HARNESS_PROVIDER` | No | `aforge` | Harness backend provider; set `opencode` for rollback |
+| `AGENTFIELD_AFORGE_COMMAND` | No | `exec` | AForge headless command the SDK runs: `exec` (default) or `do`. Read by agentfield>=0.1.130 |
+| `SEC_AF_AFORGE_BIN` | No | `aforge` | Path to an AForge binary for the `aforge` provider (also honours `AFORGE_BIN`) |
 | `SEC_AF_AI_MAX_RETRIES` | No | `3` | Retry count for model calls |
 
 </details>
 
+<details>
+<summary><strong>Build arguments</strong></summary>
+
+The image downloads the released AForge CLI at build time and verifies its
+SHA-256 against the release `checksums.txt` before installing it.
+
+| Build arg | Default | Description |
+|---|---|---|
+| `AFORGE_BASE_URL` | `https://agentfield.ai/downloads/aforge` | Root of the AForge download host |
+| `AFORGE_VERSION` | `v0.1.0` | Released AForge version to install |
+
+```bash
+docker build -t sec-af .
+docker build --build-arg AFORGE_VERSION=vX.Y.Z -t sec-af .
+```
+
+</details>
+
 ## Development Setup
+
+### Harness selection
+
+```bash
+export OPENROUTER_API_KEY=sk-or-v1-...
+export HARNESS_PROVIDER=aforge
+python -m sec_af.app
+```
+
+The container ships the AForge CLI at `/usr/local/bin/aforge` and drives it
+through `aforge exec` by default. To temporarily roll back without changing
+code, set `HARNESS_PROVIDER=opencode`. Running outside the container requires
+an `aforge` binary on `PATH` (or `SEC_AF_AFORGE_BIN` pointing at one).
 
 ```bash
 python -m venv .venv && source .venv/bin/activate

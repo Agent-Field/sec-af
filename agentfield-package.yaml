@@ -27,8 +27,13 @@ user_environment:
       type: secret
       scope: global
     - name: HARNESS_PROVIDER
-      description: Coding-agent harness provider
-      default: opencode
+      description: Coding-agent harness provider (aforge | claude-code | codex | gemini | opencode)
+      default: aforge
+    - name: AGENTFIELD_AFORGE_COMMAND
+      description: AForge headless command the SDK runs (`exec` or `do`); agentfield>=0.1.130 reads it, default `exec`
+      default: exec
+    - name: SEC_AF_AFORGE_BIN
+      description: Optional path to the AForge binary (defaults to aforge on PATH)
     - name: HARNESS_MODEL
       description: Model the harness uses
       default: openrouter/moonshotai/kimi-k2.5
