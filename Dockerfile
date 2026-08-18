@@ -51,7 +51,7 @@ COPY pyproject.toml README.md ./
 COPY src/ src/
 
 RUN pip install --no-cache-dir --prefix=/install \
-    "agentfield>=0.1.129" \
+    "agentfield>=0.1.130" \
     "pydantic>=2.0" \
     "httpx>=0.27" \
     "python-dotenv>=1.0" && \
