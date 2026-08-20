@@ -1,0 +1,31 @@
+{
+  "description": "DESIGN.md \u00a75.5: quick duplicate check gate for dedup decisions.",
+  "properties": {
+    "duplicate_of": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Duplicate Of"
+    },
+    "is_duplicate": {
+      "title": "Is Duplicate",
+      "type": "boolean"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "is_duplicate",
+    "reason"
+  ],
+  "title": "DuplicateCheck",
+  "type": "object"
+}

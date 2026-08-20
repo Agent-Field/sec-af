@@ -1,0 +1,36 @@
+{
+  "description": "Flat schema for dependency reachability analysis. 4 fields.",
+  "properties": {
+    "call_chain": {
+      "description": "Import/call chain from app code to vulnerable function",
+      "items": {
+        "type": "string"
+      },
+      "title": "Call Chain",
+      "type": "array"
+    },
+    "direct": {
+      "description": "Whether the dependency is direct or transitive",
+      "title": "Direct",
+      "type": "boolean"
+    },
+    "reachable": {
+      "description": "Whether the vulnerable function is actually called",
+      "title": "Reachable",
+      "type": "boolean"
+    },
+    "vulnerable_function": {
+      "description": "The vulnerable function/method in the dependency",
+      "title": "Vulnerable Function",
+      "type": "string"
+    }
+  },
+  "required": [
+    "vulnerable_function",
+    "call_chain",
+    "reachable",
+    "direct"
+  ],
+  "title": "ReachabilityProof",
+  "type": "object"
+}

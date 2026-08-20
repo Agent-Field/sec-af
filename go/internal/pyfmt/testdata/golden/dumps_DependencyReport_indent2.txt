@@ -1,0 +1,53 @@
+{
+  "sbom": [
+    {
+      "name": "django",
+      "version": "4.2.1",
+      "ecosystem": "pypi",
+      "direct": true,
+      "license": "BSD-3-Clause"
+    },
+    {
+      "name": "urllib3",
+      "version": "1.26.5",
+      "ecosystem": "pypi",
+      "direct": false,
+      "license": null
+    }
+  ],
+  "known_cves": [
+    {
+      "cve_id": "CVE-2023-0001",
+      "package": "django",
+      "installed_version": "4.2.1",
+      "fixed_version": "4.2.5",
+      "cvss_v4_score": 1.0,
+      "epss_score": 0.5,
+      "direct": true,
+      "reachable": true
+    },
+    {
+      "cve_id": "CVE-2023-0002",
+      "package": "urllib3",
+      "installed_version": "1.26.5",
+      "fixed_version": null,
+      "cvss_v4_score": 1e-05,
+      "epss_score": 1e+16,
+      "direct": false,
+      "reachable": null
+    },
+    {
+      "cve_id": "CVE-2023-0003",
+      "package": "zlib",
+      "installed_version": "1.2.11",
+      "fixed_version": "1.2.12",
+      "cvss_v4_score": 1000000000000000.0,
+      "epss_score": -0.0,
+      "direct": false,
+      "reachable": false
+    }
+  ],
+  "outdated": [],
+  "direct_count": 1,
+  "transitive_count": 0
+}

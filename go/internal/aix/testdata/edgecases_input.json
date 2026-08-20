@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "AlreadyStrict": {
+      "additionalProperties": true,
+      "properties": {
+        "kept": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "stale"
+      ],
+      "type": "object"
+    },
+    "Leaf": {
+      "properties": {
+        "v": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "ListTypeNode": {
+      "properties": {
+        "z": {
+          "type": "string"
+        }
+      },
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "NoTypeNode": {
+      "properties": {
+        "a": {
+          "type": "integer"
+        },
+        "b": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "properties": {
+    "decoy": {
+      "properties": "not-a-dict",
+      "type": "object"
+    },
+    "list_of_objects": {
+      "items": {
+        "properties": {
+          "inner": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "nested": {
+      "$ref": "#/$defs/Leaf"
+    },
+    "nullable_object": {
+      "anyOf": [
+        {
+          "properties": {
+            "x": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "plain": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

@@ -1,0 +1,169 @@
+{
+  "_readme": [
+    "Input fixture for the pyfmt.Dumps parity tests. Each key except this one and",
+    "'edge_cases' is a pydantic class name; its value is the constructor kwargs.",
+    "go/scripts/gen_golden.py builds the model, calls model_dump(), and writes",
+    "json.dumps(dump, indent=2) / json.dumps(dump) into testdata/golden/. The Go",
+    "test unmarshals the SAME sub-object into the identically named Go struct and",
+    "compares pyfmt.Dumps(v, 2) / pyfmt.DumpsCompact(v) byte for byte.",
+    "Every field is supplied explicitly so the comparison exercises Dumps, not the",
+    "two default-seeding implementations."
+  ],
+  "ArchitectureMap": {
+    "app_type": "web_api",
+    "modules": [
+      {
+        "name": "auth",
+        "path": "app/auth/service.py",
+        "language": "python",
+        "description": "Session issuance — naïve refresh, 世界 emoji 🚀",
+        "dependencies": ["jwt", "redis"]
+      },
+      {
+        "name": "empty_deps",
+        "path": "app/empty.py",
+        "language": "go",
+        "description": null,
+        "dependencies": []
+      }
+    ],
+    "entry_points": [
+      {
+        "kind": "http",
+        "identifier": "login",
+        "file_path": "app/api/login.py",
+        "line": 42,
+        "method": "POST",
+        "route": "/v1/login",
+        "auth_required": false
+      },
+      {
+        "kind": "cli",
+        "identifier": "migrate",
+        "file_path": "tools/migrate.py",
+        "line": 0,
+        "method": null,
+        "route": null,
+        "auth_required": null
+      }
+    ],
+    "trust_boundaries": [
+      {
+        "name": "edge",
+        "source_zone": "internet",
+        "target_zone": "app",
+        "description": "TLS terminates at the ingress <lb> & waf",
+        "enforcement": []
+      }
+    ],
+    "services": [
+      {
+        "name": "postgres",
+        "service_type": "database",
+        "endpoint": "postgres://db:5432",
+        "purpose": null,
+        "auth_mechanism": "password"
+      }
+    ],
+    "api_surface": [
+      {
+        "method": "GET",
+        "path": "/v1/users/{id}",
+        "handler": "UserController.show",
+        "file_path": "app/api/users.py",
+        "line": 17,
+        "auth_required": true,
+        "rate_limited": null
+      }
+    ]
+  },
+  "DependencyReport": {
+    "sbom": [
+      {"name": "django", "version": "4.2.1", "ecosystem": "pypi", "direct": true, "license": "BSD-3-Clause"},
+      {"name": "urllib3", "version": "1.26.5", "ecosystem": "pypi", "direct": false, "license": null}
+    ],
+    "known_cves": [
+      {
+        "cve_id": "CVE-2023-0001",
+        "package": "django",
+        "installed_version": "4.2.1",
+        "fixed_version": "4.2.5",
+        "cvss_v4_score": 1.0,
+        "epss_score": 0.5,
+        "direct": true,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0002",
+        "package": "urllib3",
+        "installed_version": "1.26.5",
+        "fixed_version": null,
+        "cvss_v4_score": 1e-05,
+        "epss_score": 1e16,
+        "direct": false,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0003",
+        "package": "zlib",
+        "installed_version": "1.2.11",
+        "fixed_version": "1.2.12",
+        "cvss_v4_score": 1000000000000000.0,
+        "epss_score": -0.0,
+        "direct": false,
+        "reachable": false
+      }
+    ],
+    "outdated": [],
+    "direct_count": 1,
+    "transitive_count": 0
+  },
+  "SecurityContext": {
+    "auth_model": "jwt",
+    "auth_details": "HS256 — key from vault\ttab\nnewline \"quoted\" back\\slash",
+    "crypto_usage": [
+      {"algorithm": "AES", "key_size": 256, "mode": "GCM", "usage_context": "at-rest", "is_weak": false},
+      {"algorithm": "MD5", "key_size": null, "mode": null, "usage_context": null, "is_weak": true}
+    ],
+    "framework_security": ["CsrfViewMiddleware", ""],
+    "security_headers": [],
+    "deployment_signals": ["k8s ingress <tls> & mTLS", "control chars: \u0000\u001f\u007f"]
+  },
+  "ConfigReport": {
+    "secrets": [
+      {
+        "id": "secret-01",
+        "secret_type": "aws_access_key",
+        "file_path": "config/prod.yaml",
+        "line": 12,
+        "match": "AKIA****0001",
+        "confidence": "high",
+        "is_test_value": false
+      }
+    ],
+    "misconfigs": [
+      {
+        "id": "misconfig-01",
+        "category": "tls",
+        "file_path": "config/prod.yaml",
+        "line": null,
+        "key": "SSL_VERIFY",
+        "value": "false",
+        "risk": "critical",
+        "remediation": null
+      }
+    ]
+  },
+  "edge_cases": {
+    "empty_list": [],
+    "empty_dict": {},
+    "none": null,
+    "bools": [true, false],
+    "ints": [0, -1, 1234567890123456789],
+    "floats": [1.0, 0.5, 1e-05, -0.0, 1e16, 1000000000000000.0, 3.141592653589793, 0.1],
+    "unicode": "héllo — 世界 🚀 \u007f",
+    "escapes": "quote\" backslash\\ tab\t newline\n cr\r ff\f bs\b </script> & <tag> / slash",
+    "nested": {"a": [{"b": {"c": [1, 2.5, null]}}], "z": 1},
+    "sort_check": {"b": 1, "a": 2, "C": 3, "_": 4, "É": 5}
+  }
+}

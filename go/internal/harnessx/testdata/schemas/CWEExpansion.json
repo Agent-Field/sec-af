@@ -1,0 +1,23 @@
+{
+  "description": "AI-suggested CWE additions based on recon context.",
+  "properties": {
+    "additional_cwes": {
+      "description": "CWE IDs to add beyond baseline, e.g. ['CWE-918', 'CWE-611'].",
+      "items": {
+        "type": "string"
+      },
+      "title": "Additional Cwes",
+      "type": "array"
+    },
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "additional_cwes",
+    "rationale"
+  ],
+  "title": "CWEExpansion",
+  "type": "object"
+}

@@ -1,0 +1,1 @@
+{"secrets": [{"id": "secret-01", "secret_type": "aws_access_key", "file_path": "config/prod.yaml", "line": 12, "match": "AKIA****0001", "confidence": "high", "is_test_value": false}], "misconfigs": [{"id": "misconfig-01", "category": "tls", "file_path": "config/prod.yaml", "line": null, "key": "SSL_VERIFY", "value": "false", "risk": "critical", "remediation": null}]}

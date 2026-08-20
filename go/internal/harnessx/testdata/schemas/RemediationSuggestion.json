@@ -1,0 +1,27 @@
+{
+  "description": "Flat schema for AI-generated remediation suggestion. 3 fields.",
+  "properties": {
+    "confidence": {
+      "description": "Confidence in the fix: \"high\", \"medium\", or \"low\"",
+      "title": "Confidence",
+      "type": "string"
+    },
+    "fix_description": {
+      "description": "Natural language description of the recommended fix",
+      "title": "Fix Description",
+      "type": "string"
+    },
+    "patch_diff": {
+      "description": "Unified diff format patch showing the code changes needed",
+      "title": "Patch Diff",
+      "type": "string"
+    }
+  },
+  "required": [
+    "fix_description",
+    "patch_diff",
+    "confidence"
+  ],
+  "title": "RemediationSuggestion",
+  "type": "object"
+}

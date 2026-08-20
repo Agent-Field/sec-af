@@ -1,0 +1,2944 @@
+{
+  "_generated_by": "go/scripts/gen_model_keys.py",
+  "models": [
+    {
+      "python_module": "sec_af.schemas.compliance",
+      "python_class": "ComplianceMapping",
+      "go_name": "ComplianceMapping",
+      "duplicate_of": null,
+      "keys": [
+        "framework",
+        "control_id",
+        "control_name"
+      ],
+      "required": [
+        "framework",
+        "control_id",
+        "control_name"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.compliance",
+      "python_class": "ComplianceGap",
+      "go_name": "ComplianceGap",
+      "duplicate_of": null,
+      "keys": [
+        "framework",
+        "control_id",
+        "control_name",
+        "finding_count",
+        "max_severity",
+        "cwe_ids"
+      ],
+      "required": [
+        "framework",
+        "control_id",
+        "control_name",
+        "finding_count",
+        "max_severity",
+        "cwe_ids"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "finding_count"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "SeverityClassification",
+      "go_name": "SeverityClassification",
+      "duplicate_of": null,
+      "keys": [
+        "severity",
+        "confidence",
+        "rationale"
+      ],
+      "required": [
+        "severity",
+        "confidence",
+        "rationale"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [
+        "confidence"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "DuplicateCheck",
+      "go_name": "DuplicateCheck",
+      "duplicate_of": null,
+      "keys": [
+        "is_duplicate",
+        "duplicate_of",
+        "reason"
+      ],
+      "required": [
+        "is_duplicate",
+        "reason"
+      ],
+      "accepts_null": [
+        "duplicate_of"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "duplicate_of"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "StrategySelection",
+      "go_name": "StrategySelection",
+      "duplicate_of": null,
+      "keys": [
+        "strategies",
+        "rationale"
+      ],
+      "required": [
+        "strategies",
+        "rationale"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "CWEExpansion",
+      "go_name": "CWEExpansion",
+      "duplicate_of": null,
+      "keys": [
+        "additional_cwes",
+        "rationale"
+      ],
+      "required": [
+        "additional_cwes",
+        "rationale"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "RelevanceGate",
+      "go_name": "RelevanceGate",
+      "duplicate_of": null,
+      "keys": [
+        "is_relevant",
+        "confidence",
+        "reason"
+      ],
+      "required": [
+        "is_relevant",
+        "confidence",
+        "reason"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [
+        "confidence"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "VerdictGate",
+      "go_name": "VerdictGate",
+      "duplicate_of": null,
+      "keys": [
+        "confirmed",
+        "confidence",
+        "reason"
+      ],
+      "required": [
+        "confirmed",
+        "confidence",
+        "reason"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [
+        "confidence"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "ComplianceSuggestion",
+      "go_name": "ComplianceSuggestion",
+      "duplicate_of": null,
+      "keys": [
+        "framework",
+        "control_id",
+        "control_name"
+      ],
+      "required": [
+        "framework",
+        "control_id",
+        "control_name"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "ComplianceGate",
+      "go_name": "ComplianceGate",
+      "duplicate_of": null,
+      "keys": [
+        "mappings",
+        "confidence"
+      ],
+      "required": [
+        "mappings",
+        "confidence"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.gates",
+      "python_class": "ReachabilityGate",
+      "go_name": "ReachabilityGate",
+      "duplicate_of": null,
+      "keys": [
+        "reachability",
+        "rationale",
+        "confidence"
+      ],
+      "required": [
+        "reachability",
+        "rationale",
+        "confidence"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.hunt",
+      "python_class": "VulnLocation",
+      "go_name": "VulnLocation",
+      "duplicate_of": null,
+      "keys": [
+        "file_path",
+        "start_line",
+        "code_snippet",
+        "pattern_type"
+      ],
+      "required": [
+        "file_path",
+        "start_line",
+        "code_snippet",
+        "pattern_type"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "start_line"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.hunt",
+      "python_class": "EnrichedFinding",
+      "go_name": "EnrichedFinding",
+      "duplicate_of": null,
+      "keys": [
+        "title",
+        "description",
+        "cwe_id",
+        "severity",
+        "confidence",
+        "data_flow_summary"
+      ],
+      "required": [
+        "title",
+        "description",
+        "cwe_id",
+        "severity",
+        "confidence",
+        "data_flow_summary"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.hunt",
+      "python_class": "ScanLocationsResult",
+      "go_name": "ScanLocationsResult",
+      "duplicate_of": null,
+      "keys": [
+        "locations"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "locations"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.hunt",
+      "python_class": "RawFinding",
+      "go_name": "RawFinding",
+      "duplicate_of": null,
+      "keys": [
+        "id",
+        "hunter_strategy",
+        "title",
+        "description",
+        "finding_type",
+        "cwe_id",
+        "cwe_name",
+        "owasp_category",
+        "file_path",
+        "start_line",
+        "end_line",
+        "function_name",
+        "code_snippet",
+        "estimated_severity",
+        "confidence",
+        "data_flow",
+        "related_files",
+        "fingerprint"
+      ],
+      "required": [
+        "hunter_strategy",
+        "title",
+        "description",
+        "finding_type",
+        "cwe_id",
+        "cwe_name",
+        "file_path",
+        "start_line",
+        "end_line",
+        "code_snippet",
+        "estimated_severity",
+        "confidence"
+      ],
+      "accepts_null": [
+        "owasp_category",
+        "function_name",
+        "data_flow"
+      ],
+      "int_fields": [
+        "start_line",
+        "end_line"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "owasp_category",
+        "function_name",
+        "data_flow"
+      ],
+      "empty_list_fields": [
+        "related_files"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": [
+        "id",
+        "fingerprint"
+      ]
+    },
+    {
+      "python_module": "sec_af.schemas.hunt",
+      "python_class": "PotentialChain",
+      "go_name": "PotentialChain",
+      "duplicate_of": null,
+      "keys": [
+        "chain_id",
+        "title",
+        "finding_ids",
+        "combined_impact",
+        "estimated_severity"
+      ],
+      "required": [
+        "title",
+        "combined_impact",
+        "estimated_severity"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "finding_ids"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": [
+        "chain_id"
+      ]
+    },
+    {
+      "python_module": "sec_af.schemas.hunt",
+      "python_class": "HuntResult",
+      "go_name": "HuntResult",
+      "duplicate_of": null,
+      "keys": [
+        "findings",
+        "chains",
+        "total_raw",
+        "deduplicated_count",
+        "chain_count",
+        "strategies_run",
+        "hunt_duration_seconds"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [
+        "total_raw",
+        "deduplicated_count",
+        "chain_count"
+      ],
+      "float_fields": [
+        "hunt_duration_seconds"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [
+        "findings",
+        "chains",
+        "strategies_run"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "total_raw": 0,
+        "deduplicated_count": 0,
+        "chain_count": 0,
+        "hunt_duration_seconds": 0.0
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.hunt",
+      "python_class": "DeduplicatedResult",
+      "go_name": "DeduplicatedResult",
+      "duplicate_of": null,
+      "keys": [
+        "findings",
+        "chains",
+        "dropped_duplicates",
+        "kept_findings"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [
+        "dropped_duplicates",
+        "kept_findings"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "findings",
+        "chains"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "dropped_duplicates": 0,
+        "kept_findings": 0
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.hunt",
+      "python_class": "ChainCorrelationResult",
+      "go_name": "ChainCorrelationResult",
+      "duplicate_of": null,
+      "keys": [
+        "chains",
+        "duplicate_ids"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "chains",
+        "duplicate_ids"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.input",
+      "python_class": "AuditInput",
+      "go_name": "AuditInput",
+      "duplicate_of": null,
+      "keys": [
+        "repo_url",
+        "branch",
+        "commit_sha",
+        "base_commit_sha",
+        "depth",
+        "severity_threshold",
+        "scan_types",
+        "output_formats",
+        "compliance_frameworks",
+        "max_cost_usd",
+        "max_provers",
+        "max_duration_seconds",
+        "include_paths",
+        "exclude_paths",
+        "is_pr",
+        "pr_id",
+        "post_pr_comments",
+        "fail_on_findings",
+        "dast_enabled",
+        "repo_urls",
+        "monitoring_mode",
+        "baseline_path",
+        "custom_policies"
+      ],
+      "required": [
+        "repo_url"
+      ],
+      "accepts_null": [
+        "commit_sha",
+        "base_commit_sha",
+        "max_cost_usd",
+        "max_provers",
+        "max_duration_seconds",
+        "include_paths",
+        "pr_id",
+        "baseline_path"
+      ],
+      "int_fields": [
+        "max_provers",
+        "max_duration_seconds"
+      ],
+      "float_fields": [
+        "max_cost_usd"
+      ],
+      "null_fields": [
+        "commit_sha",
+        "base_commit_sha",
+        "max_cost_usd",
+        "max_provers",
+        "max_duration_seconds",
+        "include_paths",
+        "pr_id",
+        "baseline_path"
+      ],
+      "empty_list_fields": [
+        "compliance_frameworks",
+        "repo_urls",
+        "custom_policies"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "branch": "main",
+        "depth": "standard",
+        "severity_threshold": "low",
+        "scan_types": [
+          "sast",
+          "sca",
+          "secrets",
+          "config"
+        ],
+        "output_formats": [
+          "json"
+        ],
+        "exclude_paths": [
+          "tests/",
+          "vendor/",
+          "node_modules/",
+          ".git/"
+        ],
+        "is_pr": false,
+        "post_pr_comments": false,
+        "fail_on_findings": false,
+        "dast_enabled": false,
+        "monitoring_mode": false
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "Location",
+      "go_name": "Location",
+      "duplicate_of": null,
+      "keys": [
+        "file_path",
+        "start_line",
+        "end_line",
+        "start_column",
+        "end_column",
+        "function_name",
+        "code_snippet"
+      ],
+      "required": [
+        "file_path",
+        "start_line",
+        "end_line"
+      ],
+      "accepts_null": [
+        "start_column",
+        "end_column",
+        "function_name",
+        "code_snippet"
+      ],
+      "int_fields": [
+        "start_line",
+        "end_line",
+        "start_column",
+        "end_column"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "start_column",
+        "end_column",
+        "function_name",
+        "code_snippet"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "CvssV4Score",
+      "go_name": "CvssV4Score",
+      "duplicate_of": null,
+      "keys": [
+        "vector",
+        "base_score",
+        "severity",
+        "automatable",
+        "subsequent_impact"
+      ],
+      "required": [
+        "vector",
+        "base_score",
+        "severity",
+        "automatable",
+        "subsequent_impact"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [
+        "base_score"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "EpssScore",
+      "go_name": "EpssScore",
+      "duplicate_of": null,
+      "keys": [
+        "score",
+        "percentile",
+        "date"
+      ],
+      "required": [
+        "score",
+        "percentile",
+        "date"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [
+        "score",
+        "percentile"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "MitreMapping",
+      "go_name": "MitreMapping",
+      "duplicate_of": null,
+      "keys": [
+        "tactic",
+        "technique_id",
+        "technique_name"
+      ],
+      "required": [
+        "tactic",
+        "technique_id",
+        "technique_name"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "AttackChain",
+      "go_name": "AttackChain",
+      "duplicate_of": null,
+      "keys": [
+        "chain_id",
+        "title",
+        "description",
+        "findings",
+        "combined_severity",
+        "combined_impact",
+        "mitre_attack_mapping"
+      ],
+      "required": [
+        "chain_id",
+        "title",
+        "description",
+        "combined_severity",
+        "combined_impact"
+      ],
+      "accepts_null": [
+        "mitre_attack_mapping"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "mitre_attack_mapping"
+      ],
+      "empty_list_fields": [
+        "findings"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "ReproductionStep",
+      "go_name": "ReproductionStep",
+      "duplicate_of": null,
+      "keys": [
+        "step",
+        "description",
+        "command",
+        "expected_output"
+      ],
+      "required": [
+        "step",
+        "description"
+      ],
+      "accepts_null": [
+        "command",
+        "expected_output"
+      ],
+      "int_fields": [
+        "step"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "command",
+        "expected_output"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "ServiceDefinition",
+      "go_name": "ServiceDefinition",
+      "duplicate_of": null,
+      "keys": [
+        "name",
+        "repo_url",
+        "api_endpoints",
+        "dependencies"
+      ],
+      "required": [
+        "name",
+        "repo_url"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "api_endpoints",
+        "dependencies"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "CrossServiceFinding",
+      "go_name": "CrossServiceFinding",
+      "duplicate_of": null,
+      "keys": [
+        "chain_description",
+        "services_involved",
+        "entry_point",
+        "impact"
+      ],
+      "required": [
+        "chain_description",
+        "services_involved",
+        "entry_point",
+        "impact"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "RegressionFinding",
+      "go_name": "RegressionFinding",
+      "duplicate_of": null,
+      "keys": [
+        "finding_title",
+        "finding_id",
+        "severity",
+        "cwe_id",
+        "status"
+      ],
+      "required": [
+        "finding_title",
+        "finding_id",
+        "severity",
+        "cwe_id",
+        "status"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "MonitoringResult",
+      "go_name": "MonitoringResult",
+      "duplicate_of": null,
+      "keys": [
+        "baseline_commit",
+        "current_commit",
+        "new_findings",
+        "fixed_findings",
+        "unchanged_count",
+        "regression_detected"
+      ],
+      "required": [
+        "baseline_commit",
+        "current_commit"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "unchanged_count"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "new_findings",
+        "fixed_findings"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "unchanged_count": 0,
+        "regression_detected": false
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "PolicyViolation",
+      "go_name": "PolicyViolation",
+      "duplicate_of": null,
+      "keys": [
+        "policy",
+        "violation_description",
+        "file_path",
+        "severity"
+      ],
+      "required": [
+        "policy",
+        "violation_description",
+        "file_path"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "severity": "medium"
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "SecurityAuditResult",
+      "go_name": "SecurityAuditResult",
+      "duplicate_of": null,
+      "keys": [
+        "repository",
+        "commit_sha",
+        "branch",
+        "timestamp",
+        "depth_profile",
+        "strategies_used",
+        "provider",
+        "findings",
+        "attack_chains",
+        "total_raw_findings",
+        "confirmed",
+        "likely",
+        "inconclusive",
+        "not_exploitable",
+        "noise_reduction_pct",
+        "by_severity",
+        "compliance_gaps",
+        "policy_violations",
+        "duration_seconds",
+        "agent_invocations",
+        "cost_usd",
+        "cost_breakdown",
+        "metadata",
+        "sarif"
+      ],
+      "required": [
+        "repository",
+        "commit_sha",
+        "timestamp",
+        "depth_profile",
+        "provider",
+        "sarif"
+      ],
+      "accepts_null": [
+        "branch"
+      ],
+      "int_fields": [
+        "total_raw_findings",
+        "confirmed",
+        "likely",
+        "inconclusive",
+        "not_exploitable",
+        "agent_invocations"
+      ],
+      "float_fields": [
+        "noise_reduction_pct",
+        "duration_seconds",
+        "cost_usd"
+      ],
+      "null_fields": [
+        "branch"
+      ],
+      "empty_list_fields": [
+        "strategies_used",
+        "findings",
+        "attack_chains",
+        "compliance_gaps",
+        "policy_violations"
+      ],
+      "empty_dict_fields": [
+        "by_severity",
+        "cost_breakdown",
+        "metadata"
+      ],
+      "scalar_defaults": {
+        "total_raw_findings": 0,
+        "confirmed": 0,
+        "likely": 0,
+        "inconclusive": 0,
+        "not_exploitable": 0,
+        "noise_reduction_pct": 0.0,
+        "duration_seconds": 0.0,
+        "agent_invocations": 0,
+        "cost_usd": 0.0
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "AuditProgress",
+      "go_name": "AuditProgress",
+      "duplicate_of": null,
+      "keys": [
+        "phase",
+        "phase_progress",
+        "agents_total",
+        "agents_completed",
+        "agents_running",
+        "findings_so_far",
+        "elapsed_seconds",
+        "estimated_remaining_seconds",
+        "cost_so_far_usd"
+      ],
+      "required": [
+        "phase",
+        "phase_progress",
+        "agents_total",
+        "agents_completed",
+        "agents_running",
+        "findings_so_far",
+        "elapsed_seconds",
+        "estimated_remaining_seconds",
+        "cost_so_far_usd"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "agents_total",
+        "agents_completed",
+        "agents_running",
+        "findings_so_far"
+      ],
+      "float_fields": [
+        "phase_progress",
+        "elapsed_seconds",
+        "estimated_remaining_seconds",
+        "cost_so_far_usd"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.output",
+      "python_class": "AuditMetrics",
+      "go_name": "AuditMetrics",
+      "duplicate_of": null,
+      "keys": [
+        "duration_seconds",
+        "agent_invocations",
+        "cost_usd",
+        "cost_breakdown",
+        "budget_exhausted",
+        "findings_not_verified"
+      ],
+      "required": [
+        "duration_seconds",
+        "agent_invocations",
+        "cost_usd"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "agent_invocations",
+        "findings_not_verified"
+      ],
+      "float_fields": [
+        "duration_seconds",
+        "cost_usd"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [
+        "cost_breakdown"
+      ],
+      "scalar_defaults": {
+        "budget_exhausted": false,
+        "findings_not_verified": 0
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "DataFlowTrace",
+      "go_name": "DataFlowTrace",
+      "duplicate_of": null,
+      "keys": [
+        "source",
+        "sink",
+        "steps",
+        "sink_reached"
+      ],
+      "required": [
+        "source",
+        "sink",
+        "steps",
+        "sink_reached"
+      ],
+      "accepts_null": [
+        "source",
+        "sink",
+        "steps"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "ReachabilityProof",
+      "go_name": "ReachabilityProof",
+      "duplicate_of": null,
+      "keys": [
+        "vulnerable_function",
+        "call_chain",
+        "reachable",
+        "direct"
+      ],
+      "required": [
+        "vulnerable_function",
+        "call_chain",
+        "reachable",
+        "direct"
+      ],
+      "accepts_null": [
+        "vulnerable_function",
+        "call_chain"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "SanitizationResult",
+      "go_name": "SanitizationResult",
+      "duplicate_of": null,
+      "keys": [
+        "found",
+        "type",
+        "sufficient",
+        "bypass_method"
+      ],
+      "required": [
+        "found"
+      ],
+      "accepts_null": [
+        "type",
+        "sufficient",
+        "bypass_method"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "type",
+        "sufficient",
+        "bypass_method"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "ExploitHypothesis",
+      "go_name": "ExploitHypothesis",
+      "duplicate_of": null,
+      "keys": [
+        "hypothesis",
+        "payload",
+        "expected_outcome"
+      ],
+      "required": [
+        "hypothesis",
+        "expected_outcome"
+      ],
+      "accepts_null": [
+        "hypothesis",
+        "payload",
+        "expected_outcome"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "payload"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "DastVerificationResult",
+      "go_name": "DastVerificationResult",
+      "duplicate_of": null,
+      "keys": [
+        "payload_sent",
+        "response_summary",
+        "exploit_confirmed",
+        "safety_notes"
+      ],
+      "required": [
+        "payload_sent",
+        "response_summary",
+        "exploit_confirmed",
+        "safety_notes"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "VerdictDecision",
+      "go_name": "VerdictDecision",
+      "duplicate_of": null,
+      "keys": [
+        "verdict",
+        "evidence_level",
+        "rationale",
+        "confidence"
+      ],
+      "required": [
+        "verdict",
+        "evidence_level",
+        "rationale",
+        "confidence"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "evidence_level"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "RemediationSuggestion",
+      "go_name": "RemediationSuggestion",
+      "duplicate_of": null,
+      "keys": [
+        "fix_description",
+        "patch_diff",
+        "confidence"
+      ],
+      "required": [
+        "fix_description",
+        "patch_diff",
+        "confidence"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "DataFlowStep",
+      "go_name": "DataFlowStep",
+      "duplicate_of": null,
+      "keys": [
+        "file",
+        "line",
+        "description",
+        "tainted"
+      ],
+      "required": [
+        "file",
+        "line",
+        "description",
+        "tainted"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "line"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "DataFlowEvidence",
+      "go_name": "DataFlowEvidence",
+      "duplicate_of": null,
+      "keys": [
+        "steps",
+        "source",
+        "sink",
+        "sink_reached"
+      ],
+      "required": [],
+      "accepts_null": [
+        "source",
+        "sink"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "source",
+        "sink"
+      ],
+      "empty_list_fields": [
+        "steps"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "sink_reached": false
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "SanitizationAnalysis",
+      "go_name": "SanitizationAnalysis",
+      "duplicate_of": null,
+      "keys": [
+        "sanitization_found",
+        "sanitization_type",
+        "sanitization_sufficient",
+        "bypass_possible",
+        "bypass_method"
+      ],
+      "required": [
+        "sanitization_found"
+      ],
+      "accepts_null": [
+        "sanitization_type",
+        "sanitization_sufficient",
+        "bypass_possible",
+        "bypass_method"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "sanitization_type",
+        "sanitization_sufficient",
+        "bypass_possible",
+        "bypass_method"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "HttpEvidence",
+      "go_name": "HttpEvidence",
+      "duplicate_of": null,
+      "keys": [
+        "method",
+        "url",
+        "headers",
+        "body",
+        "highlighted_segment"
+      ],
+      "required": [],
+      "accepts_null": [
+        "method",
+        "url",
+        "headers",
+        "body",
+        "highlighted_segment"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "method",
+        "url",
+        "headers",
+        "body",
+        "highlighted_segment"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "ReachabilityEvidence",
+      "go_name": "ReachabilityEvidence",
+      "duplicate_of": null,
+      "keys": [
+        "vulnerable_function",
+        "call_chain",
+        "reachable",
+        "direct_dependency"
+      ],
+      "required": [
+        "vulnerable_function",
+        "reachable",
+        "direct_dependency"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "call_chain"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "ChainStep",
+      "go_name": "ChainStep",
+      "duplicate_of": null,
+      "keys": [
+        "step_number",
+        "finding_id",
+        "description",
+        "enables"
+      ],
+      "required": [
+        "step_number",
+        "finding_id",
+        "description",
+        "enables"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "step_number"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "Proof",
+      "go_name": "Proof",
+      "duplicate_of": null,
+      "keys": [
+        "exploit_hypothesis",
+        "verification_method",
+        "evidence_level",
+        "data_flow_trace",
+        "data_flow_evidence",
+        "sanitization_analysis",
+        "vulnerable_code",
+        "exploit_payload",
+        "expected_outcome",
+        "poc_code",
+        "poc_execution_output",
+        "http_request",
+        "http_response",
+        "reachability",
+        "chain_steps"
+      ],
+      "required": [
+        "exploit_hypothesis",
+        "verification_method",
+        "evidence_level"
+      ],
+      "accepts_null": [
+        "data_flow_trace",
+        "data_flow_evidence",
+        "sanitization_analysis",
+        "vulnerable_code",
+        "exploit_payload",
+        "expected_outcome",
+        "poc_code",
+        "poc_execution_output",
+        "http_request",
+        "http_response",
+        "reachability",
+        "chain_steps"
+      ],
+      "int_fields": [
+        "evidence_level"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "data_flow_trace",
+        "data_flow_evidence",
+        "sanitization_analysis",
+        "vulnerable_code",
+        "exploit_payload",
+        "expected_outcome",
+        "poc_code",
+        "poc_execution_output",
+        "http_request",
+        "http_response",
+        "reachability",
+        "chain_steps"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "ProverSignal",
+      "go_name": "ProverSignal",
+      "duplicate_of": null,
+      "keys": [
+        "expand",
+        "expansion_reason",
+        "expansion_strategy",
+        "expansion_target"
+      ],
+      "required": [],
+      "accepts_null": [
+        "expansion_reason",
+        "expansion_strategy",
+        "expansion_target"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "expansion_reason",
+        "expansion_strategy",
+        "expansion_target"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "expand": false
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "VerifiedFinding",
+      "go_name": "VerifiedFinding",
+      "duplicate_of": null,
+      "keys": [
+        "id",
+        "fingerprint",
+        "title",
+        "description",
+        "finding_type",
+        "cwe_id",
+        "cwe_name",
+        "owasp_category",
+        "tags",
+        "verdict",
+        "evidence_level",
+        "rationale",
+        "severity",
+        "cvss_v4",
+        "epss",
+        "exploitability_score",
+        "proof",
+        "location",
+        "related_locations",
+        "chain_id",
+        "chain_step",
+        "enables",
+        "compliance",
+        "reproduction_steps",
+        "remediation",
+        "sarif_rule_id",
+        "sarif_security_severity",
+        "drop_reason"
+      ],
+      "required": [
+        "fingerprint",
+        "title",
+        "description",
+        "finding_type",
+        "cwe_id",
+        "cwe_name",
+        "verdict",
+        "evidence_level",
+        "rationale",
+        "severity",
+        "exploitability_score",
+        "location",
+        "sarif_rule_id",
+        "sarif_security_severity"
+      ],
+      "accepts_null": [
+        "owasp_category",
+        "cvss_v4",
+        "epss",
+        "proof",
+        "chain_id",
+        "chain_step",
+        "enables",
+        "remediation",
+        "drop_reason"
+      ],
+      "int_fields": [
+        "evidence_level",
+        "chain_step"
+      ],
+      "float_fields": [
+        "exploitability_score",
+        "sarif_security_severity"
+      ],
+      "null_fields": [
+        "owasp_category",
+        "cvss_v4",
+        "epss",
+        "proof",
+        "chain_id",
+        "chain_step",
+        "enables",
+        "remediation",
+        "drop_reason"
+      ],
+      "empty_list_fields": [
+        "tags",
+        "related_locations",
+        "compliance",
+        "reproduction_steps"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": [
+        "id"
+      ]
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "Location",
+      "go_name": "Location",
+      "duplicate_of": "Location",
+      "keys": [
+        "file_path",
+        "start_line",
+        "end_line",
+        "start_column",
+        "end_column",
+        "function_name",
+        "code_snippet"
+      ],
+      "required": [
+        "file_path",
+        "start_line",
+        "end_line"
+      ],
+      "accepts_null": [
+        "start_column",
+        "end_column",
+        "function_name",
+        "code_snippet"
+      ],
+      "int_fields": [
+        "start_line",
+        "end_line",
+        "start_column",
+        "end_column"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "start_column",
+        "end_column",
+        "function_name",
+        "code_snippet"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "CvssV4Score",
+      "go_name": "CvssV4Score",
+      "duplicate_of": "CvssV4Score",
+      "keys": [
+        "vector",
+        "base_score",
+        "severity",
+        "automatable",
+        "subsequent_impact"
+      ],
+      "required": [
+        "vector",
+        "base_score",
+        "severity",
+        "automatable",
+        "subsequent_impact"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [
+        "base_score"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "EpssScore",
+      "go_name": "EpssScore",
+      "duplicate_of": "EpssScore",
+      "keys": [
+        "score",
+        "percentile",
+        "date"
+      ],
+      "required": [
+        "score",
+        "percentile",
+        "date"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [
+        "score",
+        "percentile"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.prove",
+      "python_class": "ReproductionStep",
+      "go_name": "ReproductionStep",
+      "duplicate_of": "ReproductionStep",
+      "keys": [
+        "step",
+        "description",
+        "command",
+        "expected_output"
+      ],
+      "required": [
+        "step",
+        "description"
+      ],
+      "accepts_null": [
+        "command",
+        "expected_output"
+      ],
+      "int_fields": [
+        "step"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "command",
+        "expected_output"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "Module",
+      "go_name": "Module",
+      "duplicate_of": null,
+      "keys": [
+        "name",
+        "path",
+        "language",
+        "description",
+        "dependencies"
+      ],
+      "required": [
+        "name",
+        "path",
+        "language"
+      ],
+      "accepts_null": [
+        "description"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "description"
+      ],
+      "empty_list_fields": [
+        "dependencies"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "EntryPoint",
+      "go_name": "EntryPoint",
+      "duplicate_of": null,
+      "keys": [
+        "kind",
+        "identifier",
+        "file_path",
+        "line",
+        "method",
+        "route",
+        "auth_required"
+      ],
+      "required": [
+        "kind",
+        "identifier",
+        "file_path",
+        "line"
+      ],
+      "accepts_null": [
+        "method",
+        "route",
+        "auth_required"
+      ],
+      "int_fields": [
+        "line"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "method",
+        "route",
+        "auth_required"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "TrustBoundary",
+      "go_name": "TrustBoundary",
+      "duplicate_of": null,
+      "keys": [
+        "name",
+        "source_zone",
+        "target_zone",
+        "description",
+        "enforcement"
+      ],
+      "required": [
+        "name",
+        "source_zone",
+        "target_zone",
+        "description"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "enforcement"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "Service",
+      "go_name": "Service",
+      "duplicate_of": null,
+      "keys": [
+        "name",
+        "service_type",
+        "endpoint",
+        "purpose",
+        "auth_mechanism"
+      ],
+      "required": [
+        "name",
+        "service_type"
+      ],
+      "accepts_null": [
+        "endpoint",
+        "purpose",
+        "auth_mechanism"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "endpoint",
+        "purpose",
+        "auth_mechanism"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "APIEndpoint",
+      "go_name": "APIEndpoint",
+      "duplicate_of": null,
+      "keys": [
+        "method",
+        "path",
+        "handler",
+        "file_path",
+        "line",
+        "auth_required",
+        "rate_limited"
+      ],
+      "required": [
+        "method",
+        "path",
+        "handler",
+        "file_path",
+        "line"
+      ],
+      "accepts_null": [
+        "auth_required",
+        "rate_limited"
+      ],
+      "int_fields": [
+        "line"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "auth_required",
+        "rate_limited"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "ArchitectureMap",
+      "go_name": "ArchitectureMap",
+      "duplicate_of": null,
+      "keys": [
+        "app_type",
+        "modules",
+        "entry_points",
+        "trust_boundaries",
+        "services",
+        "api_surface"
+      ],
+      "required": [],
+      "accepts_null": [
+        "app_type"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "app_type"
+      ],
+      "empty_list_fields": [
+        "modules",
+        "entry_points",
+        "trust_boundaries",
+        "services",
+        "api_surface"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "DataFlowStep",
+      "go_name": "ReconDataFlowStep",
+      "duplicate_of": null,
+      "keys": [
+        "file_path",
+        "line",
+        "component",
+        "operation"
+      ],
+      "required": [
+        "file_path",
+        "line",
+        "component",
+        "operation"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "line"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "SanitizationPoint",
+      "go_name": "SanitizationPoint",
+      "duplicate_of": null,
+      "keys": [
+        "file_path",
+        "line",
+        "function_name",
+        "sanitization_type",
+        "protects_against"
+      ],
+      "required": [
+        "file_path",
+        "line",
+        "sanitization_type"
+      ],
+      "accepts_null": [
+        "function_name"
+      ],
+      "int_fields": [
+        "line"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "function_name"
+      ],
+      "empty_list_fields": [
+        "protects_against"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "Sink",
+      "go_name": "Sink",
+      "duplicate_of": null,
+      "keys": [
+        "sink_type",
+        "file_path",
+        "line",
+        "function_name",
+        "exploitability_notes"
+      ],
+      "required": [
+        "sink_type",
+        "file_path",
+        "line"
+      ],
+      "accepts_null": [
+        "function_name",
+        "exploitability_notes"
+      ],
+      "int_fields": [
+        "line"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "function_name",
+        "exploitability_notes"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "DataFlow",
+      "go_name": "DataFlow",
+      "duplicate_of": null,
+      "keys": [
+        "source",
+        "path",
+        "sink",
+        "sanitized",
+        "files"
+      ],
+      "required": [
+        "source",
+        "sink",
+        "sanitized"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "path",
+        "files"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "DataFlowMap",
+      "go_name": "DataFlowMap",
+      "duplicate_of": null,
+      "keys": [
+        "flows",
+        "sanitization_points",
+        "sinks"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "flows",
+        "sanitization_points",
+        "sinks"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "Dependency",
+      "go_name": "Dependency",
+      "duplicate_of": null,
+      "keys": [
+        "name",
+        "version",
+        "ecosystem",
+        "direct",
+        "license"
+      ],
+      "required": [
+        "name",
+        "version",
+        "ecosystem",
+        "direct"
+      ],
+      "accepts_null": [
+        "license"
+      ],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [
+        "license"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "KnownCVE",
+      "go_name": "KnownCVE",
+      "duplicate_of": null,
+      "keys": [
+        "cve_id",
+        "package",
+        "installed_version",
+        "fixed_version",
+        "cvss_v4_score",
+        "epss_score",
+        "direct",
+        "reachable"
+      ],
+      "required": [
+        "cve_id",
+        "package",
+        "installed_version",
+        "direct"
+      ],
+      "accepts_null": [
+        "fixed_version",
+        "cvss_v4_score",
+        "epss_score",
+        "reachable"
+      ],
+      "int_fields": [],
+      "float_fields": [
+        "cvss_v4_score",
+        "epss_score"
+      ],
+      "null_fields": [
+        "fixed_version",
+        "cvss_v4_score",
+        "epss_score",
+        "reachable"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "OutdatedDep",
+      "go_name": "OutdatedDep",
+      "duplicate_of": null,
+      "keys": [
+        "package",
+        "current_version",
+        "latest_version",
+        "direct"
+      ],
+      "required": [
+        "package",
+        "current_version",
+        "latest_version",
+        "direct"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "DependencyReport",
+      "go_name": "DependencyReport",
+      "duplicate_of": null,
+      "keys": [
+        "sbom",
+        "known_cves",
+        "outdated",
+        "direct_count",
+        "transitive_count"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [
+        "direct_count",
+        "transitive_count"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "sbom",
+        "known_cves",
+        "outdated"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "direct_count": 0,
+        "transitive_count": 0
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "SecretFinding",
+      "go_name": "SecretFinding",
+      "duplicate_of": null,
+      "keys": [
+        "id",
+        "secret_type",
+        "file_path",
+        "line",
+        "match",
+        "confidence",
+        "is_test_value"
+      ],
+      "required": [
+        "secret_type",
+        "file_path",
+        "line",
+        "match",
+        "confidence"
+      ],
+      "accepts_null": [
+        "is_test_value"
+      ],
+      "int_fields": [
+        "line"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "is_test_value"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": [
+        "id"
+      ]
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "MisconfigFinding",
+      "go_name": "MisconfigFinding",
+      "duplicate_of": null,
+      "keys": [
+        "id",
+        "category",
+        "file_path",
+        "line",
+        "key",
+        "value",
+        "risk",
+        "remediation"
+      ],
+      "required": [
+        "category",
+        "file_path",
+        "risk"
+      ],
+      "accepts_null": [
+        "line",
+        "key",
+        "value",
+        "remediation"
+      ],
+      "int_fields": [
+        "line"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "line",
+        "key",
+        "value",
+        "remediation"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": [
+        "id"
+      ]
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "ConfigReport",
+      "go_name": "ConfigReport",
+      "duplicate_of": null,
+      "keys": [
+        "secrets",
+        "misconfigs"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "secrets",
+        "misconfigs"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "CryptoUsage",
+      "go_name": "CryptoUsage",
+      "duplicate_of": null,
+      "keys": [
+        "algorithm",
+        "key_size",
+        "mode",
+        "usage_context",
+        "is_weak"
+      ],
+      "required": [
+        "algorithm"
+      ],
+      "accepts_null": [
+        "key_size",
+        "mode",
+        "usage_context",
+        "is_weak"
+      ],
+      "int_fields": [
+        "key_size"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "key_size",
+        "mode",
+        "usage_context",
+        "is_weak"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "SecurityContext",
+      "go_name": "SecurityContext",
+      "duplicate_of": null,
+      "keys": [
+        "auth_model",
+        "auth_details",
+        "crypto_usage",
+        "framework_security",
+        "security_headers",
+        "deployment_signals"
+      ],
+      "required": [
+        "auth_model",
+        "auth_details"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "crypto_usage",
+        "framework_security",
+        "security_headers",
+        "deployment_signals"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "ReconResult",
+      "go_name": "ReconResult",
+      "duplicate_of": null,
+      "keys": [
+        "architecture",
+        "data_flows",
+        "dependencies",
+        "config",
+        "security_context",
+        "languages",
+        "frameworks",
+        "lines_of_code",
+        "file_count",
+        "recon_duration_seconds"
+      ],
+      "required": [
+        "architecture",
+        "data_flows",
+        "dependencies",
+        "config",
+        "security_context"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "lines_of_code",
+        "file_count"
+      ],
+      "float_fields": [
+        "recon_duration_seconds"
+      ],
+      "null_fields": [],
+      "empty_list_fields": [
+        "languages",
+        "frameworks"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "lines_of_code": 0,
+        "file_count": 0,
+        "recon_duration_seconds": 0.0
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "ArchitectureMapRaw",
+      "go_name": "ArchitectureMapRaw",
+      "duplicate_of": null,
+      "keys": [
+        "app_type",
+        "modules",
+        "entry_points",
+        "trust_boundaries",
+        "services",
+        "api_endpoints"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "modules",
+        "entry_points",
+        "trust_boundaries",
+        "services",
+        "api_endpoints"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "app_type": "unknown"
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "DataFlowMapRaw",
+      "go_name": "DataFlowMapRaw",
+      "duplicate_of": null,
+      "keys": [
+        "flows",
+        "sanitization_points",
+        "sinks"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "flows",
+        "sanitization_points",
+        "sinks"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "DependencyReportRaw",
+      "go_name": "DependencyReportRaw",
+      "duplicate_of": null,
+      "keys": [
+        "sbom",
+        "known_cves",
+        "outdated"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "sbom",
+        "known_cves",
+        "outdated"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "ConfigReportRaw",
+      "go_name": "ConfigReportRaw",
+      "duplicate_of": null,
+      "keys": [
+        "secrets",
+        "misconfigs"
+      ],
+      "required": [],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "secrets",
+        "misconfigs"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.recon",
+      "python_class": "SecurityContextRaw",
+      "go_name": "SecurityContextRaw",
+      "duplicate_of": null,
+      "keys": [
+        "auth_model",
+        "auth_details",
+        "crypto_usage",
+        "security_signals"
+      ],
+      "required": [
+        "auth_model"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [
+        "crypto_usage",
+        "security_signals"
+      ],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "auth_details": ""
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.views",
+      "python_class": "FindingForVerifier",
+      "go_name": "FindingForVerifier",
+      "duplicate_of": null,
+      "keys": [
+        "id",
+        "title",
+        "description",
+        "file_path",
+        "start_line",
+        "end_line",
+        "code_snippet",
+        "cwe_id",
+        "function_name",
+        "data_flow_summary"
+      ],
+      "required": [
+        "id",
+        "title",
+        "description",
+        "file_path",
+        "start_line",
+        "end_line",
+        "code_snippet",
+        "cwe_id"
+      ],
+      "accepts_null": [
+        "function_name"
+      ],
+      "int_fields": [
+        "start_line",
+        "end_line"
+      ],
+      "float_fields": [],
+      "null_fields": [
+        "function_name"
+      ],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {
+        "data_flow_summary": ""
+      },
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.views",
+      "python_class": "FindingForDedup",
+      "go_name": "FindingForDedup",
+      "duplicate_of": null,
+      "keys": [
+        "id",
+        "fingerprint",
+        "title",
+        "file_path",
+        "start_line",
+        "cwe_id",
+        "finding_type",
+        "estimated_severity"
+      ],
+      "required": [
+        "id",
+        "fingerprint",
+        "title",
+        "file_path",
+        "start_line",
+        "cwe_id",
+        "finding_type",
+        "estimated_severity"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "start_line"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.schemas.views",
+      "python_class": "FindingForReachability",
+      "go_name": "FindingForReachability",
+      "duplicate_of": null,
+      "keys": [
+        "title",
+        "description",
+        "cwe_id",
+        "file_path",
+        "start_line",
+        "verdict"
+      ],
+      "required": [
+        "title",
+        "description",
+        "cwe_id",
+        "file_path",
+        "start_line",
+        "verdict"
+      ],
+      "accepts_null": [],
+      "int_fields": [
+        "start_line"
+      ],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    },
+    {
+      "python_module": "sec_af.policies",
+      "python_class": "PolicyEvalResult",
+      "go_name": "PolicyEvalResult",
+      "duplicate_of": null,
+      "keys": [
+        "violated",
+        "description",
+        "file_path",
+        "severity"
+      ],
+      "required": [
+        "violated",
+        "description",
+        "file_path",
+        "severity"
+      ],
+      "accepts_null": [],
+      "int_fields": [],
+      "float_fields": [],
+      "null_fields": [],
+      "empty_list_fields": [],
+      "empty_dict_fields": [],
+      "scalar_defaults": {},
+      "uuid_defaults": []
+    }
+  ],
+  "enums": {
+    "FindingType": {
+      "python_module": "sec_af.schemas.hunt",
+      "members": {
+        "SAST": "sast",
+        "SCA": "sca",
+        "SECRETS": "secrets",
+        "CONFIG": "config",
+        "LOGIC": "logic",
+        "API": "api"
+      },
+      "kind": "str"
+    },
+    "Severity": {
+      "python_module": "sec_af.schemas.hunt",
+      "members": {
+        "CRITICAL": "critical",
+        "HIGH": "high",
+        "MEDIUM": "medium",
+        "LOW": "low",
+        "INFO": "info"
+      },
+      "kind": "str"
+    },
+    "Confidence": {
+      "python_module": "sec_af.schemas.hunt",
+      "members": {
+        "HIGH": "high",
+        "MEDIUM": "medium",
+        "LOW": "low"
+      },
+      "kind": "str"
+    },
+    "HuntStrategy": {
+      "python_module": "sec_af.schemas.hunt",
+      "members": {
+        "INJECTION": "injection",
+        "XSS": "xss",
+        "DOS": "dos",
+        "SSRF": "ssrf",
+        "AUTH": "auth",
+        "CRYPTO": "crypto",
+        "BUSINESS_LOGIC": "business_logic",
+        "LOGIC_BUGS": "business_logic",
+        "DATA_EXPOSURE": "data_exposure",
+        "SUPPLY_CHAIN": "supply_chain",
+        "CONFIG_SECRETS": "config_secrets",
+        "API_SECURITY": "api_security",
+        "PYTHON_SPECIFIC": "python_specific",
+        "JAVASCRIPT_SPECIFIC": "javascript_specific"
+      },
+      "kind": "str"
+    },
+    "Verdict": {
+      "python_module": "sec_af.schemas.prove",
+      "members": {
+        "CONFIRMED": "confirmed",
+        "LIKELY": "likely",
+        "INCONCLUSIVE": "inconclusive",
+        "NOT_EXPLOITABLE": "not_exploitable"
+      },
+      "kind": "str"
+    },
+    "EvidenceLevel": {
+      "python_module": "sec_af.schemas.prove",
+      "members": {
+        "STATIC_MATCH": 1,
+        "FLOW_IDENTIFIED": 2,
+        "REACHABILITY_CONFIRMED": 3,
+        "SANITIZATION_BYPASSABLE": 4,
+        "EXPLOIT_SCENARIO_VALIDATED": 5,
+        "FULL_EXPLOIT": 6
+      },
+      "kind": "int"
+    }
+  },
+  "schemas_all": [
+    "APIEndpoint",
+    "ArchitectureMap",
+    "AttackChain",
+    "AuditInput",
+    "AuditMetrics",
+    "AuditProgress",
+    "ChainStep",
+    "ComplianceGate",
+    "ComplianceGap",
+    "ComplianceMapping",
+    "ComplianceSuggestion",
+    "Confidence",
+    "ConfigReport",
+    "CryptoUsage",
+    "CvssV4Score",
+    "DataFlow",
+    "DataFlowEvidence",
+    "DataFlowMap",
+    "DataFlowStep",
+    "DeduplicatedResult",
+    "Dependency",
+    "DependencyReport",
+    "DuplicateCheck",
+    "EntryPoint",
+    "EpssScore",
+    "EvidenceLevel",
+    "FindingForDedup",
+    "FindingForReachability",
+    "FindingForVerifier",
+    "FindingType",
+    "HttpEvidence",
+    "HuntResult",
+    "HuntStrategy",
+    "KnownCVE",
+    "Location",
+    "MisconfigFinding",
+    "MitreMapping",
+    "Module",
+    "OutdatedDep",
+    "PotentialChain",
+    "Proof",
+    "ProverSignal",
+    "RawFinding",
+    "ReachabilityEvidence",
+    "ReconDataFlowStep",
+    "ReconResult",
+    "RelevanceGate",
+    "ReproductionStep",
+    "SanitizationAnalysis",
+    "SanitizationPoint",
+    "SecretFinding",
+    "SecurityAuditResult",
+    "SecurityContext",
+    "Service",
+    "Severity",
+    "SeverityClassification",
+    "Sink",
+    "StrategySelection",
+    "TrustBoundary",
+    "Verdict",
+    "VerdictGate",
+    "VerifiedFinding"
+  ]
+}

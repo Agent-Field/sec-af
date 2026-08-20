@@ -1,0 +1,23 @@
+{
+  "description": "Flat harness output for config scanner. All list[str], no nesting.",
+  "properties": {
+    "misconfigs": {
+      "description": "One string per misconfiguration. Format: 'category | file_path:line | key | risk | remediation'. Example: 'debug_mode | config.py:15 | DEBUG=True | Exposes stack traces | Set DEBUG=False'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Misconfigs",
+      "type": "array"
+    },
+    "secrets": {
+      "description": "One string per secret finding. Format: 'type | file_path:line | match_preview | confidence | is_test(true/false)'. Example: 'aws_access_key | .env:3 | AKIA... | high | false'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Secrets",
+      "type": "array"
+    }
+  },
+  "title": "ConfigReportRaw",
+  "type": "object"
+}

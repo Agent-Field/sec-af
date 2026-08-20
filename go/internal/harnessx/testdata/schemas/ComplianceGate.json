@@ -1,0 +1,46 @@
+{
+  "$defs": {
+    "ComplianceSuggestion": {
+      "properties": {
+        "control_id": {
+          "title": "Control Id",
+          "type": "string"
+        },
+        "control_name": {
+          "title": "Control Name",
+          "type": "string"
+        },
+        "framework": {
+          "title": "Framework",
+          "type": "string"
+        }
+      },
+      "required": [
+        "framework",
+        "control_id",
+        "control_name"
+      ],
+      "title": "ComplianceSuggestion",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "confidence": {
+      "title": "Confidence",
+      "type": "string"
+    },
+    "mappings": {
+      "items": {
+        "$ref": "#/$defs/ComplianceSuggestion"
+      },
+      "title": "Mappings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "mappings",
+    "confidence"
+  ],
+  "title": "ComplianceGate",
+  "type": "object"
+}

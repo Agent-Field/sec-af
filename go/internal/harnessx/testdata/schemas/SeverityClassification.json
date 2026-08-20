@@ -1,0 +1,25 @@
+{
+  "description": "DESIGN.md \u00a72.4: quick severity classification gate used in scoring.",
+  "properties": {
+    "confidence": {
+      "title": "Confidence",
+      "type": "number"
+    },
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    },
+    "severity": {
+      "description": "One of: \"critical\", \"high\", \"medium\", \"low\".",
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "required": [
+    "severity",
+    "confidence",
+    "rationale"
+  ],
+  "title": "SeverityClassification",
+  "type": "object"
+}

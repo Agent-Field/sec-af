@@ -1,0 +1,850 @@
+{
+  "ArchitectureMapRaw": {
+    "additionalProperties": false,
+    "description": "Flat harness output for architecture mapper. All list[str], no nesting.",
+    "properties": {
+      "api_endpoints": {
+        "description": "One string per API endpoint. Format: 'method | path | handler | file_path:line | auth_required | rate_limited'. Example: 'GET | /api/users | get_users | src/api.py:15 | true | false'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Api Endpoints",
+        "type": "array"
+      },
+      "app_type": {
+        "default": "unknown",
+        "description": "Application type: web_api, cli_tool, library, microservice, monolith",
+        "title": "App Type",
+        "type": "string"
+      },
+      "entry_points": {
+        "description": "One string per entry point. Format: 'kind | route_or_id | file_path:line | auth_required'. Example: 'http | POST /api/login | src/routes.py:42 | false'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Entry Points",
+        "type": "array"
+      },
+      "modules": {
+        "description": "One string per module. Format: 'name | path | language | description'. Example: 'auth | src/auth/ | python | Authentication and session management'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Modules",
+        "type": "array"
+      },
+      "services": {
+        "description": "One string per external service. Format: 'name | type | endpoint | auth_mechanism'. Example: 'PostgreSQL | database | localhost:5432 | password'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Services",
+        "type": "array"
+      },
+      "trust_boundaries": {
+        "description": "One string per boundary. Format: 'name | source_zone | target_zone | description'. Example: 'API Gateway | external | internal | Rate limiting and auth'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Trust Boundaries",
+        "type": "array"
+      }
+    },
+    "required": [
+      "api_endpoints",
+      "app_type",
+      "entry_points",
+      "modules",
+      "services",
+      "trust_boundaries"
+    ],
+    "title": "ArchitectureMapRaw",
+    "type": "object"
+  },
+  "CWEExpansion": {
+    "additionalProperties": false,
+    "description": "AI-suggested CWE additions based on recon context.",
+    "properties": {
+      "additional_cwes": {
+        "description": "CWE IDs to add beyond baseline, e.g. ['CWE-918', 'CWE-611'].",
+        "items": {
+          "type": "string"
+        },
+        "title": "Additional Cwes",
+        "type": "array"
+      },
+      "rationale": {
+        "title": "Rationale",
+        "type": "string"
+      }
+    },
+    "required": [
+      "additional_cwes",
+      "rationale"
+    ],
+    "title": "CWEExpansion",
+    "type": "object"
+  },
+  "ChainCorrelationResult": {
+    "additionalProperties": false,
+    "description": "Flat harness schema for chain correlation. LLM identifies chains only.",
+    "properties": {
+      "chains": {
+        "description": "Multi-step attack chains found. Format per entry: 'title | finding_id1,finding_id2,... | combined_impact | severity'. Example: 'SSRF to Internal API | f1,f2 | Access internal services | high'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Chains",
+        "type": "array"
+      },
+      "duplicate_ids": {
+        "description": "Finding IDs that are duplicates missed by programmatic dedup (to drop)",
+        "items": {
+          "type": "string"
+        },
+        "title": "Duplicate Ids",
+        "type": "array"
+      }
+    },
+    "required": [
+      "chains",
+      "duplicate_ids"
+    ],
+    "title": "ChainCorrelationResult",
+    "type": "object"
+  },
+  "ComplianceGate": {
+    "$defs": {
+      "ComplianceSuggestion": {
+        "additionalProperties": false,
+        "properties": {
+          "control_id": {
+            "title": "Control Id",
+            "type": "string"
+          },
+          "control_name": {
+            "title": "Control Name",
+            "type": "string"
+          },
+          "framework": {
+            "title": "Framework",
+            "type": "string"
+          }
+        },
+        "required": [
+          "control_id",
+          "control_name",
+          "framework"
+        ],
+        "title": "ComplianceSuggestion",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "confidence": {
+        "title": "Confidence",
+        "type": "string"
+      },
+      "mappings": {
+        "items": {
+          "$ref": "#/$defs/ComplianceSuggestion"
+        },
+        "title": "Mappings",
+        "type": "array"
+      }
+    },
+    "required": [
+      "confidence",
+      "mappings"
+    ],
+    "title": "ComplianceGate",
+    "type": "object"
+  },
+  "ConfigReportRaw": {
+    "additionalProperties": false,
+    "description": "Flat harness output for config scanner. All list[str], no nesting.",
+    "properties": {
+      "misconfigs": {
+        "description": "One string per misconfiguration. Format: 'category | file_path:line | key | risk | remediation'. Example: 'debug_mode | config.py:15 | DEBUG=True | Exposes stack traces | Set DEBUG=False'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Misconfigs",
+        "type": "array"
+      },
+      "secrets": {
+        "description": "One string per secret finding. Format: 'type | file_path:line | match_preview | confidence | is_test(true/false)'. Example: 'aws_access_key | .env:3 | AKIA... | high | false'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Secrets",
+        "type": "array"
+      }
+    },
+    "required": [
+      "misconfigs",
+      "secrets"
+    ],
+    "title": "ConfigReportRaw",
+    "type": "object"
+  },
+  "CrossServiceFinding": {
+    "additionalProperties": false,
+    "description": "Flat schema for cross-service attack chain analysis. 4 fields.",
+    "properties": {
+      "chain_description": {
+        "description": "Description of the cross-service attack path",
+        "title": "Chain Description",
+        "type": "string"
+      },
+      "entry_point": {
+        "description": "Public-facing entry point where attack begins",
+        "title": "Entry Point",
+        "type": "string"
+      },
+      "impact": {
+        "description": "Impact if the cross-service chain is exploited",
+        "title": "Impact",
+        "type": "string"
+      },
+      "services_involved": {
+        "description": "Service names in the attack chain",
+        "items": {
+          "type": "string"
+        },
+        "title": "Services Involved",
+        "type": "array"
+      }
+    },
+    "required": [
+      "chain_description",
+      "entry_point",
+      "impact",
+      "services_involved"
+    ],
+    "title": "CrossServiceFinding",
+    "type": "object"
+  },
+  "DastVerificationResult": {
+    "additionalProperties": false,
+    "description": "Flat schema for DAST-like runtime verification. 4 fields.",
+    "properties": {
+      "exploit_confirmed": {
+        "description": "Whether the exploit was confirmed at runtime",
+        "title": "Exploit Confirmed",
+        "type": "boolean"
+      },
+      "payload_sent": {
+        "description": "The exploit payload or request that was sent",
+        "title": "Payload Sent",
+        "type": "string"
+      },
+      "response_summary": {
+        "description": "Summary of the application response",
+        "title": "Response Summary",
+        "type": "string"
+      },
+      "safety_notes": {
+        "description": "Safety measures taken during verification (sandbox, timeout, etc.)",
+        "title": "Safety Notes",
+        "type": "string"
+      }
+    },
+    "required": [
+      "exploit_confirmed",
+      "payload_sent",
+      "response_summary",
+      "safety_notes"
+    ],
+    "title": "DastVerificationResult",
+    "type": "object"
+  },
+  "DataFlowMapRaw": {
+    "additionalProperties": false,
+    "description": "Flat harness output for data flow mapper. All list[str], no nesting.",
+    "properties": {
+      "flows": {
+        "description": "One string per data flow. Format: 'source | sink | sanitized(true/false) | file1, file2, ...'. Example: 'request.body | sql.execute | false | src/db.py, src/routes.py'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Flows",
+        "type": "array"
+      },
+      "sanitization_points": {
+        "description": "One string per sanitization point. Format: 'file_path:line | function_name | type | protects_against'. Example: 'src/utils.py:42 | sanitize_html | html_encoding | CWE-79'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Sanitization Points",
+        "type": "array"
+      },
+      "sinks": {
+        "description": "One string per security-critical sink. Format: 'sink_type | file_path:line | function_name | notes'. Example: 'sql_execute | src/db.py:55 | run_query | Direct string concatenation'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Sinks",
+        "type": "array"
+      }
+    },
+    "required": [
+      "flows",
+      "sanitization_points",
+      "sinks"
+    ],
+    "title": "DataFlowMapRaw",
+    "type": "object"
+  },
+  "DataFlowTrace": {
+    "additionalProperties": false,
+    "description": "Flat schema for data flow tracing sub-agent. 4 fields.",
+    "properties": {
+      "sink": {
+        "description": "Security-sensitive operation reached (e.g. 'sql.execute(query)')",
+        "title": "Sink",
+        "type": "string"
+      },
+      "sink_reached": {
+        "description": "Whether tainted data actually reaches the sink",
+        "title": "Sink Reached",
+        "type": "boolean"
+      },
+      "source": {
+        "description": "Where tainted input enters (e.g. 'request.params.id')",
+        "title": "Source",
+        "type": "string"
+      },
+      "steps": {
+        "description": "Ordered list of file:line descriptions showing flow path",
+        "items": {
+          "type": "string"
+        },
+        "title": "Steps",
+        "type": "array"
+      }
+    },
+    "required": [
+      "sink",
+      "sink_reached",
+      "source",
+      "steps"
+    ],
+    "title": "DataFlowTrace",
+    "type": "object"
+  },
+  "DependencyReportRaw": {
+    "additionalProperties": false,
+    "description": "Flat harness output for dependency auditor. All list[str], no nesting.",
+    "properties": {
+      "known_cves": {
+        "description": "One string per CVE. Format: 'cve_id | package | installed_version | fixed_version | cvss_score | direct | reachable'. Example: 'CVE-2023-1234 | lodash | 4.17.15 | 4.17.21 | 7.5 | true | unknown'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Known Cves",
+        "type": "array"
+      },
+      "outdated": {
+        "description": "One string per outdated dep. Format: 'package | current_version | latest_version | direct(true/false)'. Example: 'express | 4.17.0 | 4.18.2 | true'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Outdated",
+        "type": "array"
+      },
+      "sbom": {
+        "description": "One string per dependency. Format: 'name | version | ecosystem | direct(true/false) | license'. Example: 'express | 4.18.2 | npm | true | MIT'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Sbom",
+        "type": "array"
+      }
+    },
+    "required": [
+      "known_cves",
+      "outdated",
+      "sbom"
+    ],
+    "title": "DependencyReportRaw",
+    "type": "object"
+  },
+  "DuplicateCheck": {
+    "additionalProperties": false,
+    "description": "DESIGN.md \u00a75.5: quick duplicate check gate for dedup decisions.",
+    "properties": {
+      "duplicate_of": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Duplicate Of"
+      },
+      "is_duplicate": {
+        "title": "Is Duplicate",
+        "type": "boolean"
+      },
+      "reason": {
+        "title": "Reason",
+        "type": "string"
+      }
+    },
+    "required": [
+      "duplicate_of",
+      "is_duplicate",
+      "reason"
+    ],
+    "title": "DuplicateCheck",
+    "type": "object"
+  },
+  "EnrichedFinding": {
+    "additionalProperties": false,
+    "description": "Flat schema for Step 2: finding enrichment. 6 fields.",
+    "properties": {
+      "confidence": {
+        "description": "One of: \"high\", \"medium\", \"low\"",
+        "title": "Confidence",
+        "type": "string"
+      },
+      "cwe_id": {
+        "description": "CWE identifier (e.g. 'CWE-89')",
+        "title": "Cwe Id",
+        "type": "string"
+      },
+      "data_flow_summary": {
+        "description": "Natural language summary of the data flow (string, not nested)",
+        "title": "Data Flow Summary",
+        "type": "string"
+      },
+      "description": {
+        "description": "Detailed description of the vulnerability",
+        "title": "Description",
+        "type": "string"
+      },
+      "severity": {
+        "description": "One of: \"critical\", \"high\", \"medium\", \"low\", \"info\"",
+        "title": "Severity",
+        "type": "string"
+      },
+      "title": {
+        "description": "Human-readable title for the finding",
+        "title": "Title",
+        "type": "string"
+      }
+    },
+    "required": [
+      "confidence",
+      "cwe_id",
+      "data_flow_summary",
+      "description",
+      "severity",
+      "title"
+    ],
+    "title": "EnrichedFinding",
+    "type": "object"
+  },
+  "ExploitHypothesis": {
+    "additionalProperties": false,
+    "description": "Flat schema for exploit construction sub-agent. 3 fields.",
+    "properties": {
+      "expected_outcome": {
+        "description": "What would happen if exploit succeeds",
+        "title": "Expected Outcome",
+        "type": "string"
+      },
+      "hypothesis": {
+        "description": "Natural language description of exploit scenario",
+        "title": "Hypothesis",
+        "type": "string"
+      },
+      "payload": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Concrete exploit payload or input",
+        "title": "Payload"
+      }
+    },
+    "required": [
+      "expected_outcome",
+      "hypothesis",
+      "payload"
+    ],
+    "title": "ExploitHypothesis",
+    "type": "object"
+  },
+  "PolicyEvalResult": {
+    "additionalProperties": false,
+    "description": "Flat schema for AI policy evaluation. 4 fields.",
+    "properties": {
+      "description": {
+        "description": "How the policy is violated, or 'No violation' if compliant",
+        "title": "Description",
+        "type": "string"
+      },
+      "file_path": {
+        "description": "Primary file where violation occurs, or 'N/A'",
+        "title": "File Path",
+        "type": "string"
+      },
+      "severity": {
+        "description": "Severity: \"high\", \"medium\", or \"low\"",
+        "title": "Severity",
+        "type": "string"
+      },
+      "violated": {
+        "description": "Whether the policy is violated",
+        "title": "Violated",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "description",
+      "file_path",
+      "severity",
+      "violated"
+    ],
+    "title": "PolicyEvalResult",
+    "type": "object"
+  },
+  "ReachabilityGate": {
+    "additionalProperties": false,
+    "description": "Reachability assessment for findings without explicit reachability tags.",
+    "properties": {
+      "confidence": {
+        "description": "One of: \"high\", \"medium\", \"low\".",
+        "title": "Confidence",
+        "type": "string"
+      },
+      "rationale": {
+        "title": "Rationale",
+        "type": "string"
+      },
+      "reachability": {
+        "description": "One of: \"externally_reachable\", \"requires_auth\", \"internal_only\", \"unreachable\".",
+        "title": "Reachability",
+        "type": "string"
+      }
+    },
+    "required": [
+      "confidence",
+      "rationale",
+      "reachability"
+    ],
+    "title": "ReachabilityGate",
+    "type": "object"
+  },
+  "ReachabilityProof": {
+    "additionalProperties": false,
+    "description": "Flat schema for dependency reachability analysis. 4 fields.",
+    "properties": {
+      "call_chain": {
+        "description": "Import/call chain from app code to vulnerable function",
+        "items": {
+          "type": "string"
+        },
+        "title": "Call Chain",
+        "type": "array"
+      },
+      "direct": {
+        "description": "Whether the dependency is direct or transitive",
+        "title": "Direct",
+        "type": "boolean"
+      },
+      "reachable": {
+        "description": "Whether the vulnerable function is actually called",
+        "title": "Reachable",
+        "type": "boolean"
+      },
+      "vulnerable_function": {
+        "description": "The vulnerable function/method in the dependency",
+        "title": "Vulnerable Function",
+        "type": "string"
+      }
+    },
+    "required": [
+      "call_chain",
+      "direct",
+      "reachable",
+      "vulnerable_function"
+    ],
+    "title": "ReachabilityProof",
+    "type": "object"
+  },
+  "RemediationSuggestion": {
+    "additionalProperties": false,
+    "description": "Flat schema for AI-generated remediation suggestion. 3 fields.",
+    "properties": {
+      "confidence": {
+        "description": "Confidence in the fix: \"high\", \"medium\", or \"low\"",
+        "title": "Confidence",
+        "type": "string"
+      },
+      "fix_description": {
+        "description": "Natural language description of the recommended fix",
+        "title": "Fix Description",
+        "type": "string"
+      },
+      "patch_diff": {
+        "description": "Unified diff format patch showing the code changes needed",
+        "title": "Patch Diff",
+        "type": "string"
+      }
+    },
+    "required": [
+      "confidence",
+      "fix_description",
+      "patch_diff"
+    ],
+    "title": "RemediationSuggestion",
+    "type": "object"
+  },
+  "SanitizationResult": {
+    "additionalProperties": false,
+    "description": "Flat schema for sanitization analysis sub-agent. 4 fields.",
+    "properties": {
+      "bypass_method": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "How sanitization could be bypassed, if applicable",
+        "title": "Bypass Method"
+      },
+      "found": {
+        "description": "Whether any sanitization/validation was found on the path",
+        "title": "Found",
+        "type": "boolean"
+      },
+      "sufficient": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Whether sanitization is sufficient to prevent exploit",
+        "title": "Sufficient"
+      },
+      "type": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Type of sanitization (e.g. 'parameterized query', 'html encoding')",
+        "title": "Type"
+      }
+    },
+    "required": [
+      "bypass_method",
+      "found",
+      "sufficient",
+      "type"
+    ],
+    "title": "SanitizationResult",
+    "type": "object"
+  },
+  "ScanLocationsResult": {
+    "$defs": {
+      "VulnLocation": {
+        "additionalProperties": false,
+        "description": "Flat schema for Step 1: location scanning. 4 fields.",
+        "properties": {
+          "code_snippet": {
+            "description": "Relevant code snippet around the vulnerability",
+            "title": "Code Snippet",
+            "type": "string"
+          },
+          "file_path": {
+            "description": "Path to the file containing the potential vulnerability",
+            "title": "File Path",
+            "type": "string"
+          },
+          "pattern_type": {
+            "description": "Type of vulnerability pattern detected (e.g. 'sql_injection', 'command_injection')",
+            "title": "Pattern Type",
+            "type": "string"
+          },
+          "start_line": {
+            "description": "Starting line number of the vulnerable code",
+            "title": "Start Line",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code_snippet",
+          "file_path",
+          "pattern_type",
+          "start_line"
+        ],
+        "title": "VulnLocation",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "description": "Container for Step 1 results.",
+    "properties": {
+      "locations": {
+        "items": {
+          "$ref": "#/$defs/VulnLocation"
+        },
+        "title": "Locations",
+        "type": "array"
+      }
+    },
+    "required": [
+      "locations"
+    ],
+    "title": "ScanLocationsResult",
+    "type": "object"
+  },
+  "SecurityContextRaw": {
+    "additionalProperties": false,
+    "description": "Flat harness output for security context profiler. All flat, no nesting.",
+    "properties": {
+      "auth_details": {
+        "default": "",
+        "description": "Brief description of auth implementation details",
+        "title": "Auth Details",
+        "type": "string"
+      },
+      "auth_model": {
+        "description": "Authentication model: jwt, session_cookie, oauth2, api_key, none, or other",
+        "title": "Auth Model",
+        "type": "string"
+      },
+      "crypto_usage": {
+        "description": "One string per crypto usage. Format: 'algorithm | key_size | mode | usage_context | is_weak(true/false)'. Example: 'AES | 256 | GCM | data encryption | false'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Crypto Usage",
+        "type": "array"
+      },
+      "security_signals": {
+        "description": "Framework security features, security headers, and deployment signals. One signal per entry. Examples: 'CSRF protection enabled', 'HSTS header present', 'Runs in Docker'",
+        "items": {
+          "type": "string"
+        },
+        "title": "Security Signals",
+        "type": "array"
+      }
+    },
+    "required": [
+      "auth_details",
+      "auth_model",
+      "crypto_usage",
+      "security_signals"
+    ],
+    "title": "SecurityContextRaw",
+    "type": "object"
+  },
+  "SeverityClassification": {
+    "additionalProperties": false,
+    "description": "DESIGN.md \u00a72.4: quick severity classification gate used in scoring.",
+    "properties": {
+      "confidence": {
+        "title": "Confidence",
+        "type": "number"
+      },
+      "rationale": {
+        "title": "Rationale",
+        "type": "string"
+      },
+      "severity": {
+        "description": "One of: \"critical\", \"high\", \"medium\", \"low\".",
+        "title": "Severity",
+        "type": "string"
+      }
+    },
+    "required": [
+      "confidence",
+      "rationale",
+      "severity"
+    ],
+    "title": "SeverityClassification",
+    "type": "object"
+  },
+  "StrategySelection": {
+    "additionalProperties": false,
+    "description": "DESIGN.md \u00a75.3: strategy selection gate for HUNT routing.",
+    "properties": {
+      "rationale": {
+        "title": "Rationale",
+        "type": "string"
+      },
+      "strategies": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Strategies",
+        "type": "array"
+      }
+    },
+    "required": [
+      "rationale",
+      "strategies"
+    ],
+    "title": "StrategySelection",
+    "type": "object"
+  },
+  "VerdictDecision": {
+    "additionalProperties": false,
+    "description": "Flat schema for verdict sub-agent. Uses .ai() not .harness(). 4 fields.",
+    "properties": {
+      "confidence": {
+        "description": "One of: \"high\", \"medium\", \"low\"",
+        "title": "Confidence",
+        "type": "string"
+      },
+      "evidence_level": {
+        "description": "1-6 scale: 1=STATIC_MATCH to 6=FULL_EXPLOIT",
+        "title": "Evidence Level",
+        "type": "integer"
+      },
+      "rationale": {
+        "title": "Rationale",
+        "type": "string"
+      },
+      "verdict": {
+        "description": "One of: \"confirmed\", \"likely\", \"inconclusive\", \"not_exploitable\"",
+        "title": "Verdict",
+        "type": "string"
+      }
+    },
+    "required": [
+      "confidence",
+      "evidence_level",
+      "rationale",
+      "verdict"
+    ],
+    "title": "VerdictDecision",
+    "type": "object"
+  }
+}
