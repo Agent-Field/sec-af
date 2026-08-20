@@ -1,0 +1,44 @@
+{
+  "phase": "prove",
+  "created_at": "2026-01-02T03:04:05.123456+00:00",
+  "data": [
+    {
+      "id": "vf-1",
+      "fingerprint": "fp-1",
+      "title": "SQL injection in user lookup",
+      "description": "User id flows unsanitised into an f-string query",
+      "finding_type": "sast",
+      "cwe_id": "CWE-89",
+      "cwe_name": "SQL Injection",
+      "owasp_category": null,
+      "tags": [],
+      "verdict": "confirmed",
+      "evidence_level": 4,
+      "rationale": "Traced source to sink",
+      "severity": "high",
+      "cvss_v4": null,
+      "epss": null,
+      "exploitability_score": 0.0,
+      "proof": null,
+      "location": {
+        "file_path": "src/users.py",
+        "start_line": 10,
+        "end_line": 12,
+        "start_column": null,
+        "end_column": null,
+        "function_name": null,
+        "code_snippet": null
+      },
+      "related_locations": [],
+      "chain_id": null,
+      "chain_step": null,
+      "enables": null,
+      "compliance": [],
+      "reproduction_steps": [],
+      "remediation": null,
+      "sarif_rule_id": "sec-af/sast/sql-injection",
+      "sarif_security_severity": 0.0,
+      "drop_reason": null
+    }
+  ]
+}

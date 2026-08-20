@@ -1,0 +1,5 @@
+Finding: SQL injection in user lookup
+Description: User id flows unsanitised into an f-string query
+CWE: CWE-89
+File: src/users.py:10
+Verdict: confirmed

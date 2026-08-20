@@ -1,0 +1,1 @@
+python/typescript (django), 5000 LOC, 42 files, jwt auth, 2 crypto algorithms, 5 direct dependencies, 1 known CVEs, 2 API endpoints, 1 secrets found, 1 misconfigs

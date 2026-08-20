@@ -1,0 +1,155 @@
+{
+  "full|": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "crypto",
+    "supply_chain",
+    "api_security",
+    "business_logic"
+  ],
+  "full|QUICK": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "crypto",
+    "supply_chain",
+    "api_security"
+  ],
+  "full|Thorough": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "crypto",
+    "supply_chain",
+    "api_security",
+    "business_logic"
+  ],
+  "full|bogus": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "crypto",
+    "supply_chain",
+    "api_security",
+    "business_logic"
+  ],
+  "full|quick": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "crypto",
+    "supply_chain",
+    "api_security"
+  ],
+  "full|standard": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "crypto",
+    "supply_chain",
+    "api_security",
+    "business_logic"
+  ],
+  "full|thorough": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "crypto",
+    "supply_chain",
+    "api_security",
+    "business_logic"
+  ],
+  "minimal|": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "business_logic"
+  ],
+  "minimal|QUICK": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets"
+  ],
+  "minimal|Thorough": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "business_logic"
+  ],
+  "minimal|bogus": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "business_logic"
+  ],
+  "minimal|quick": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets"
+  ],
+  "minimal|standard": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "business_logic"
+  ],
+  "minimal|thorough": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure",
+    "config_secrets",
+    "xss",
+    "business_logic"
+  ]
+}

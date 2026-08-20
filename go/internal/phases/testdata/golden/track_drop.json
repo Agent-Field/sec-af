@@ -1,0 +1,31 @@
+{
+  "notes": [
+    "Demoted finding 'First' (verdict=unknown): verifier_error",
+    "Demoted finding 'Second' (verdict=unverified): verdict_unverified",
+    "Demoted finding 'Third' (verdict=unknown): verifier_error"
+  ],
+  "summary": {
+    "by_reason": {
+      "verdict_unverified": 1,
+      "verifier_error": 2
+    },
+    "demoted_total": 3,
+    "findings": [
+      {
+        "original_verdict": null,
+        "reason": "verifier_error",
+        "title": "First"
+      },
+      {
+        "original_verdict": "unverified",
+        "reason": "verdict_unverified",
+        "title": "Second"
+      },
+      {
+        "original_verdict": "",
+        "reason": "verifier_error",
+        "title": "Third"
+      }
+    ]
+  }
+}

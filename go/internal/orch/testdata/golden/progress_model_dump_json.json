@@ -1,0 +1,4 @@
+{
+  "fractional": "{\"phase\":\"hunt\",\"phase_progress\":0.5,\"agents_total\":4,\"agents_completed\":2,\"agents_running\":2,\"findings_so_far\":13,\"elapsed_seconds\":1.25,\"estimated_remaining_seconds\":1.25,\"cost_so_far_usd\":0.1235}",
+  "unit_progress": "{\"phase\":\"recon\",\"phase_progress\":1.0,\"agents_total\":2,\"agents_completed\":2,\"agents_running\":0,\"findings_so_far\":0,\"elapsed_seconds\":2.5,\"estimated_remaining_seconds\":0.0,\"cost_so_far_usd\":0.0}"
+}

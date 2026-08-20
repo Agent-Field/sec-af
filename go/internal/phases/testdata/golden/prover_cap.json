@@ -1,0 +1,11 @@
+{
+  "bogus|null": 30,
+  "quick|3": 3,
+  "quick|50": 10,
+  "quick|null": 10,
+  "standard|-5": 0,
+  "standard|0": 0,
+  "standard|null": 30,
+  "thorough|12345": 10000,
+  "thorough|null": 10000
+}

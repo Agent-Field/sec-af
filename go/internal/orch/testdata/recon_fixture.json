@@ -1,0 +1,143 @@
+{
+  "full": {
+    "architecture": {
+      "api_surface": [
+        {
+          "auth_required": true,
+          "file_path": "src/api/users.py",
+          "handler": "list_users",
+          "line": 12,
+          "method": "GET",
+          "path": "/users",
+          "rate_limited": false
+        },
+        {
+          "auth_required": false,
+          "file_path": "src/api/users.py",
+          "handler": "delete_user",
+          "line": 40,
+          "method": "DELETE",
+          "path": "/users/{id}",
+          "rate_limited": false
+        }
+      ],
+      "app_type": "web_api",
+      "entry_points": [],
+      "modules": [
+        {
+          "dependencies": [],
+          "language": "Python",
+          "name": "api",
+          "path": "src/api"
+        },
+        {
+          "dependencies": [],
+          "language": "TypeScript",
+          "name": "web",
+          "path": "web"
+        },
+        {
+          "dependencies": [],
+          "language": "python",
+          "name": "legacy",
+          "path": "legacy"
+        },
+        {
+          "dependencies": [],
+          "language": "",
+          "name": "blank",
+          "path": "blank"
+        }
+      ],
+      "services": [],
+      "trust_boundaries": []
+    },
+    "config": {
+      "misconfigs": [
+        {
+          "category": "tls",
+          "file_path": "nginx.conf",
+          "id": "misconfig-1",
+          "key": "ssl_protocols",
+          "line": 3,
+          "risk": "TLS 1.0 enabled",
+          "value": "TLSv1"
+        }
+      ],
+      "secrets": [
+        {
+          "confidence": "high",
+          "file_path": "src/config.py",
+          "id": "secret-1",
+          "line": 7,
+          "match": "API_KEY = \"sk-live-123\"",
+          "secret_type": "api_key"
+        }
+      ]
+    },
+    "data_flows": {},
+    "dependencies": {
+      "direct_count": 5,
+      "known_cves": [
+        {
+          "cve_id": "CVE-2024-0001",
+          "cvss_v4_score": 9.1,
+          "direct": true,
+          "fixed_version": "2.32.0",
+          "installed_version": "2.20.0",
+          "package": "requests"
+        }
+      ],
+      "outdated": [],
+      "sbom": [],
+      "transitive_count": 20
+    },
+    "file_count": 42,
+    "frameworks": [
+      "django"
+    ],
+    "languages": [
+      "python",
+      "typescript"
+    ],
+    "lines_of_code": 5000,
+    "security_context": {
+      "auth_details": "Bearer token",
+      "auth_model": "jwt",
+      "crypto_usage": [
+        {
+          "algorithm": "TLSv1.0",
+          "is_weak": true,
+          "usage_context": "legacy tls terminator"
+        },
+        {
+          "algorithm": "AES-256-GCM",
+          "is_weak": false,
+          "usage_context": "at-rest encryption"
+        }
+      ],
+      "deployment_signals": [],
+      "framework_security": [
+        "django-rest-framework",
+        "",
+        "django-rest-framework",
+        "Django"
+      ],
+      "security_headers": []
+    }
+  },
+  "minimal": {
+    "architecture": {},
+    "config": {},
+    "data_flows": {},
+    "dependencies": {},
+    "file_count": 0,
+    "frameworks": [],
+    "languages": [],
+    "lines_of_code": 0,
+    "security_context": {
+      "auth_details": "",
+      "auth_model": ""
+    }
+  }
+}

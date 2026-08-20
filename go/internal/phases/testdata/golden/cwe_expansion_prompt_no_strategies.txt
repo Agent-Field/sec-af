@@ -1,0 +1,6 @@
+Based on this codebase recon context, suggest additional CWE IDs that hunters should look for beyond their hardcoded baselines. Only suggest CWEs that are specifically relevant to the detected languages, frameworks, and architecture patterns.
+
+Active strategies: 
+
+Recon context:
+Unknown application

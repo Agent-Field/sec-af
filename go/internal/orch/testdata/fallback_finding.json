@@ -1,0 +1,20 @@
+{
+  "code_snippet": "cursor.execute(f\"SELECT * FROM users WHERE id = {user_id}\")",
+  "confidence": "high",
+  "cwe_id": "CWE-89",
+  "cwe_name": "SQL Injection",
+  "data_flow": [],
+  "description": "Potential injection from request parameter",
+  "end_line": 12,
+  "estimated_severity": "high",
+  "file_path": "src/users.py",
+  "finding_type": "sast",
+  "fingerprint": "fp-1",
+  "function_name": "get_user",
+  "hunter_strategy": "injection",
+  "id": "raw-1",
+  "owasp_category": "A03:2021",
+  "related_files": [],
+  "start_line": 10,
+  "title": "Potential SQL injection"
+}
