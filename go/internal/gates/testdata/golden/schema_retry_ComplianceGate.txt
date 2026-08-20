@@ -1,0 +1,55 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "$defs": {
+    "ComplianceSuggestion": {
+      "properties": {
+        "framework": {
+          "title": "Framework",
+          "type": "string"
+        },
+        "control_id": {
+          "title": "Control Id",
+          "type": "string"
+        },
+        "control_name": {
+          "title": "Control Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "framework",
+        "control_id",
+        "control_name"
+      ],
+      "title": "ComplianceSuggestion",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "mappings": {
+      "items": {
+        "$ref": "#/$defs/ComplianceSuggestion"
+      },
+      "title": "Mappings",
+      "type": "array"
+    },
+    "confidence": {
+      "title": "Confidence",
+      "type": "string"
+    }
+  },
+  "required": [
+    "mappings",
+    "confidence"
+  ],
+  "title": "ComplianceGate",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

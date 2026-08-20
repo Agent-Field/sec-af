@@ -1,0 +1,306 @@
+{
+  "agent_invocations": 3,
+  "attack_chains": [
+    {
+      "chain_id": "chain-x",
+      "combined_impact": "Impact <script> & co.",
+      "combined_severity": "high",
+      "description": "The second id is not in result.findings.",
+      "findings": [
+        "dup-a",
+        "not-in-result"
+      ],
+      "mitre_attack_mapping": null,
+      "title": "Chain naming a missing finding"
+    }
+  ],
+  "branch": "",
+  "by_severity": {
+    "critical": 1,
+    "info": 1,
+    "low": 1,
+    "medium": 1
+  },
+  "commit_sha": "abc123",
+  "compliance_gaps": [
+    {
+      "control_id": "A03:2021",
+      "control_name": "Injection",
+      "cwe_ids": [
+        "CWE-78",
+        "CWE-79",
+        "CWE-89",
+        "CWE-90",
+        "CWE-91",
+        "CWE-94",
+        "CWE-917"
+      ],
+      "finding_count": 7,
+      "framework": "OWASP",
+      "max_severity": "info"
+    },
+    {
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control",
+      "cwe_ids": [
+        "CWE-862"
+      ],
+      "finding_count": 1,
+      "framework": "OWASP",
+      "max_severity": "unknown-severity"
+    }
+  ],
+  "confirmed": 1,
+  "cost_breakdown": {
+    "hunt": 1.0,
+    "prove": 0.0
+  },
+  "cost_usd": 1.005,
+  "depth_profile": "thorough",
+  "duration_seconds": 0.05,
+  "findings": [
+    {
+      "chain_id": "chain-x",
+      "chain_step": 0,
+      "compliance": [
+        {
+          "control_id": "A03:2021",
+          "control_name": "Injection",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "A01:2021",
+          "control_name": "Broken Access Control",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "Req  6.2.4",
+          "control_name": "Custom software",
+          "framework": "PCI-DSS"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-89",
+      "cwe_name": "SQL Injection",
+      "description": "Backslash \\ and tab\tand newline stay in one line.",
+      "drop_reason": null,
+      "enables": null,
+      "epss": null,
+      "evidence_level": 3,
+      "exploitability_score": 4.5,
+      "finding_type": "sast",
+      "fingerprint": "fp-dup-a",
+      "id": "dup-a",
+      "location": {
+        "code_snippet": "",
+        "end_column": null,
+        "end_line": 3,
+        "file_path": "src/naïve.py",
+        "function_name": null,
+        "start_column": 1,
+        "start_line": 3
+      },
+      "owasp_category": null,
+      "proof": null,
+      "rationale": "",
+      "related_locations": [],
+      "remediation": null,
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/sast/sql-injection",
+      "sarif_security_severity": 11.5,
+      "severity": "medium",
+      "tags": [
+        "zeta",
+        "alpha"
+      ],
+      "title": "Naïve \"quote\" & <tag> handling",
+      "verdict": "likely"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [],
+      "cvss_v4": null,
+      "cwe_id": "CWE-89",
+      "cwe_name": "SQL Injection",
+      "description": "Aggregates into the same SARIF rule as dup-a.",
+      "drop_reason": null,
+      "enables": null,
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 9.25,
+      "finding_type": "sast",
+      "fingerprint": "fp-dup-b",
+      "id": "dup-b",
+      "location": {
+        "code_snippet": null,
+        "end_column": 4,
+        "end_line": 9,
+        "file_path": "src/dup.py",
+        "function_name": null,
+        "start_column": null,
+        "start_line": 7
+      },
+      "owasp_category": "A03:2021",
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "source → sink",
+            "file": "src/§.py",
+            "line": 1,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": null,
+        "exploit_hypothesis": "h",
+        "exploit_payload": null,
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": null,
+        "verification_method": "trace",
+        "vulnerable_code": null
+      },
+      "rationale": "Confirmed by trace.",
+      "related_locations": [
+        {
+          "code_snippet": null,
+          "end_column": null,
+          "end_line": 2,
+          "file_path": "src/other.py",
+          "function_name": null,
+          "start_column": null,
+          "start_line": 2
+        }
+      ],
+      "remediation": null,
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/sast/sql-injection",
+      "sarif_security_severity": -1.0,
+      "severity": "critical",
+      "tags": [],
+      "title": "Second finding on the same rule",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "A.8.28",
+          "control_name": "Secure coding",
+          "framework": "ISO27001"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "cwe-79",
+      "cwe_name": "Cross-site Scripting",
+      "description": "Exercises the _rule_name fallback.",
+      "drop_reason": null,
+      "enables": null,
+      "epss": null,
+      "evidence_level": 1,
+      "exploitability_score": 0.0,
+      "finding_type": "config",
+      "fingerprint": "fp-fallback",
+      "id": "rule-fallback",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 1,
+        "file_path": "src/views.py",
+        "function_name": null,
+        "start_column": null,
+        "start_line": 1
+      },
+      "owasp_category": null,
+      "proof": null,
+      "rationale": "Unclear.",
+      "related_locations": [],
+      "remediation": null,
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/",
+      "sarif_security_severity": 0.04,
+      "severity": "info",
+      "tags": [
+        "b",
+        "a"
+      ],
+      "title": "Rule id with an empty last segment",
+      "verdict": "inconclusive"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [],
+      "cvss_v4": null,
+      "cwe_id": "CWE-798",
+      "cwe_name": "Hard-coded Credentials",
+      "description": "not_exploitable findings never reach the SARIF document.",
+      "drop_reason": null,
+      "enables": null,
+      "epss": null,
+      "evidence_level": 1,
+      "exploitability_score": 1.0,
+      "finding_type": "secrets",
+      "fingerprint": "fp-dropped",
+      "id": "dropped",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 5,
+        "file_path": "src/config.py",
+        "function_name": null,
+        "start_column": null,
+        "start_line": 5
+      },
+      "owasp_category": null,
+      "proof": null,
+      "rationale": "False positive.",
+      "related_locations": [],
+      "remediation": null,
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/secrets/hardcoded",
+      "sarif_security_severity": 2.0,
+      "severity": "low",
+      "tags": [],
+      "title": "Filtered out of SARIF",
+      "verdict": "not_exploitable"
+    }
+  ],
+  "inconclusive": 1,
+  "likely": 1,
+  "metadata": {
+    "flag": true,
+    "nested": {
+      "a": "1",
+      "b": "2"
+    },
+    "note": "quote\" backslash\\ <tag> & ünïcode"
+  },
+  "noise_reduction_pct": 0.0,
+  "not_exploitable": 1,
+  "policy_violations": [
+    {
+      "file_path": "src/naïve.py",
+      "policy": "no-eval",
+      "severity": "high",
+      "violation_description": "eval() on request data"
+    }
+  ],
+  "provider": "aforge",
+  "repository": "Agent-Field/sec-af—naïve",
+  "sarif": "",
+  "strategies_used": [
+    "injection",
+    "auth",
+    "xss"
+  ],
+  "timestamp": "2026-03-04T10:30:00.123456Z",
+  "total_raw_findings": 9
+}

@@ -1,0 +1,44 @@
+Supply-chain-focused recon summary.
+
+Dependency inventory: direct=7, transitive=143, SBOM entries=14.
+
+Known CVE exposure (reachable/high severity first): 18 total, showing top 15:
+- CVE-2023-0014 in log4j 2.14.0 (fixed=2.17.1, cvss=10.0, epss=0.97, direct=False, reachable=True)
+- CVE-2023-0003 in lodash 4.17.19 (fixed=4.17.21, cvss=9.8, epss=0.9, direct=True, reachable=True)
+- CVE-2023-0001 in django 4.2.1 (fixed=4.2.5, cvss=9.8, epss=0.5, direct=True, reachable=True)
+- CVE-2023-0013 in pyyaml 5.3 (fixed=5.4, cvss=9.8, epss=0.5, direct=False, reachable=True)
+- CVE-2023-0008 in nokogiri 1.13.6 (fixed=1.13.10, cvss=8.8, epss=0.3, direct=False, reachable=True)
+- CVE-2023-0018 in curl 7.68.0 (fixed=7.88.0, cvss=8.1, epss=None, direct=True, reachable=True)
+- CVE-2023-0009 in golang.org/x/net 0.7.0 (fixed=0.17.0, cvss=7.5, epss=0.44, direct=False, reachable=True)
+- CVE-2023-0012 in requests 2.31.0 (fixed=2.32.0, cvss=6.5, epss=0.07, direct=True, reachable=True)
+- CVE-2023-0005 in axios 0.21.1 (fixed=0.21.2, cvss=5.3, epss=0.02, direct=False, reachable=True)
+- CVE-2023-0017 in libxml2 2.9.10 (fixed=unknown, cvss=None, epss=0.25, direct=False, reachable=True)
+- CVE-2023-0010 in rails 7.0.4 (fixed=7.0.7, cvss=9.1, epss=0.6, direct=True, reachable=False)
+- CVE-2023-0016 in zlib 1.2.11 (fixed=1.2.12, cvss=8.2, epss=0.04, direct=False, reachable=False)
+- CVE-2023-0002 in urllib3 1.26.5 (fixed=unknown, cvss=7.5, epss=0.1, direct=False, reachable=False)
+- CVE-2023-0015 in openssl 1.1.1k (fixed=1.1.1t, cvss=7.4, epss=0.12, direct=False, reachable=None)
+- CVE-2023-0006 in jinja2 3.1.2 (fixed=unknown, cvss=6.1, epss=None, direct=False, reachable=False)
+
+Outdated dependencies: 12 total, showing top 10:
+- pkg-0: 1.0.0 -> 2.0.0 (direct=True)
+- pkg-1: 1.1.0 -> 2.1.0 (direct=False)
+- pkg-2: 1.2.0 -> 2.2.0 (direct=True)
+- pkg-3: 1.3.0 -> 2.3.0 (direct=False)
+- pkg-4: 1.4.0 -> 2.4.0 (direct=True)
+- pkg-5: 1.5.0 -> 2.5.0 (direct=False)
+- pkg-6: 1.6.0 -> 2.6.0 (direct=True)
+- pkg-7: 1.7.0 -> 2.7.0 (direct=False)
+- pkg-8: 1.8.0 -> 2.8.0 (direct=True)
+- pkg-9: 1.9.0 -> 2.9.0 (direct=False)
+
+Primary dependency ecosystems in this repo: 12 total, showing top 10:
+- go: github.com/gin-gonic/gin@1.9.0
+- go: golang.org/x/net@0.7.0
+- npm: axios@0.21.1
+- npm: express@4.17.1
+- npm: lodash@4.17.19
+- npm: minimist@1.2.5
+- pypi: django@4.2.1
+- pypi: jinja2@3.1.2
+- pypi: requests@2.31.0
+- pypi: urllib3@1.26.5

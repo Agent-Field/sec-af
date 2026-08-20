@@ -1,0 +1,56 @@
+{
+  "input": {
+    "secrets": [
+      "api_key | src/config.py:7 | API_KEY = \"sk-live-123\" | high | false",
+      "password | src/settings.py | pw=hunter2 |  | "
+    ],
+    "misconfigs": [
+      "dangerous_config | deploy/prod.yaml:22 | DEBUG | Debug mode enabled in production | Set DEBUG=false",
+      "cors | deploy/nginx.conf | N/A | Wildcard origin | unknown"
+    ]
+  },
+  "want": {
+    "secrets": [
+      {
+        "id": "<uuid>",
+        "secret_type": "api_key",
+        "file_path": "src/config.py",
+        "line": 7,
+        "match": "API_KEY = \"sk-live-123\"",
+        "confidence": "high",
+        "is_test_value": false
+      },
+      {
+        "id": "<uuid>",
+        "secret_type": "password",
+        "file_path": "src/settings.py",
+        "line": 0,
+        "match": "pw=hunter2",
+        "confidence": "medium",
+        "is_test_value": null
+      }
+    ],
+    "misconfigs": [
+      {
+        "id": "<uuid>",
+        "category": "dangerous_config",
+        "file_path": "deploy/prod.yaml",
+        "line": 22,
+        "key": "DEBUG",
+        "value": null,
+        "risk": "Debug mode enabled in production",
+        "remediation": "Set DEBUG=false"
+      },
+      {
+        "id": "<uuid>",
+        "category": "cors",
+        "file_path": "deploy/nginx.conf",
+        "line": null,
+        "key": null,
+        "value": null,
+        "risk": "Wildcard origin",
+        "remediation": null
+      }
+    ]
+  }
+}

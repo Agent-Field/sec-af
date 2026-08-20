@@ -1,0 +1,83 @@
+{
+  "input": {
+    "flows": [
+      "request.body | sql.execute | false | src/db.py, src/routes.py",
+      "argv | os.system | TRUE | ",
+      "env | log | garbage | a, , b ,"
+    ],
+    "sanitization_points": [
+      "src/valid.py:12 | sanitize | escape | sqli, xss",
+      "src/valid.py |  | strip | "
+    ],
+    "sinks": [
+      "sql | src/db.py:88 | execute | user-controlled query string",
+      "exec | src/run.py |  | "
+    ]
+  },
+  "want": {
+    "flows": [
+      {
+        "source": "request.body",
+        "path": [],
+        "sink": "sql.execute",
+        "sanitized": false,
+        "files": [
+          "src/db.py",
+          "src/routes.py"
+        ]
+      },
+      {
+        "source": "argv",
+        "path": [],
+        "sink": "os.system",
+        "sanitized": true,
+        "files": []
+      },
+      {
+        "source": "env",
+        "path": [],
+        "sink": "log",
+        "sanitized": false,
+        "files": [
+          "a",
+          "b"
+        ]
+      }
+    ],
+    "sanitization_points": [
+      {
+        "file_path": "src/valid.py",
+        "line": 12,
+        "function_name": "sanitize",
+        "sanitization_type": "escape",
+        "protects_against": [
+          "sqli",
+          "xss"
+        ]
+      },
+      {
+        "file_path": "src/valid.py",
+        "line": 0,
+        "function_name": null,
+        "sanitization_type": "strip",
+        "protects_against": []
+      }
+    ],
+    "sinks": [
+      {
+        "sink_type": "sql",
+        "file_path": "src/db.py",
+        "line": 88,
+        "function_name": "execute",
+        "exploitability_notes": "user-controlled query string"
+      },
+      {
+        "sink_type": "exec",
+        "file_path": "src/run.py",
+        "line": 0,
+        "function_name": null,
+        "exploitability_notes": null
+      }
+    ]
+  }
+}

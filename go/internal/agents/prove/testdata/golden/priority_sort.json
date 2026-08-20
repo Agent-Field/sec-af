@@ -1,0 +1,42 @@
+{
+  "input": [
+    {
+      "id": "a",
+      "estimated_severity": "low",
+      "confidence": "high"
+    },
+    {
+      "id": "b",
+      "estimated_severity": "critical",
+      "confidence": "low"
+    },
+    {
+      "id": "c",
+      "estimated_severity": "critical",
+      "confidence": "high"
+    },
+    {
+      "id": "d",
+      "estimated_severity": "info",
+      "confidence": "medium"
+    },
+    {
+      "id": "e",
+      "estimated_severity": "critical",
+      "confidence": "low"
+    },
+    {
+      "id": "f",
+      "estimated_severity": "medium",
+      "confidence": "medium"
+    }
+  ],
+  "want_ids": [
+    "c",
+    "b",
+    "e",
+    "f",
+    "a",
+    "d"
+  ]
+}

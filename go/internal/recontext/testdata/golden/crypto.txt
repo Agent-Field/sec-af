@@ -1,0 +1,44 @@
+Cryptography-focused recon summary.
+
+Crypto usage entries: 16 total.
+
+Algorithms and key handling (weak entries first): 16 total, showing top 15:
+- algorithm=MD5, key_size=None, mode=None, context=password hashing, is_weak=True
+- algorithm=RSA, key_size=1024, mode=None, context=token signing, is_weak=True
+- algorithm=DES, key_size=56, mode=CBC, context=legacy export, is_weak=True
+- algorithm=HMAC-SHA1, key_size=160, mode=None, context=webhook signature, is_weak=True
+- algorithm=RC4, key_size=128, mode=None, context=unspecified, is_weak=True
+- algorithm=SHA-1, key_size=None, mode=None, context=checksum, is_weak=True
+- algorithm=AES, key_size=128, mode=ECB, context=legacy blob, is_weak=True
+- algorithm=3DES, key_size=168, mode=CBC, context=legacy tape, is_weak=True
+- algorithm=AES, key_size=256, mode=GCM, context=at-rest encryption, is_weak=False
+- algorithm=SHA-256, key_size=None, mode=None, context=unspecified, is_weak=False
+- algorithm=ChaCha20, key_size=256, mode=Poly1305, context=transport, is_weak=False
+- algorithm=bcrypt, key_size=None, mode=None, context=password hashing, is_weak=False
+- algorithm=ECDSA, key_size=256, mode=None, context=JWT signing, is_weak=None
+- algorithm=PBKDF2, key_size=None, mode=None, context=key derivation, is_weak=False
+- algorithm=Ed25519, key_size=256, mode=None, context=package signing, is_weak=False
+
+Potential secret/key findings from config scan: 17 total, showing top 10:
+- aws_access_key at config/env_0.yaml:3 (confidence=high)
+- github_token at config/env_1.yaml:4 (confidence=medium)
+- private_key at config/env_2.yaml:5 (confidence=low)
+- slack_webhook at config/env_3.yaml:6 (confidence=high)
+- generic_api_key at config/env_4.yaml:7 (confidence=medium)
+- aws_access_key at config/env_5.yaml:8 (confidence=low)
+- github_token at config/env_6.yaml:9 (confidence=high)
+- private_key at config/env_7.yaml:10 (confidence=medium)
+- slack_webhook at config/env_8.yaml:11 (confidence=low)
+- generic_api_key at config/env_9.yaml:12 (confidence=high)
+
+Deployment/TLS/security header signals: 14 total, showing top 10:
+- kubernetes ingress with TLS termination
+- docker-compose exposes 5432
+- no WAF in front of /api
+- secrets mounted from vault
+- readiness probe on /healthz
+- single replica for the worker
+- TLS 1.2 minimum
+- internal service mesh mTLS
+- Content-Security-Policy: default-src 'self'
+- X-Content-Type-Options: nosniff

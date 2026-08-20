@@ -1,0 +1,7 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `sbom`: One string per dependency. Format: 'name | version | ecosystem | direct(true/false) | license'. Example: 'express | 4.18.2 | npm | true | MIT'
+- `known_cves`: One string per CVE. Format: 'cve_id | package | installed_version | fixed_version | cvss_score | direct | reachable'. Example: 'CVE-2023-1234 | lodash | 4.17.15 | 4.17.21 | 7.5 | true | unknown'
+- `outdated`: One string per outdated dep. Format: 'package | current_version | latest_version | direct(true/false)'. Example: 'express | 4.17.0 | 4.18.2 | true'

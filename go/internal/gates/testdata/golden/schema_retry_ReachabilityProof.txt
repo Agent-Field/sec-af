@@ -1,0 +1,45 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat schema for dependency reachability analysis. 4 fields.",
+  "properties": {
+    "vulnerable_function": {
+      "description": "The vulnerable function/method in the dependency",
+      "title": "Vulnerable Function",
+      "type": "string"
+    },
+    "call_chain": {
+      "description": "Import/call chain from app code to vulnerable function",
+      "items": {
+        "type": "string"
+      },
+      "title": "Call Chain",
+      "type": "array"
+    },
+    "reachable": {
+      "description": "Whether the vulnerable function is actually called",
+      "title": "Reachable",
+      "type": "boolean"
+    },
+    "direct": {
+      "description": "Whether the dependency is direct or transitive",
+      "title": "Direct",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "vulnerable_function",
+    "call_chain",
+    "reachable",
+    "direct"
+  ],
+  "title": "ReachabilityProof",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

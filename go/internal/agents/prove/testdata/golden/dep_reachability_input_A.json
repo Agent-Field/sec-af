@@ -1,0 +1,19 @@
+{
+  "cve": "CVE-2021-44228",
+  "package": "log4j-core",
+  "vulnerable_function": "JndiLookup.lookup",
+  "version": "2.14.1",
+  "evidence": {
+    "direct": true,
+    "manifest": "pom.xml",
+    "nested": {
+      "a": 1,
+      "b": [
+        true,
+        null
+      ]
+    },
+    "score": 9.8,
+    "transitive_depth": 2
+  }
+}

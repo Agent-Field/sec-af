@@ -1,0 +1,5 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `additional_cwes`: CWE IDs to add beyond baseline, e.g. ['CWE-918', 'CWE-611'].

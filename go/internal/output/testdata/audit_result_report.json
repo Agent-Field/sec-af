@@ -1,0 +1,100 @@
+{
+  "agent_invocations": 12,
+  "attack_chains": [],
+  "branch": "main",
+  "by_severity": {
+    "critical": 0,
+    "high": 1,
+    "info": 0,
+    "low": 0,
+    "medium": 0
+  },
+  "commit_sha": "abc123def456",
+  "compliance_gaps": [
+    {
+      "control_id": "A03:2021",
+      "control_name": "Injection",
+      "cwe_ids": [
+        "CWE-89"
+      ],
+      "finding_count": 1,
+      "framework": "OWASP",
+      "max_severity": "high"
+    }
+  ],
+  "confirmed": 1,
+  "cost_breakdown": {
+    "hunt": 0.07,
+    "prove": 0.05,
+    "recon": 0.03
+  },
+  "cost_usd": 0.15,
+  "depth_profile": "standard",
+  "duration_seconds": 45.2,
+  "findings": [
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [
+        {
+          "control_id": "A03:2021",
+          "control_name": "Injection",
+          "framework": "OWASP"
+        },
+        {
+          "control_id": "Req 6.2.4",
+          "control_name": "Secure coding",
+          "framework": "PCI-DSS"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-89",
+      "cwe_name": "SQL Injection",
+      "description": "Test description",
+      "drop_reason": null,
+      "enables": null,
+      "epss": null,
+      "evidence_level": 3,
+      "exploitability_score": 7.5,
+      "finding_type": "sast",
+      "fingerprint": "test-fp",
+      "id": "compliance-report-finding",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 15,
+        "file_path": "app.py",
+        "function_name": null,
+        "start_column": null,
+        "start_line": 10
+      },
+      "owasp_category": null,
+      "proof": null,
+      "rationale": "Test rationale",
+      "related_locations": [],
+      "remediation": null,
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/sast/cwe-89",
+      "sarif_security_severity": 7.5,
+      "severity": "high",
+      "tags": [],
+      "title": "Test Finding",
+      "verdict": "confirmed"
+    }
+  ],
+  "inconclusive": 0,
+  "likely": 0,
+  "metadata": {},
+  "noise_reduction_pct": 80.0,
+  "not_exploitable": 4,
+  "policy_violations": [],
+  "provider": "harness",
+  "repository": "https://github.com/test/repo",
+  "sarif": "",
+  "strategies_used": [
+    "injection",
+    "auth"
+  ],
+  "timestamp": "2025-01-15T10:30:00Z",
+  "total_raw_findings": 5
+}

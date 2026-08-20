@@ -1,0 +1,10 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `app_type`: Application type: web_api, cli_tool, library, microservice, monolith
+- `modules`: One string per module. Format: 'name | path | language | description'. Example: 'auth | src/auth/ | python | Authentication and session management'
+- `entry_points`: One string per entry point. Format: 'kind | route_or_id | file_path:line | auth_required'. Example: 'http | POST /api/login | src/routes.py:42 | false'
+- `trust_boundaries`: One string per boundary. Format: 'name | source_zone | target_zone | description'. Example: 'API Gateway | external | internal | Rate limiting and auth'
+- `services`: One string per external service. Format: 'name | type | endpoint | auth_mechanism'. Example: 'PostgreSQL | database | localhost:5432 | password'
+- `api_endpoints`: One string per API endpoint. Format: 'method | path | handler | file_path:line | auth_required | rate_limited'. Example: 'GET | /api/users | get_users | src/api.py:15 | true | false'

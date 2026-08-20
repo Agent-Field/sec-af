@@ -1,0 +1,64 @@
+Injection-focused recon summary.
+
+Codebase profile: 2417 files, 184213 LOC, languages=Python, JavaScript, Go, Ruby, Rust, python, frameworks=Django, next.js, Spring Boot,   React  , unknown-fw, NEXT, Vue.
+
+Entry points likely to receive untrusted input: 17 total, showing top 15:
+- http handler_0 (app/entry/e0.py:10)
+- HTTP /v1/resource/1 (app/entry/e1.py:17)
+- cli /v1/resource/2 (app/entry/e2.py:24)
+- api handler_3 (app/entry/e3.py:31)
+- graphql /v1/resource/4 (app/entry/e4.py:38)
+- rpc /v1/resource/5 (app/entry/e5.py:45)
+- route handler_6 (app/entry/e6.py:52)
+- cron /v1/resource/7 (app/entry/e7.py:59)
+- queue /v1/resource/8 (app/entry/e8.py:66)
+- http handler_9 (app/entry/e9.py:73)
+- api /v1/resource/10 (app/entry/e10.py:80)
+- grpc /v1/resource/11 (app/entry/e11.py:87)
+- http handler_12 (app/entry/e12.py:94)
+- route /v1/resource/13 (app/entry/e13.py:101)
+- cli /v1/resource/14 (app/entry/e14.py:108)
+
+High-value sinks: 18 total, showing top 15:
+- sql at app/sink/k0.py:200
+- command at app/sink/k1.py:202 (sink_fn_1)
+- template at app/sink/k2.py:204 (sink_fn_2)
+- file at app/sink/k3.py:206 (sink_fn_3)
+- network at app/sink/k4.py:208
+- deserialization at app/sink/k5.py:210 (sink_fn_5)
+- sql at app/sink/k6.py:212 (sink_fn_6)
+- command at app/sink/k7.py:214 (sink_fn_7)
+- template at app/sink/k8.py:216
+- file at app/sink/k9.py:218 (sink_fn_9)
+- network at app/sink/k10.py:220 (sink_fn_10)
+- deserialization at app/sink/k11.py:222 (sink_fn_11)
+- sql at app/sink/k12.py:224
+- command at app/sink/k13.py:226 (sink_fn_13)
+- template at app/sink/k14.py:228 (sink_fn_14)
+
+Source-to-sink flow candidates (unsanitized first): 13 total, showing top 13:
+- request.args['q'] -> cursor.execute; sanitized=False; files=app/search/index.ts, app/db/raw.py, app/util/a.py
+- request.json['url'] -> requests.get; sanitized=False; files=app/integrations/webhooks.go, app/net/client.go
+- form['password'] -> logger.info; sanitized=False; files=app/auth/service.py, app/obs/telemetry.go
+- query['email'] -> smtp.send; sanitized=False; files=app/notify/mailer.rb
+- upload.filename -> open; sanitized=False; files=app/media/uploads.py, app/common/cache.py, app/common/guard.py
+- env['DEBUG'] -> template.render; sanitized=False; files=app/web/render.py
+- request.body -> eval; sanitized=False; files=app/admin/views.py
+- websocket.msg -> subprocess.run; sanitized=False; files=app/ws/handler.py, app/ws/exec.py
+- cli.argv -> os.system; sanitized=False; files=tools/run.py
+- queue.payload -> pickle.loads; sanitized=False; files=app/worker/task.py
+- request.args['redirect'] -> HttpResponseRedirect; sanitized=False; files=app/web/redirect.py
+- request.headers['X-User-Phone'] -> audit_log; sanitized=False; files=app/obs/audit.py
+- graphql.variables -> db.query; sanitized=False; files=app/api/graphql.ts
+
+Known sanitization points: 12 total, showing top 10:
+- app/sanitize/s0.py:5 type=escape protects=unspecified
+- app/sanitize/s1.py:9 type=parameterize protects=CWE-80, CWE-90
+- app/sanitize/s2.py:13 type=allowlist protects=CWE-81, CWE-91
+- app/sanitize/s3.py:17 type=encode protects=unspecified
+- app/sanitize/s4.py:21 type=escape protects=CWE-83, CWE-93
+- app/sanitize/s5.py:25 type=parameterize protects=CWE-84, CWE-94
+- app/sanitize/s6.py:29 type=allowlist protects=unspecified
+- app/sanitize/s7.py:33 type=encode protects=CWE-86, CWE-96
+- app/sanitize/s8.py:37 type=escape protects=CWE-87, CWE-97
+- app/sanitize/s9.py:41 type=parameterize protects=unspecified

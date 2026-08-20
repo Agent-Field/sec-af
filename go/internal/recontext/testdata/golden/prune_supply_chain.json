@@ -1,0 +1,381 @@
+{
+  "dependencies": {
+    "sbom": [
+      {
+        "name": "django",
+        "version": "4.2.1",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "BSD-3-Clause"
+      },
+      {
+        "name": "requests",
+        "version": "2.31.0",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "urllib3",
+        "version": "1.26.5",
+        "ecosystem": "pypi",
+        "direct": false,
+        "license": "MIT"
+      },
+      {
+        "name": "jinja2",
+        "version": "3.1.2",
+        "ecosystem": "pypi",
+        "direct": false,
+        "license": null
+      },
+      {
+        "name": "lodash",
+        "version": "4.17.19",
+        "ecosystem": "npm",
+        "direct": true,
+        "license": "MIT"
+      },
+      {
+        "name": "express",
+        "version": "4.17.1",
+        "ecosystem": "npm",
+        "direct": true,
+        "license": "MIT"
+      },
+      {
+        "name": "minimist",
+        "version": "1.2.5",
+        "ecosystem": "npm",
+        "direct": false,
+        "license": "MIT"
+      },
+      {
+        "name": "axios",
+        "version": "0.21.1",
+        "ecosystem": "npm",
+        "direct": false,
+        "license": "MIT"
+      },
+      {
+        "name": "github.com/gin-gonic/gin",
+        "version": "1.9.0",
+        "ecosystem": "go",
+        "direct": true,
+        "license": "MIT"
+      },
+      {
+        "name": "golang.org/x/net",
+        "version": "0.7.0",
+        "ecosystem": "go",
+        "direct": false,
+        "license": "BSD-3-Clause"
+      },
+      {
+        "name": "rails",
+        "version": "7.0.4",
+        "ecosystem": "rubygems",
+        "direct": true,
+        "license": "MIT"
+      },
+      {
+        "name": "nokogiri",
+        "version": "1.13.6",
+        "ecosystem": "rubygems",
+        "direct": false,
+        "license": "MIT"
+      },
+      {
+        "name": "django",
+        "version": "4.2.1",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "BSD-3-Clause"
+      },
+      {
+        "name": "requests",
+        "version": "2.31.0",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "Apache-2.0"
+      }
+    ],
+    "known_cves": [
+      {
+        "cve_id": "CVE-2023-0001",
+        "package": "django",
+        "installed_version": "4.2.1",
+        "fixed_version": "4.2.5",
+        "cvss_v4_score": 9.8,
+        "epss_score": 0.5,
+        "direct": true,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0002",
+        "package": "urllib3",
+        "installed_version": "1.26.5",
+        "fixed_version": null,
+        "cvss_v4_score": 7.5,
+        "epss_score": 0.1,
+        "direct": false,
+        "reachable": false
+      },
+      {
+        "cve_id": "CVE-2023-0003",
+        "package": "lodash",
+        "installed_version": "4.17.19",
+        "fixed_version": "4.17.21",
+        "cvss_v4_score": 9.8,
+        "epss_score": 0.9,
+        "direct": true,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0004",
+        "package": "minimist",
+        "installed_version": "1.2.5",
+        "fixed_version": "1.2.6",
+        "cvss_v4_score": null,
+        "epss_score": null,
+        "direct": false,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0005",
+        "package": "axios",
+        "installed_version": "0.21.1",
+        "fixed_version": "0.21.2",
+        "cvss_v4_score": 5.3,
+        "epss_score": 0.02,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0006",
+        "package": "jinja2",
+        "installed_version": "3.1.2",
+        "fixed_version": null,
+        "cvss_v4_score": 6.1,
+        "epss_score": null,
+        "direct": false,
+        "reachable": false
+      },
+      {
+        "cve_id": "CVE-2023-0007",
+        "package": "express",
+        "installed_version": "4.17.1",
+        "fixed_version": "4.18.0",
+        "cvss_v4_score": 4.3,
+        "epss_score": 0.005,
+        "direct": true,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0008",
+        "package": "nokogiri",
+        "installed_version": "1.13.6",
+        "fixed_version": "1.13.10",
+        "cvss_v4_score": 8.8,
+        "epss_score": 0.3,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0009",
+        "package": "golang.org/x/net",
+        "installed_version": "0.7.0",
+        "fixed_version": "0.17.0",
+        "cvss_v4_score": 7.5,
+        "epss_score": 0.44,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0010",
+        "package": "rails",
+        "installed_version": "7.0.4",
+        "fixed_version": "7.0.7",
+        "cvss_v4_score": 9.1,
+        "epss_score": 0.6,
+        "direct": true,
+        "reachable": false
+      },
+      {
+        "cve_id": "CVE-2023-0011",
+        "package": "gin",
+        "installed_version": "1.9.0",
+        "fixed_version": null,
+        "cvss_v4_score": 3.7,
+        "epss_score": 0.001,
+        "direct": true,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0012",
+        "package": "requests",
+        "installed_version": "2.31.0",
+        "fixed_version": "2.32.0",
+        "cvss_v4_score": 6.5,
+        "epss_score": 0.07,
+        "direct": true,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0013",
+        "package": "pyyaml",
+        "installed_version": "5.3",
+        "fixed_version": "5.4",
+        "cvss_v4_score": 9.8,
+        "epss_score": 0.5,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0014",
+        "package": "log4j",
+        "installed_version": "2.14.0",
+        "fixed_version": "2.17.1",
+        "cvss_v4_score": 10.0,
+        "epss_score": 0.97,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0015",
+        "package": "openssl",
+        "installed_version": "1.1.1k",
+        "fixed_version": "1.1.1t",
+        "cvss_v4_score": 7.4,
+        "epss_score": 0.12,
+        "direct": false,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0016",
+        "package": "zlib",
+        "installed_version": "1.2.11",
+        "fixed_version": "1.2.12",
+        "cvss_v4_score": 8.2,
+        "epss_score": 0.04,
+        "direct": false,
+        "reachable": false
+      },
+      {
+        "cve_id": "CVE-2023-0017",
+        "package": "libxml2",
+        "installed_version": "2.9.10",
+        "fixed_version": null,
+        "cvss_v4_score": null,
+        "epss_score": 0.25,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0018",
+        "package": "curl",
+        "installed_version": "7.68.0",
+        "fixed_version": "7.88.0",
+        "cvss_v4_score": 8.1,
+        "epss_score": null,
+        "direct": true,
+        "reachable": true
+      }
+    ],
+    "outdated": [
+      {
+        "package": "pkg-0",
+        "current_version": "1.0.0",
+        "latest_version": "2.0.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-1",
+        "current_version": "1.1.0",
+        "latest_version": "2.1.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-2",
+        "current_version": "1.2.0",
+        "latest_version": "2.2.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-3",
+        "current_version": "1.3.0",
+        "latest_version": "2.3.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-4",
+        "current_version": "1.4.0",
+        "latest_version": "2.4.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-5",
+        "current_version": "1.5.0",
+        "latest_version": "2.5.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-6",
+        "current_version": "1.6.0",
+        "latest_version": "2.6.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-7",
+        "current_version": "1.7.0",
+        "latest_version": "2.7.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-8",
+        "current_version": "1.8.0",
+        "latest_version": "2.8.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-9",
+        "current_version": "1.9.0",
+        "latest_version": "2.9.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-10",
+        "current_version": "1.10.0",
+        "latest_version": "2.10.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-11",
+        "current_version": "1.11.0",
+        "latest_version": "2.11.0",
+        "direct": false
+      }
+    ],
+    "direct_count": 7,
+    "transitive_count": 143
+  },
+  "file_count": 2417,
+  "frameworks": [
+    "Django",
+    "next.js",
+    "Spring Boot",
+    "  React  ",
+    "unknown-fw",
+    "NEXT",
+    "Vue"
+  ],
+  "languages": [
+    "Python",
+    "JavaScript",
+    "Go",
+    "Ruby",
+    "Rust",
+    "python"
+  ],
+  "lines_of_code": 184213
+}

@@ -1,0 +1,27 @@
+{
+  "security_critical": [
+    "password",
+    "passwd",
+    "credential",
+    "auth",
+    "token",
+    "session",
+    "encrypt",
+    "decrypt",
+    "signature",
+    "sign",
+    "verify",
+    "jwt",
+    "tls",
+    "ssl",
+    "key"
+  ],
+  "non_security": [
+    "checksum",
+    "etag",
+    "cache",
+    "fingerprint",
+    "dedup",
+    "integrity"
+  ]
+}

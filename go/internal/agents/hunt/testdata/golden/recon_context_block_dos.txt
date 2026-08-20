@@ -1,0 +1,346 @@
+{
+  "app_type": "web_api",
+  "auth_model": "jwt",
+  "frameworks": [
+    "Django",
+    "next.js",
+    "Spring Boot",
+    "  React  ",
+    "unknown-fw",
+    "NEXT",
+    "Vue"
+  ],
+  "languages": [
+    "Python",
+    "JavaScript",
+    "Go",
+    "Ruby",
+    "Rust",
+    "python"
+  ],
+  "entry_points": [
+    {
+      "kind": "http",
+      "identifier": "handler_0",
+      "file_path": "app/entry/e0.py",
+      "line": 10,
+      "method": "GET",
+      "route": null,
+      "auth_required": true
+    },
+    {
+      "kind": "HTTP",
+      "identifier": "handler_1",
+      "file_path": "app/entry/e1.py",
+      "line": 17,
+      "method": "POST",
+      "route": "/v1/resource/1",
+      "auth_required": false
+    },
+    {
+      "kind": "cli",
+      "identifier": "handler_2",
+      "file_path": "app/entry/e2.py",
+      "line": 24,
+      "method": null,
+      "route": "/v1/resource/2",
+      "auth_required": null
+    },
+    {
+      "kind": "api",
+      "identifier": "handler_3",
+      "file_path": "app/entry/e3.py",
+      "line": 31,
+      "method": "PUT",
+      "route": null,
+      "auth_required": true
+    },
+    {
+      "kind": "graphql",
+      "identifier": "handler_4",
+      "file_path": "app/entry/e4.py",
+      "line": 38,
+      "method": "GET",
+      "route": "/v1/resource/4",
+      "auth_required": false
+    },
+    {
+      "kind": "rpc",
+      "identifier": "handler_5",
+      "file_path": "app/entry/e5.py",
+      "line": 45,
+      "method": "POST",
+      "route": "/v1/resource/5",
+      "auth_required": null
+    },
+    {
+      "kind": "route",
+      "identifier": "handler_6",
+      "file_path": "app/entry/e6.py",
+      "line": 52,
+      "method": null,
+      "route": null,
+      "auth_required": true
+    },
+    {
+      "kind": "cron",
+      "identifier": "handler_7",
+      "file_path": "app/entry/e7.py",
+      "line": 59,
+      "method": "PUT",
+      "route": "/v1/resource/7",
+      "auth_required": false
+    },
+    {
+      "kind": "queue",
+      "identifier": "handler_8",
+      "file_path": "app/entry/e8.py",
+      "line": 66,
+      "method": "GET",
+      "route": "/v1/resource/8",
+      "auth_required": null
+    },
+    {
+      "kind": "http",
+      "identifier": "handler_9",
+      "file_path": "app/entry/e9.py",
+      "line": 73,
+      "method": "POST",
+      "route": null,
+      "auth_required": true
+    }
+  ],
+  "data_flows": [
+    {
+      "source": "request.args['q']",
+      "path": [
+        {
+          "file_path": "app/search/index.ts",
+          "line": 20,
+          "component": "step_0_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/util/b.py",
+          "line": 40,
+          "component": "step_0_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "cursor.execute",
+      "sanitized": false,
+      "files": [
+        "app/search/index.ts",
+        "app/db/raw.py",
+        "app/util/a.py",
+        "app/util/b.py"
+      ]
+    },
+    {
+      "source": "request.cookies['session']",
+      "path": [
+        {
+          "file_path": "app/auth/session_store.py",
+          "line": 21,
+          "component": "step_1_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/auth/session_store.py",
+          "line": 41,
+          "component": "step_1_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "redis.set",
+      "sanitized": true,
+      "files": [
+        "app/auth/session_store.py"
+      ]
+    },
+    {
+      "source": "request.json['url']",
+      "path": [
+        {
+          "file_path": "app/integrations/webhooks.go",
+          "line": 22,
+          "component": "step_2_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/net/client.go",
+          "line": 42,
+          "component": "step_2_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "requests.get",
+      "sanitized": false,
+      "files": [
+        "app/integrations/webhooks.go",
+        "app/net/client.go"
+      ]
+    },
+    {
+      "source": "form['password']",
+      "path": [
+        {
+          "file_path": "app/auth/service.py",
+          "line": 23,
+          "component": "step_3_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/obs/telemetry.go",
+          "line": 43,
+          "component": "step_3_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "logger.info",
+      "sanitized": false,
+      "files": [
+        "app/auth/service.py",
+        "app/obs/telemetry.go"
+      ]
+    },
+    {
+      "source": "header['Authorization']",
+      "path": [
+        {
+          "file_path": "app/common/jwt_tools.py",
+          "line": 24,
+          "component": "step_4_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/common/jwt_tools.py",
+          "line": 44,
+          "component": "step_4_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "jwt.decode",
+      "sanitized": true,
+      "files": [
+        "app/common/jwt_tools.py"
+      ]
+    },
+    {
+      "source": "query['email']",
+      "path": [
+        {
+          "file_path": "app/notify/mailer.rb",
+          "line": 25,
+          "component": "step_5_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/notify/mailer.rb",
+          "line": 45,
+          "component": "step_5_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "smtp.send",
+      "sanitized": false,
+      "files": [
+        "app/notify/mailer.rb"
+      ]
+    },
+    {
+      "source": "body['card_number']",
+      "path": [
+        {
+          "file_path": "app/billing/payments.go",
+          "line": 26,
+          "component": "step_6_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/billing/core.py",
+          "line": 46,
+          "component": "step_6_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "stripe.Charge.create",
+      "sanitized": true,
+      "files": [
+        "app/billing/payments.go",
+        "app/billing/core.py"
+      ]
+    },
+    {
+      "source": "path_param['id']",
+      "path": [
+        {
+          "file_path": "app/api/thing_1.py",
+          "line": 27,
+          "component": "step_7_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/api/thing_1.py",
+          "line": 47,
+          "component": "step_7_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "orm.filter",
+      "sanitized": true,
+      "files": [
+        "app/api/thing_1.py"
+      ]
+    },
+    {
+      "source": "upload.filename",
+      "path": [
+        {
+          "file_path": "app/media/uploads.py",
+          "line": 28,
+          "component": "step_8_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/x/w.py",
+          "line": 48,
+          "component": "step_8_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "open",
+      "sanitized": false,
+      "files": [
+        "app/media/uploads.py",
+        "app/common/cache.py",
+        "app/common/guard.py",
+        "app/x/y.py",
+        "app/x/z.py",
+        "app/x/w.py"
+      ]
+    },
+    {
+      "source": "env['DEBUG']",
+      "path": [
+        {
+          "file_path": "app/web/render.py",
+          "line": 29,
+          "component": "step_9_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/web/render.py",
+          "line": 49,
+          "component": "step_9_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "template.render",
+      "sanitized": false,
+      "files": [
+        "app/web/render.py"
+      ]
+    }
+  ]
+}

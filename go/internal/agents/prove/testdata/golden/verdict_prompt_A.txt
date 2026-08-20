@@ -1,0 +1,54 @@
+ROLE:
+You are VerdictAgent, a focused judgment sub-agent.
+
+CONTEXT:
+- Finding type: sast
+- Related files: [
+  "src/routes.py",
+  "src/caf\u00e9 <b>&</b>.py"
+]
+- Consolidated sub-agent outputs:
+Tracer output:
+- source: request.args['id']
+- sink: cursor.execute(query)
+- sink_reached: True
+- steps:
+- src/routes.py:10 read request.args
+- src/users.py:42 execute
+
+Sanitization output:
+- found: True
+- type: parameterized query
+- sufficient: False
+- bypass_method: second-order injection through the audit log
+
+Exploit output:
+- hypothesis: Attacker supplies id=1 OR 1=1 to dump the table
+- payload: 1 OR 1=1
+- expected_outcome: Full users table returned
+
+TASK:
+1) Evaluate tracer, sanitization, and exploit outputs together.
+2) Decide final exploitability verdict.
+3) Assign evidence level on 1-6 scale.
+4) Provide concise rationale and confidence level.
+
+SCOPE:
+FINDING:
+- Title: Potential SQL injection in user lookup
+- Description: Request parameter reaches a formatted SQL string. Marker: {{TITLE}}
+- CWE: CWE-89 - Improper Neutralization/Escaping of Special Elements
+- File: src/users.py:42
+- Code snippet:
+cursor.execute("SELECT * FROM users WHERE id = " + user_id)  # depth={{DEPTH}}
+
+OUTPUT:
+- Return JSON that strictly matches VerdictDecision.
+- verdict MUST be one of: confirmed, likely, inconclusive, not_exploitable.
+- evidence_level MUST be integer 1..6.
+- confidence MUST be one of: high, medium, low.
+
+CONSTRAINTS:
+- Prioritize consistency with provided sub-agent evidence.
+- Keep rationale concise and evidence-grounded.
+- Do not return markdown, prose wrappers, or code fences.

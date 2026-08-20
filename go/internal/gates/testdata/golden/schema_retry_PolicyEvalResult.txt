@@ -1,0 +1,42 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat schema for AI policy evaluation. 4 fields.",
+  "properties": {
+    "violated": {
+      "description": "Whether the policy is violated",
+      "title": "Violated",
+      "type": "boolean"
+    },
+    "description": {
+      "description": "How the policy is violated, or 'No violation' if compliant",
+      "title": "Description",
+      "type": "string"
+    },
+    "file_path": {
+      "description": "Primary file where violation occurs, or 'N/A'",
+      "title": "File Path",
+      "type": "string"
+    },
+    "severity": {
+      "description": "Severity: \"high\", \"medium\", or \"low\"",
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "required": [
+    "violated",
+    "description",
+    "file_path",
+    "severity"
+  ],
+  "title": "PolicyEvalResult",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

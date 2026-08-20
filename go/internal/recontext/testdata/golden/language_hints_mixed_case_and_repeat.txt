@@ -1,0 +1,24 @@
+LANGUAGE-SPECIFIC GUIDANCE:
+Language: PYTHON
+  Key sinks: cursor.execute, os.system, subprocess.run, eval, exec, pickle.loads
+  Safe patterns (skip these): parameterized queries with %s placeholders, subprocess.run with list args (no shell=True)
+  DO NOT FLAG: Django ORM queries (uses parameterized queries internally), SQLAlchemy text() with bound params
+  Framework notes: Check for Django/Flask/FastAPI-specific patterns. Django auto-escapes templates. Flask Jinja2 auto-escapes.
+
+Language: PYTHON
+  Key sinks: cursor.execute, os.system, subprocess.run, eval, exec, pickle.loads
+  Safe patterns (skip these): parameterized queries with %s placeholders, subprocess.run with list args (no shell=True)
+  DO NOT FLAG: Django ORM queries (uses parameterized queries internally), SQLAlchemy text() with bound params
+  Framework notes: Check for Django/Flask/FastAPI-specific patterns. Django auto-escapes templates. Flask Jinja2 auto-escapes.
+
+Language: JAVASCRIPT
+  Key sinks: eval, Function(), innerHTML, document.write, child_process.exec, new Function
+  Safe patterns (skip these): DOMPurify.sanitize(), textContent assignment, parameterized pg queries
+  DO NOT FLAG: React JSX expressions (auto-escaped), Angular template bindings (sanitized by default)
+  Framework notes: Check for React/Vue/Angular-specific XSS patterns. React auto-escapes JSX. Vue v-html is dangerous.
+
+Language: GO
+  Key sinks: fmt.Sprintf into SQL, exec.Command with user input, template.HTML(), os.Exec
+  Safe patterns (skip these): database/sql with ? placeholders, html/template (auto-escapes), exec.Command with separate args
+  DO NOT FLAG: GORM parameterized queries, html/template default escaping, database/sql prepared statements
+  Framework notes: Go's html/template auto-escapes. text/template does NOT. Check for text/template serving HTML.

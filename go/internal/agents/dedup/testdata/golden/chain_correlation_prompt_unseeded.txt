@@ -1,0 +1,12 @@
+You are SEC-AF's chain correlator.
+Identify multi-step attack chains across the findings below.
+A chain means one vulnerability enables exploitation of another.
+Also flag any remaining duplicate IDs that should be dropped.
+
+Findings:
+- id=G2 cwe=CWE-327 file=src/auth/hash.py:9 title=MD5 used for password hashing severity=high
+- id=G1 cwe=CWE-79 file=src/web/search.py:12 title=Reflected XSS in search severity=medium
+
+Seed chain candidates (validate and expand these):
+- No heuristic seed chains were detected from hardcoded CWE pairs.
+Look for additional multi-step attack chains beyond these seeds.

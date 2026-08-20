@@ -1,0 +1,16 @@
+{
+  "commit_sha": "abc123",
+  "timestamp": "2025-01-15T00:00:00+00:00",
+  "findings": [
+    {
+      "id": "id-1",
+      "fingerprint": "fp-1",
+      "title": "SQL injection in \"users\" <admin> & caf\u00e9 \u2014 \\path\ttab\nnewline\u007f \ud83d\ude00",
+      "severity": "high",
+      "cwe_id": "CWE-89",
+      "verdict": "confirmed",
+      "file_path": "app.py",
+      "start_line": 10
+    }
+  ]
+}

@@ -1,0 +1,234 @@
+{
+  "agent_invocations": 24,
+  "attack_chains": [
+    {
+      "chain_id": "chain-1",
+      "combined_impact": "Unauthorized DB disclosure",
+      "combined_severity": "critical",
+      "description": "Untrusted input reaches SQL sink",
+      "findings": [
+        "finding-confirmed",
+        "finding-likely"
+      ],
+      "mitre_attack_mapping": [
+        {
+          "tactic": "Initial Access",
+          "technique_id": "T1190",
+          "technique_name": "Exploit Public-Facing Application"
+        }
+      ],
+      "title": "Input to DB read"
+    }
+  ],
+  "branch": "issue-23-tests",
+  "by_severity": {
+    "critical": 1,
+    "high": 1,
+    "low": 1
+  },
+  "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "compliance_gaps": [
+    {
+      "control_id": "Req 6.2.4",
+      "control_name": "Prevent injection",
+      "cwe_ids": [
+        "CWE-89"
+      ],
+      "finding_count": 1,
+      "framework": "PCI-DSS",
+      "max_severity": "critical"
+    }
+  ],
+  "confirmed": 1,
+  "cost_breakdown": {
+    "hunt": 1.2,
+    "prove": 1.51,
+    "recon": 0.5
+  },
+  "cost_usd": 3.21,
+  "depth_profile": "standard",
+  "duration_seconds": 182.4,
+  "findings": [
+    {
+      "chain_id": "chain-1",
+      "chain_step": 1,
+      "compliance": [
+        {
+          "control_id": "Req 6.2.4",
+          "control_name": "Prevent injection",
+          "framework": "PCI-DSS"
+        }
+      ],
+      "cvss_v4": null,
+      "cwe_id": "CWE-89",
+      "cwe_name": "SQL Injection",
+      "description": "Unsanitized user input reaches SQL query execution.",
+      "drop_reason": null,
+      "enables": [
+        "finding-likely"
+      ],
+      "epss": null,
+      "evidence_level": 6,
+      "exploitability_score": 10.0,
+      "finding_type": "sast",
+      "fingerprint": "fp-sql-1",
+      "id": "finding-confirmed",
+      "location": {
+        "code_snippet": "cursor.execute(f\"SELECT * FROM users WHERE id = {user_id}\")",
+        "end_column": 66,
+        "end_line": 42,
+        "file_path": "src/users.py",
+        "function_name": "lookup_user",
+        "start_column": 9,
+        "start_line": 42
+      },
+      "owasp_category": "A03:2021",
+      "proof": {
+        "chain_steps": null,
+        "data_flow_evidence": null,
+        "data_flow_trace": [
+          {
+            "description": "Input source",
+            "file": "src/routes.py",
+            "line": 15,
+            "tainted": true
+          },
+          {
+            "description": "SQL sink",
+            "file": "src/users.py",
+            "line": 42,
+            "tainted": true
+          }
+        ],
+        "evidence_level": 6,
+        "expected_outcome": "Unauthorized data access",
+        "exploit_hypothesis": "Inject through id parameter.",
+        "exploit_payload": "{\"id\": \"1 OR 1=1\"}",
+        "http_request": null,
+        "http_response": null,
+        "poc_code": null,
+        "poc_execution_output": null,
+        "reachability": null,
+        "sanitization_analysis": null,
+        "verification_method": "manual-review+trace",
+        "vulnerable_code": "cursor.execute(f\"SELECT * FROM users WHERE id = {user_id}\")"
+      },
+      "rationale": "Source-to-sink path is confirmed and exploitable.",
+      "related_locations": [
+        {
+          "code_snippet": "user_id = request.json['id']",
+          "end_column": null,
+          "end_line": 15,
+          "file_path": "src/routes.py",
+          "function_name": null,
+          "start_column": null,
+          "start_line": 15
+        }
+      ],
+      "remediation": null,
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/sast/sql-injection",
+      "sarif_security_severity": 9.9,
+      "severity": "critical",
+      "tags": [
+        "externally_reachable",
+        "user-input"
+      ],
+      "title": "SQL Injection",
+      "verdict": "confirmed"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [],
+      "cvss_v4": null,
+      "cwe_id": "CWE-306",
+      "cwe_name": "Missing Authentication for Critical Function",
+      "description": "Admin endpoint can be accessed without auth.",
+      "drop_reason": null,
+      "enables": null,
+      "epss": null,
+      "evidence_level": 2,
+      "exploitability_score": 4.8,
+      "finding_type": "api",
+      "fingerprint": "fp-auth-1",
+      "id": "finding-likely",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 11,
+        "file_path": "src/api/admin.py",
+        "function_name": null,
+        "start_column": null,
+        "start_line": 11
+      },
+      "owasp_category": "A07:2021",
+      "proof": null,
+      "rationale": "Guard checks appear absent on route.",
+      "related_locations": [],
+      "remediation": null,
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/api/missing-authentication",
+      "sarif_security_severity": 7.6,
+      "severity": "high",
+      "tags": [
+        "requires_auth"
+      ],
+      "title": "Missing Authentication",
+      "verdict": "likely"
+    },
+    {
+      "chain_id": null,
+      "chain_step": null,
+      "compliance": [],
+      "cvss_v4": null,
+      "cwe_id": "CWE-79",
+      "cwe_name": "Cross-site Scripting",
+      "description": "Output is escaped by template engine.",
+      "drop_reason": null,
+      "enables": null,
+      "epss": null,
+      "evidence_level": 1,
+      "exploitability_score": 0.6,
+      "finding_type": "sast",
+      "fingerprint": "fp-noise-1",
+      "id": "finding-noise",
+      "location": {
+        "code_snippet": null,
+        "end_column": null,
+        "end_line": 89,
+        "file_path": "src/views.py",
+        "function_name": null,
+        "start_column": null,
+        "start_line": 88
+      },
+      "owasp_category": null,
+      "proof": null,
+      "rationale": "Sink auto-escapes output.",
+      "related_locations": [],
+      "remediation": null,
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/sast/xss",
+      "sarif_security_severity": 1.9,
+      "severity": "low",
+      "tags": [],
+      "title": "Potential XSS",
+      "verdict": "not_exploitable"
+    }
+  ],
+  "inconclusive": 0,
+  "likely": 1,
+  "metadata": {},
+  "noise_reduction_pct": 66.7,
+  "not_exploitable": 1,
+  "policy_violations": [],
+  "provider": "opencode",
+  "repository": "Agent-Field/sec-af",
+  "sarif": "{}",
+  "strategies_used": [
+    "injection",
+    "auth"
+  ],
+  "timestamp": "2026-03-04T10:30:00Z",
+  "total_raw_findings": 6
+}

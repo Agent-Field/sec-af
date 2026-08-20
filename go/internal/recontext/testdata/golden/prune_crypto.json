@@ -1,0 +1,166 @@
+{
+  "file_count": 2417,
+  "frameworks": [
+    "Django",
+    "next.js",
+    "Spring Boot",
+    "  React  ",
+    "unknown-fw",
+    "NEXT",
+    "Vue"
+  ],
+  "languages": [
+    "Python",
+    "JavaScript",
+    "Go",
+    "Ruby",
+    "Rust",
+    "python"
+  ],
+  "lines_of_code": 184213,
+  "security_context": {
+    "auth_model": "jwt",
+    "auth_details": "HS256 JWTs issued by app/auth/service.py, refresh tokens in Redis",
+    "crypto_usage": [
+      {
+        "algorithm": "AES",
+        "key_size": 256,
+        "mode": "GCM",
+        "usage_context": "at-rest encryption",
+        "is_weak": false
+      },
+      {
+        "algorithm": "MD5",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "password hashing",
+        "is_weak": true
+      },
+      {
+        "algorithm": "RSA",
+        "key_size": 1024,
+        "mode": null,
+        "usage_context": "token signing",
+        "is_weak": true
+      },
+      {
+        "algorithm": "SHA-256",
+        "key_size": null,
+        "mode": null,
+        "usage_context": null,
+        "is_weak": false
+      },
+      {
+        "algorithm": "DES",
+        "key_size": 56,
+        "mode": "CBC",
+        "usage_context": "legacy export",
+        "is_weak": true
+      },
+      {
+        "algorithm": "HMAC-SHA1",
+        "key_size": 160,
+        "mode": null,
+        "usage_context": "webhook signature",
+        "is_weak": true
+      },
+      {
+        "algorithm": "ChaCha20",
+        "key_size": 256,
+        "mode": "Poly1305",
+        "usage_context": "transport",
+        "is_weak": false
+      },
+      {
+        "algorithm": "bcrypt",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "password hashing",
+        "is_weak": false
+      },
+      {
+        "algorithm": "RC4",
+        "key_size": 128,
+        "mode": null,
+        "usage_context": null,
+        "is_weak": true
+      },
+      {
+        "algorithm": "ECDSA",
+        "key_size": 256,
+        "mode": null,
+        "usage_context": "JWT signing",
+        "is_weak": null
+      },
+      {
+        "algorithm": "PBKDF2",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "key derivation",
+        "is_weak": false
+      },
+      {
+        "algorithm": "SHA-1",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "checksum",
+        "is_weak": true
+      },
+      {
+        "algorithm": "AES",
+        "key_size": 128,
+        "mode": "ECB",
+        "usage_context": "legacy blob",
+        "is_weak": true
+      },
+      {
+        "algorithm": "Ed25519",
+        "key_size": 256,
+        "mode": null,
+        "usage_context": "package signing",
+        "is_weak": false
+      },
+      {
+        "algorithm": "3DES",
+        "key_size": 168,
+        "mode": "CBC",
+        "usage_context": "legacy tape",
+        "is_weak": true
+      },
+      {
+        "algorithm": "Argon2id",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "password hashing",
+        "is_weak": null
+      }
+    ],
+    "framework_security": [
+      "django.middleware.csrf.CsrfViewMiddleware",
+      "",
+      "helmet defaults",
+      "SecurityMiddleware",
+      "rack-protection",
+      "spring-security filter chain"
+    ],
+    "security_headers": [
+      "Content-Security-Policy: default-src 'self'",
+      "X-Content-Type-Options: nosniff",
+      "Strict-Transport-Security: max-age=31536000",
+      "X-Frame-Options: DENY",
+      "Referrer-Policy: no-referrer",
+      "",
+      "Permissions-Policy: geolocation=()"
+    ],
+    "deployment_signals": [
+      "kubernetes ingress with TLS termination",
+      "docker-compose exposes 5432",
+      "no WAF in front of /api",
+      "secrets mounted from vault",
+      "readiness probe on /healthz",
+      "single replica for the worker",
+      "TLS 1.2 minimum",
+      "internal service mesh mTLS"
+    ]
+  }
+}

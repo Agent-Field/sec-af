@@ -1,0 +1,6 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `secrets`: One string per secret finding. Format: 'type | file_path:line | match_preview | confidence | is_test(true/false)'. Example: 'aws_access_key | .env:3 | AKIA... | high | false'
+- `misconfigs`: One string per misconfiguration. Format: 'category | file_path:line | key | risk | remediation'. Example: 'debug_mode | config.py:15 | DEBUG=True | Exposes stack traces | Set DEBUG=False'

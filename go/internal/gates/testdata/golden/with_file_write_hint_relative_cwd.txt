@@ -1,0 +1,2 @@
+relative
+- If output is large or complex, use the file-write pattern and ensure final JSON is written to work/../work/.agentfield_output.json.

@@ -1,0 +1,40 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat harness output for dependency auditor. All list[str], no nesting.",
+  "properties": {
+    "sbom": {
+      "description": "One string per dependency. Format: 'name | version | ecosystem | direct(true/false) | license'. Example: 'express | 4.18.2 | npm | true | MIT'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Sbom",
+      "type": "array"
+    },
+    "known_cves": {
+      "description": "One string per CVE. Format: 'cve_id | package | installed_version | fixed_version | cvss_score | direct | reachable'. Example: 'CVE-2023-1234 | lodash | 4.17.15 | 4.17.21 | 7.5 | true | unknown'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Known Cves",
+      "type": "array"
+    },
+    "outdated": {
+      "description": "One string per outdated dep. Format: 'package | current_version | latest_version | direct(true/false)'. Example: 'express | 4.17.0 | 4.18.2 | true'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Outdated",
+      "type": "array"
+    }
+  },
+  "title": "DependencyReportRaw",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

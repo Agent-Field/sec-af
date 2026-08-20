@@ -1,0 +1,60 @@
+{
+  "repository": "https://github.com/test/repo",
+  "commit_sha": "abc123def456",
+  "timestamp": "2025-01-15T10:30:00+00:00",
+  "depth_profile": "standard",
+  "summary": {
+    "total_findings": 1,
+    "confirmed": 1,
+    "likely": 0,
+    "inconclusive": 0,
+    "not_exploitable": 4,
+    "noise_reduction_pct": 80.0,
+    "by_severity": {
+      "critical": 0,
+      "high": 1,
+      "info": 0,
+      "low": 0,
+      "medium": 0
+    }
+  },
+  "findings": [
+    {
+      "id": "compliance-report-finding",
+      "title": "Test Finding",
+      "severity": "high",
+      "verdict": "confirmed",
+      "evidence_level": 3,
+      "exploitability_score": 7.5,
+      "cwe_id": "CWE-89",
+      "location": {
+        "file": "app.py",
+        "line": 10
+      },
+      "chain_id": null
+    }
+  ],
+  "attack_chains": [],
+  "compliance_gaps": [
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection",
+      "finding_count": 1,
+      "max_severity": "high",
+      "cwe_ids": [
+        "CWE-89"
+      ]
+    }
+  ],
+  "performance": {
+    "duration_seconds": 45.2,
+    "cost_usd": 0.15,
+    "cost_breakdown": {
+      "hunt": 0.07,
+      "prove": 0.05,
+      "recon": 0.03
+    },
+    "agent_invocations": 12
+  }
+}

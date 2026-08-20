@@ -1,0 +1,196 @@
+{
+  "keeps_rule_id": {
+    "id": "m1",
+    "fingerprint": "fp-m1",
+    "title": "finding m1",
+    "description": "d",
+    "finding_type": "sast",
+    "cwe_id": "CWE-89",
+    "cwe_name": "SQL Injection",
+    "owasp_category": null,
+    "tags": [],
+    "verdict": "confirmed",
+    "evidence_level": 3,
+    "rationale": "r",
+    "severity": "critical",
+    "cvss_v4": null,
+    "epss": null,
+    "exploitability_score": 5.0,
+    "proof": null,
+    "location": {
+      "file_path": "src/users.py",
+      "start_line": 1,
+      "end_line": 2,
+      "start_column": null,
+      "end_column": null,
+      "function_name": null,
+      "code_snippet": null
+    },
+    "related_locations": [],
+    "chain_id": null,
+    "chain_step": null,
+    "enables": null,
+    "compliance": [
+      {
+        "framework": "PCI-DSS",
+        "control_id": "Req 6.2.4",
+        "control_name": "Custom software addresses common coding vulnerabilities"
+      },
+      {
+        "framework": "SOC2",
+        "control_id": "CC6",
+        "control_name": "Logical and physical access controls"
+      },
+      {
+        "framework": "OWASP",
+        "control_id": "A03:2021",
+        "control_name": "Injection"
+      },
+      {
+        "framework": "HIPAA",
+        "control_id": "\u00a7164.312(a)(1)",
+        "control_name": "Access control"
+      },
+      {
+        "framework": "ISO27001",
+        "control_id": "A.8.28",
+        "control_name": "Secure coding"
+      }
+    ],
+    "reproduction_steps": [],
+    "remediation": null,
+    "sarif_rule_id": "sec-af/sast/sql-injection",
+    "sarif_security_severity": 5.0,
+    "drop_reason": null
+  },
+  "mints_rule_id": {
+    "id": "m2",
+    "fingerprint": "fp-m2",
+    "title": "finding m2",
+    "description": "d",
+    "finding_type": "sast",
+    "cwe_id": "CWE-89",
+    "cwe_name": "Broken Access/Control Check",
+    "owasp_category": null,
+    "tags": [],
+    "verdict": "confirmed",
+    "evidence_level": 6,
+    "rationale": "r",
+    "severity": "critical",
+    "cvss_v4": null,
+    "epss": null,
+    "exploitability_score": 10.0,
+    "proof": null,
+    "location": {
+      "file_path": "src/users.py",
+      "start_line": 1,
+      "end_line": 2,
+      "start_column": null,
+      "end_column": null,
+      "function_name": null,
+      "code_snippet": null
+    },
+    "related_locations": [],
+    "chain_id": null,
+    "chain_step": null,
+    "enables": null,
+    "compliance": [
+      {
+        "framework": "PCI-DSS",
+        "control_id": "Req 6.2.4",
+        "control_name": "Custom software addresses common coding vulnerabilities"
+      },
+      {
+        "framework": "SOC2",
+        "control_id": "CC6",
+        "control_name": "Logical and physical access controls"
+      },
+      {
+        "framework": "OWASP",
+        "control_id": "A03:2021",
+        "control_name": "Injection"
+      },
+      {
+        "framework": "HIPAA",
+        "control_id": "\u00a7164.312(a)(1)",
+        "control_name": "Access control"
+      },
+      {
+        "framework": "ISO27001",
+        "control_id": "A.8.28",
+        "control_name": "Secure coding"
+      }
+    ],
+    "reproduction_steps": [],
+    "remediation": null,
+    "sarif_rule_id": "sec-af/sast/broken-access-control-check",
+    "sarif_security_severity": 10.0,
+    "drop_reason": null
+  },
+  "with_reachability_tag": {
+    "id": "m3",
+    "fingerprint": "fp-m3",
+    "title": "finding m3",
+    "description": "d",
+    "finding_type": "sast",
+    "cwe_id": "CWE-89",
+    "cwe_name": "SQL Injection",
+    "owasp_category": null,
+    "tags": [
+      "externally_reachable"
+    ],
+    "verdict": "confirmed",
+    "evidence_level": 6,
+    "rationale": "r",
+    "severity": "critical",
+    "cvss_v4": null,
+    "epss": null,
+    "exploitability_score": 10.0,
+    "proof": null,
+    "location": {
+      "file_path": "src/users.py",
+      "start_line": 1,
+      "end_line": 2,
+      "start_column": null,
+      "end_column": null,
+      "function_name": null,
+      "code_snippet": null
+    },
+    "related_locations": [],
+    "chain_id": null,
+    "chain_step": null,
+    "enables": null,
+    "compliance": [
+      {
+        "framework": "PCI-DSS",
+        "control_id": "Req 6.2.4",
+        "control_name": "Custom software addresses common coding vulnerabilities"
+      },
+      {
+        "framework": "SOC2",
+        "control_id": "CC6",
+        "control_name": "Logical and physical access controls"
+      },
+      {
+        "framework": "OWASP",
+        "control_id": "A03:2021",
+        "control_name": "Injection"
+      },
+      {
+        "framework": "HIPAA",
+        "control_id": "\u00a7164.312(a)(1)",
+        "control_name": "Access control"
+      },
+      {
+        "framework": "ISO27001",
+        "control_id": "A.8.28",
+        "control_name": "Secure coding"
+      }
+    ],
+    "reproduction_steps": [],
+    "remediation": null,
+    "sarif_rule_id": "sec-af/sast/sql-injection",
+    "sarif_security_severity": 10.0,
+    "drop_reason": null
+  }
+}

@@ -1,0 +1,8 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `found`: Whether any sanitization/validation was found on the path
+- `type`: Type of sanitization (e.g. 'parameterized query', 'html encoding')
+- `sufficient`: Whether sanitization is sufficient to prevent exploit
+- `bypass_method`: How sanitization could be bypassed, if applicable

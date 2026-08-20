@@ -1,0 +1,40 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat harness output for data flow mapper. All list[str], no nesting.",
+  "properties": {
+    "flows": {
+      "description": "One string per data flow. Format: 'source | sink | sanitized(true/false) | file1, file2, ...'. Example: 'request.body | sql.execute | false | src/db.py, src/routes.py'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Flows",
+      "type": "array"
+    },
+    "sanitization_points": {
+      "description": "One string per sanitization point. Format: 'file_path:line | function_name | type | protects_against'. Example: 'src/utils.py:42 | sanitize_html | html_encoding | CWE-79'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Sanitization Points",
+      "type": "array"
+    },
+    "sinks": {
+      "description": "One string per security-critical sink. Format: 'sink_type | file_path:line | function_name | notes'. Example: 'sql_execute | src/db.py:55 | run_query | Direct string concatenation'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Sinks",
+      "type": "array"
+    }
+  },
+  "title": "DataFlowMapRaw",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

@@ -1,0 +1,45 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat schema for cross-service attack chain analysis. 4 fields.",
+  "properties": {
+    "chain_description": {
+      "description": "Description of the cross-service attack path",
+      "title": "Chain Description",
+      "type": "string"
+    },
+    "services_involved": {
+      "description": "Service names in the attack chain",
+      "items": {
+        "type": "string"
+      },
+      "title": "Services Involved",
+      "type": "array"
+    },
+    "entry_point": {
+      "description": "Public-facing entry point where attack begins",
+      "title": "Entry Point",
+      "type": "string"
+    },
+    "impact": {
+      "description": "Impact if the cross-service chain is exploited",
+      "title": "Impact",
+      "type": "string"
+    }
+  },
+  "required": [
+    "chain_description",
+    "services_involved",
+    "entry_point",
+    "impact"
+  ],
+  "title": "CrossServiceFinding",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

@@ -1,0 +1,94 @@
+{
+  "quick": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure"
+  ],
+  "QUICK": [
+    "injection",
+    "dos",
+    "ssrf",
+    "auth",
+    "data_exposure"
+  ],
+  " quick": [
+    "injection",
+    "xss",
+    "dos",
+    "ssrf",
+    "auth",
+    "crypto",
+    "business_logic",
+    "data_exposure",
+    "supply_chain",
+    "config_secrets",
+    "api_security"
+  ],
+  "standard": [
+    "injection",
+    "xss",
+    "dos",
+    "ssrf",
+    "auth",
+    "crypto",
+    "business_logic",
+    "data_exposure",
+    "supply_chain",
+    "config_secrets",
+    "api_security"
+  ],
+  "thorough": [
+    "injection",
+    "xss",
+    "dos",
+    "ssrf",
+    "auth",
+    "crypto",
+    "business_logic",
+    "data_exposure",
+    "supply_chain",
+    "config_secrets",
+    "api_security"
+  ],
+  "Thorough": [
+    "injection",
+    "xss",
+    "dos",
+    "ssrf",
+    "auth",
+    "crypto",
+    "business_logic",
+    "data_exposure",
+    "supply_chain",
+    "config_secrets",
+    "api_security"
+  ],
+  "bogus": [
+    "injection",
+    "xss",
+    "dos",
+    "ssrf",
+    "auth",
+    "crypto",
+    "business_logic",
+    "data_exposure",
+    "supply_chain",
+    "config_secrets",
+    "api_security"
+  ],
+  "": [
+    "injection",
+    "xss",
+    "dos",
+    "ssrf",
+    "auth",
+    "crypto",
+    "business_logic",
+    "data_exposure",
+    "supply_chain",
+    "config_secrets",
+    "api_security"
+  ]
+}

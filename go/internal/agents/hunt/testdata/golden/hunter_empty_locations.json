@@ -1,0 +1,170 @@
+{
+  "injection": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "xss": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "dos": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "ssrf": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "auth": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "crypto": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [
+        "crypto"
+      ],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "business_logic": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [
+        "business_logic"
+      ],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "logic": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [
+        "business_logic"
+      ],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "data_exposure": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [
+        "data_exposure"
+      ],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "supply_chain": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [
+        "supply_chain"
+      ],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "config_secrets": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "api_security": {
+    "scan_calls": 1,
+    "enrich_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [
+        "api_security"
+      ],
+      "hunt_duration_seconds": 0.0
+    }
+  }
+}

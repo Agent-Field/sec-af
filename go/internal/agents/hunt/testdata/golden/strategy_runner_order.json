@@ -1,0 +1,13 @@
+[
+  "injection",
+  "xss",
+  "dos",
+  "ssrf",
+  "auth",
+  "crypto",
+  "business_logic",
+  "data_exposure",
+  "supply_chain",
+  "config_secrets",
+  "api_security"
+]

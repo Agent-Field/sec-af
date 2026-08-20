@@ -1,0 +1,34 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "DESIGN.md \u00a72.4: quick severity classification gate used in scoring.",
+  "properties": {
+    "severity": {
+      "description": "One of: \"critical\", \"high\", \"medium\", \"low\".",
+      "title": "Severity",
+      "type": "string"
+    },
+    "confidence": {
+      "title": "Confidence",
+      "type": "number"
+    },
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "severity",
+    "confidence",
+    "rationale"
+  ],
+  "title": "SeverityClassification",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

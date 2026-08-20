@@ -1,0 +1,13 @@
+Determine if these two security findings are duplicates (same root cause).
+
+Finding A:
+- Title: SQL injection in user lookup
+- CWE: CWE-89 (SQL Injection)
+- File: src/db/users.py:42
+- Description: Tainted `user_id` reaches cur.execute without parameterization. Tainted `user_id` reaches cur.execute without parameterization. Tainted `user_id` reaches cur.execute without parameterization. Tainted 
+
+Finding B:
+- Title: Unsanitized SQL string concatenation
+- CWE: CWE-89 (SQL Injection)
+- File: src/db/users.py:43
+- Description: Same sink, different wording — café ☕.

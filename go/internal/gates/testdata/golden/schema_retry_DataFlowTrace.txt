@@ -1,0 +1,45 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat schema for data flow tracing sub-agent. 4 fields.",
+  "properties": {
+    "source": {
+      "description": "Where tainted input enters (e.g. 'request.params.id')",
+      "title": "Source",
+      "type": "string"
+    },
+    "sink": {
+      "description": "Security-sensitive operation reached (e.g. 'sql.execute(query)')",
+      "title": "Sink",
+      "type": "string"
+    },
+    "steps": {
+      "description": "Ordered list of file:line descriptions showing flow path",
+      "items": {
+        "type": "string"
+      },
+      "title": "Steps",
+      "type": "array"
+    },
+    "sink_reached": {
+      "description": "Whether tainted data actually reaches the sink",
+      "title": "Sink Reached",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "source",
+    "sink",
+    "steps",
+    "sink_reached"
+  ],
+  "title": "DataFlowTrace",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

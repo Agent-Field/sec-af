@@ -1,0 +1,160 @@
+{
+  "input": {
+    "app_type": "web_api",
+    "modules": [
+      "auth | src/auth/ | Python | Authentication and session management",
+      "ui|web/|TypeScript|",
+      "orphan",
+      "  a  |  b  |  c  |  d | e  "
+    ],
+    "entry_points": [
+      "http | POST /api/login | src/routes.py:42 | false",
+      "cli | migrate | src/cli.py | yes",
+      "event | queue:jobs | src/worker.py:0 | maybe"
+    ],
+    "trust_boundaries": [
+      "API Gateway | external | internal | Rate limiting and auth",
+      "edge|dmz"
+    ],
+    "services": [
+      "PostgreSQL | database | localhost:5432 | password",
+      "Stripe | payments | n/a | NONE",
+      "Redis | cache | | unknown"
+    ],
+    "api_endpoints": [
+      "GET | /api/users | get_users | src/api.py:15 | true | false",
+      "POST | /api/users | create | src/api.py | 1 | 0",
+      "PUT | /x | h | a:b:12 | | "
+    ]
+  },
+  "want": {
+    "app_type": "web_api",
+    "modules": [
+      {
+        "name": "auth",
+        "path": "src/auth/",
+        "language": "Python",
+        "description": "Authentication and session management",
+        "dependencies": []
+      },
+      {
+        "name": "ui",
+        "path": "web/",
+        "language": "TypeScript",
+        "description": null,
+        "dependencies": []
+      },
+      {
+        "name": "orphan",
+        "path": "",
+        "language": "",
+        "description": null,
+        "dependencies": []
+      },
+      {
+        "name": "a",
+        "path": "b",
+        "language": "c",
+        "description": "d | e",
+        "dependencies": []
+      }
+    ],
+    "entry_points": [
+      {
+        "kind": "http",
+        "identifier": "POST /api/login",
+        "file_path": "src/routes.py",
+        "line": 42,
+        "method": null,
+        "route": "POST /api/login",
+        "auth_required": false
+      },
+      {
+        "kind": "cli",
+        "identifier": "migrate",
+        "file_path": "src/cli.py",
+        "line": 0,
+        "method": null,
+        "route": null,
+        "auth_required": true
+      },
+      {
+        "kind": "event",
+        "identifier": "queue:jobs",
+        "file_path": "src/worker.py:0",
+        "line": 0,
+        "method": null,
+        "route": null,
+        "auth_required": null
+      }
+    ],
+    "trust_boundaries": [
+      {
+        "name": "API Gateway",
+        "source_zone": "external",
+        "target_zone": "internal",
+        "description": "Rate limiting and auth",
+        "enforcement": []
+      },
+      {
+        "name": "edge",
+        "source_zone": "dmz",
+        "target_zone": "",
+        "description": "",
+        "enforcement": []
+      }
+    ],
+    "services": [
+      {
+        "name": "PostgreSQL",
+        "service_type": "database",
+        "endpoint": "localhost:5432",
+        "purpose": null,
+        "auth_mechanism": "password"
+      },
+      {
+        "name": "Stripe",
+        "service_type": "payments",
+        "endpoint": null,
+        "purpose": null,
+        "auth_mechanism": null
+      },
+      {
+        "name": "Redis",
+        "service_type": "cache",
+        "endpoint": null,
+        "purpose": null,
+        "auth_mechanism": null
+      }
+    ],
+    "api_surface": [
+      {
+        "method": "GET",
+        "path": "/api/users",
+        "handler": "get_users",
+        "file_path": "src/api.py",
+        "line": 15,
+        "auth_required": true,
+        "rate_limited": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/users",
+        "handler": "create",
+        "file_path": "src/api.py",
+        "line": 0,
+        "auth_required": true,
+        "rate_limited": false
+      },
+      {
+        "method": "PUT",
+        "path": "/x",
+        "handler": "h",
+        "file_path": "a:b",
+        "line": 12,
+        "auth_required": null,
+        "rate_limited": null
+      }
+    ]
+  }
+}

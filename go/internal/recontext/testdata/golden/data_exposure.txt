@@ -1,0 +1,32 @@
+Data exposure-focused recon summary.
+
+Data flows touching likely sensitive domains: 8 total, showing top 8:
+- request.cookies['session'] -> redis.set; sanitized=True; files=app/auth/session_store.py
+- form['password'] -> logger.info; sanitized=False; files=app/auth/service.py, app/obs/telemetry.go
+- header['Authorization'] -> jwt.decode; sanitized=True; files=app/common/jwt_tools.py
+- query['email'] -> smtp.send; sanitized=False; files=app/notify/mailer.rb
+- body['card_number'] -> stripe.Charge.create; sanitized=True; files=app/billing/payments.go, app/billing/core.py
+- session['role'] -> permission_check; sanitized=True; files=app/auth/permissions.py, app/auth/rbac.py
+- token -> cache.set; sanitized=True; files=app/common/cache.py
+- request.headers['X-User-Phone'] -> audit_log; sanitized=False; files=app/obs/audit.py
+
+Logging/exposure-related misconfig signals: 7 total, showing top 7:
+- logging at config/app_0.ini:0; risk=high; key=LOG_LEVEL
+- tls at config/app_1.ini:13; risk=critical; key=SSL_VERIFY
+- debug at config/app_4.ini:16; risk=critical; key=DJANGO_DEBUG
+- http at config/app_7.ini:19; risk=high; key=REDIRECT_HTTPS
+- trace at config/app_9.ini:21; risk=low; key=OTEL_TRACE_ALL
+- errors at config/app_11.ini:23; risk=high; key=SHOW_STACKTRACE
+- exposure at config/app_15.ini:0; risk=medium; key=ADMIN_PATH
+
+Entry points and API surface with exposure risk: 20 total, showing top 10:
+- GET /api/v1/thing/0 (app/api/thing_0.py:100, auth_required=True)
+- POST /api/v1/thing/1 (app/api/thing_1.py:103, auth_required=False)
+- PUT /api/v1/thing/2 (app/api/thing_2.py:106, auth_required=None)
+- DELETE /api/v1/thing/3 (app/api/thing_3.py:109, auth_required=False)
+- PATCH /api/v1/thing/4 (app/api/thing_4.py:112, auth_required=True)
+- GET /api/v1/thing/5 (app/api/thing_5.py:115, auth_required=None)
+- POST /api/v1/thing/6 (app/api/thing_6.py:118, auth_required=True)
+- PUT /api/v1/thing/7 (app/api/thing_7.py:121, auth_required=False)
+- DELETE /api/v1/thing/8 (app/api/thing_8.py:124, auth_required=None)
+- PATCH /api/v1/thing/9 (app/api/thing_9.py:127, auth_required=False)

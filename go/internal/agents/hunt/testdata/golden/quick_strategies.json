@@ -1,0 +1,7 @@
+[
+  "injection",
+  "dos",
+  "ssrf",
+  "auth",
+  "data_exposure"
+]

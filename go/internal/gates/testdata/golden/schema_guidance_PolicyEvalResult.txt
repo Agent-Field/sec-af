@@ -1,0 +1,8 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `violated`: Whether the policy is violated
+- `description`: How the policy is violated, or 'No violation' if compliant
+- `file_path`: Primary file where violation occurs, or 'N/A'
+- `severity`: Severity: "high", "medium", or "low"

@@ -1,0 +1,9 @@
+{
+  "quick": "quick",
+  "QUICK": "quick",
+  "Standard": "standard",
+  "thorough": "thorough",
+  "bogus": "standard",
+  "": "standard",
+  " quick ": "standard"
+}

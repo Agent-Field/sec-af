@@ -1,0 +1,8 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `source`: Where tainted input enters (e.g. 'request.params.id')
+- `sink`: Security-sensitive operation reached (e.g. 'sql.execute(query)')
+- `steps`: Ordered list of file:line descriptions showing flow path
+- `sink_reached`: Whether tainted data actually reaches the sink

@@ -1,0 +1,36 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat schema for AI-generated remediation suggestion. 3 fields.",
+  "properties": {
+    "fix_description": {
+      "description": "Natural language description of the recommended fix",
+      "title": "Fix Description",
+      "type": "string"
+    },
+    "patch_diff": {
+      "description": "Unified diff format patch showing the code changes needed",
+      "title": "Patch Diff",
+      "type": "string"
+    },
+    "confidence": {
+      "description": "Confidence in the fix: \"high\", \"medium\", or \"low\"",
+      "title": "Confidence",
+      "type": "string"
+    }
+  },
+  "required": [
+    "fix_description",
+    "patch_diff",
+    "confidence"
+  ],
+  "title": "RemediationSuggestion",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

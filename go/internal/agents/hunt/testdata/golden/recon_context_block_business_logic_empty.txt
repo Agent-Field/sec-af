@@ -1,0 +1,10 @@
+{
+  "app_type": null,
+  "frameworks": [],
+  "languages": [],
+  "auth_model": "session",
+  "auth_details": "cookie",
+  "entry_points": [],
+  "api_surface": [],
+  "data_flows": []
+}

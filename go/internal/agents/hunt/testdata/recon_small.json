@@ -1,0 +1,195 @@
+{
+  "architecture": {
+    "app_type": "web_api",
+    "modules": [
+      {
+        "name": "api",
+        "path": "app/api/",
+        "language": "Python",
+        "description": "HTTP layer",
+        "dependencies": [
+          "db"
+        ]
+      }
+    ],
+    "entry_points": [
+      {
+        "kind": "http",
+        "identifier": "POST /login",
+        "file_path": "app/api/auth.py",
+        "line": 12,
+        "method": "POST",
+        "route": "/login",
+        "auth_required": false
+      },
+      {
+        "kind": "cli",
+        "identifier": "seed",
+        "file_path": "app/cli.py",
+        "line": 3,
+        "method": null,
+        "route": null,
+        "auth_required": null
+      }
+    ],
+    "trust_boundaries": [
+      {
+        "name": "edge",
+        "source_zone": "internet",
+        "target_zone": "app",
+        "description": "TLS terminator",
+        "enforcement": [
+          "waf"
+        ]
+      }
+    ],
+    "services": [
+      {
+        "name": "postgres",
+        "service_type": "database",
+        "endpoint": "db:5432",
+        "purpose": "primary store",
+        "auth_mechanism": "password"
+      }
+    ],
+    "api_surface": [
+      {
+        "method": "POST",
+        "path": "/login",
+        "handler": "login",
+        "file_path": "app/api/auth.py",
+        "line": 12,
+        "auth_required": false,
+        "rate_limited": false
+      },
+      {
+        "method": "GET",
+        "path": "/users/{id}",
+        "handler": "get_user",
+        "file_path": "app/api/users.py",
+        "line": 40,
+        "auth_required": true,
+        "rate_limited": true
+      }
+    ]
+  },
+  "data_flows": {
+    "flows": [
+      {
+        "source": "request.json",
+        "path": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 41,
+            "component": "handler",
+            "operation": "read id"
+          }
+        ],
+        "sink": "cursor.execute",
+        "sanitized": false,
+        "files": [
+          "app/api/users.py"
+        ]
+      }
+    ],
+    "sanitization_points": [],
+    "sinks": [
+      {
+        "sink_type": "sql",
+        "file_path": "app/api/users.py",
+        "line": 42,
+        "function_name": "get_user",
+        "exploitability_notes": "f-string query"
+      }
+    ]
+  },
+  "dependencies": {
+    "sbom": [
+      {
+        "name": "django",
+        "version": "4.2.1",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "BSD-3"
+      }
+    ],
+    "known_cves": [
+      {
+        "cve_id": "CVE-2024-0001",
+        "package": "django",
+        "installed_version": "4.2.1",
+        "fixed_version": "4.2.11",
+        "cvss_v4_score": 7.5,
+        "epss_score": 0.42,
+        "direct": true,
+        "reachable": true
+      }
+    ],
+    "outdated": [],
+    "direct_count": 3,
+    "transitive_count": 9
+  },
+  "config": {
+    "secrets": [
+      {
+        "id": "<uuid>",
+        "secret_type": "api_key",
+        "file_path": ".env",
+        "line": 2,
+        "match": "AKIA...",
+        "confidence": "high",
+        "is_test_value": false
+      }
+    ],
+    "misconfigs": [
+      {
+        "id": "<uuid>",
+        "category": "debug",
+        "file_path": "settings.py",
+        "line": 9,
+        "key": "DEBUG",
+        "value": "True",
+        "risk": "high",
+        "remediation": "disable in production"
+      }
+    ]
+  },
+  "security_context": {
+    "auth_model": "jwt",
+    "auth_details": "HS256 access tokens",
+    "crypto_usage": [
+      {
+        "algorithm": "MD5",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "password hashing",
+        "is_weak": true
+      },
+      {
+        "algorithm": "SHA256",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "etag cache key",
+        "is_weak": false
+      }
+    ],
+    "framework_security": [
+      "django-csrf"
+    ],
+    "security_headers": [
+      "Content-Security-Policy"
+    ],
+    "deployment_signals": [
+      "docker"
+    ]
+  },
+  "languages": [
+    "python"
+  ],
+  "frameworks": [
+    "django"
+  ],
+  "lines_of_code": 1234,
+  "file_count": 56,
+  "recon_duration_seconds": 0.0
+}

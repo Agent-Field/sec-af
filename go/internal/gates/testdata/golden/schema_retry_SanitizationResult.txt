@@ -1,0 +1,63 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat schema for sanitization analysis sub-agent. 4 fields.",
+  "properties": {
+    "found": {
+      "description": "Whether any sanitization/validation was found on the path",
+      "title": "Found",
+      "type": "boolean"
+    },
+    "type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Type of sanitization (e.g. 'parameterized query', 'html encoding')",
+      "title": "Type"
+    },
+    "sufficient": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Whether sanitization is sufficient to prevent exploit",
+      "title": "Sufficient"
+    },
+    "bypass_method": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "How sanitization could be bypassed, if applicable",
+      "title": "Bypass Method"
+    }
+  },
+  "required": [
+    "found"
+  ],
+  "title": "SanitizationResult",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

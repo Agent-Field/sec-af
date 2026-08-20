@@ -1,0 +1,8 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `chain_description`: Description of the cross-service attack path
+- `services_involved`: Service names in the attack chain
+- `entry_point`: Public-facing entry point where attack begins
+- `impact`: Impact if the cross-service chain is exploited

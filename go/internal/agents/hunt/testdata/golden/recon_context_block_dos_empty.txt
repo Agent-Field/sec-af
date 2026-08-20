@@ -1,0 +1,8 @@
+{
+  "app_type": null,
+  "auth_model": "session",
+  "frameworks": [],
+  "languages": [],
+  "entry_points": [],
+  "data_flows": []
+}

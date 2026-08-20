@@ -1,0 +1,2189 @@
+{
+  "architecture": {
+    "app_type": "web_api",
+    "modules": [
+      {
+        "name": "auth_service",
+        "path": "app/auth/service.py",
+        "language": "python",
+        "description": "Session and JWT issuance",
+        "dependencies": [
+          "jwt",
+          "redis"
+        ]
+      },
+      {
+        "name": "rbac",
+        "path": "app/auth/rbac.py",
+        "language": "python",
+        "description": null,
+        "dependencies": []
+      },
+      {
+        "name": "billing",
+        "path": "app/billing/core.py",
+        "language": "python",
+        "description": "Invoice state machine — handles refunds",
+        "dependencies": [
+          "stripe"
+        ]
+      },
+      {
+        "name": "csrf_guard",
+        "path": "app/web/middleware/csrf.js",
+        "language": "javascript",
+        "description": "CSRF middleware",
+        "dependencies": []
+      },
+      {
+        "name": "payments",
+        "path": "app/billing/payments.go",
+        "language": "go",
+        "description": "Charge orchestration",
+        "dependencies": [
+          "stripe-go"
+        ]
+      },
+      {
+        "name": "reporting",
+        "path": "app/reports/render.py",
+        "language": "python",
+        "description": "PDF and CSV export",
+        "dependencies": [
+          "weasyprint"
+        ]
+      },
+      {
+        "name": "search",
+        "path": "app/search/index.ts",
+        "language": "typescript",
+        "description": "Elasticsearch query builder",
+        "dependencies": [
+          "@elastic/elasticsearch"
+        ]
+      },
+      {
+        "name": "session_store",
+        "path": "app/auth/session_store.py",
+        "language": "python",
+        "description": "Redis-backed sessions",
+        "dependencies": [
+          "redis"
+        ]
+      },
+      {
+        "name": "notifications",
+        "path": "app/notify/mailer.rb",
+        "language": "ruby",
+        "description": null,
+        "dependencies": [
+          "mail"
+        ]
+      },
+      {
+        "name": "permission_matrix",
+        "path": "app/auth/permissions.py",
+        "language": "python",
+        "description": "Role → permission table",
+        "dependencies": []
+      },
+      {
+        "name": "uploads",
+        "path": "app/media/uploads.py",
+        "language": "python",
+        "description": "S3 multipart upload helper",
+        "dependencies": [
+          "boto3"
+        ]
+      },
+      {
+        "name": "webhooks",
+        "path": "app/integrations/webhooks.go",
+        "language": "go",
+        "description": "Outbound webhook dispatcher",
+        "dependencies": []
+      },
+      {
+        "name": "graph_api",
+        "path": "app/api/graphql.ts",
+        "language": "typescript",
+        "description": "GraphQL resolvers — naïve depth limit",
+        "dependencies": [
+          "graphql"
+        ]
+      },
+      {
+        "name": "admin_panel",
+        "path": "app/admin/views.py",
+        "language": "python",
+        "description": "Django admin overrides",
+        "dependencies": [
+          "django"
+        ]
+      },
+      {
+        "name": "guard_utils",
+        "path": "app/common/guard.py",
+        "language": "python",
+        "description": "Assorted guard helpers",
+        "dependencies": []
+      },
+      {
+        "name": "cache",
+        "path": "app/common/cache.py",
+        "language": "python",
+        "description": "Memoization wrappers",
+        "dependencies": []
+      },
+      {
+        "name": "migrations",
+        "path": "db/migrate/2024_add_roles.rb",
+        "language": "ruby",
+        "description": "Adds role column",
+        "dependencies": []
+      },
+      {
+        "name": "jwt_tools",
+        "path": "app/common/jwt_tools.py",
+        "language": "python",
+        "description": null,
+        "dependencies": [
+          "pyjwt"
+        ]
+      },
+      {
+        "name": "telemetry",
+        "path": "app/obs/telemetry.go",
+        "language": "go",
+        "description": "OTel exporter",
+        "dependencies": []
+      }
+    ],
+    "entry_points": [
+      {
+        "kind": "http",
+        "identifier": "handler_0",
+        "file_path": "app/entry/e0.py",
+        "line": 10,
+        "method": "GET",
+        "route": null,
+        "auth_required": true
+      },
+      {
+        "kind": "HTTP",
+        "identifier": "handler_1",
+        "file_path": "app/entry/e1.py",
+        "line": 17,
+        "method": "POST",
+        "route": "/v1/resource/1",
+        "auth_required": false
+      },
+      {
+        "kind": "cli",
+        "identifier": "handler_2",
+        "file_path": "app/entry/e2.py",
+        "line": 24,
+        "method": null,
+        "route": "/v1/resource/2",
+        "auth_required": null
+      },
+      {
+        "kind": "api",
+        "identifier": "handler_3",
+        "file_path": "app/entry/e3.py",
+        "line": 31,
+        "method": "PUT",
+        "route": null,
+        "auth_required": true
+      },
+      {
+        "kind": "graphql",
+        "identifier": "handler_4",
+        "file_path": "app/entry/e4.py",
+        "line": 38,
+        "method": "GET",
+        "route": "/v1/resource/4",
+        "auth_required": false
+      },
+      {
+        "kind": "rpc",
+        "identifier": "handler_5",
+        "file_path": "app/entry/e5.py",
+        "line": 45,
+        "method": "POST",
+        "route": "/v1/resource/5",
+        "auth_required": null
+      },
+      {
+        "kind": "route",
+        "identifier": "handler_6",
+        "file_path": "app/entry/e6.py",
+        "line": 52,
+        "method": null,
+        "route": null,
+        "auth_required": true
+      },
+      {
+        "kind": "cron",
+        "identifier": "handler_7",
+        "file_path": "app/entry/e7.py",
+        "line": 59,
+        "method": "PUT",
+        "route": "/v1/resource/7",
+        "auth_required": false
+      },
+      {
+        "kind": "queue",
+        "identifier": "handler_8",
+        "file_path": "app/entry/e8.py",
+        "line": 66,
+        "method": "GET",
+        "route": "/v1/resource/8",
+        "auth_required": null
+      },
+      {
+        "kind": "http",
+        "identifier": "handler_9",
+        "file_path": "app/entry/e9.py",
+        "line": 73,
+        "method": "POST",
+        "route": null,
+        "auth_required": true
+      },
+      {
+        "kind": "api",
+        "identifier": "handler_10",
+        "file_path": "app/entry/e10.py",
+        "line": 80,
+        "method": null,
+        "route": "/v1/resource/10",
+        "auth_required": false
+      },
+      {
+        "kind": "grpc",
+        "identifier": "handler_11",
+        "file_path": "app/entry/e11.py",
+        "line": 87,
+        "method": "PUT",
+        "route": "/v1/resource/11",
+        "auth_required": null
+      },
+      {
+        "kind": "http",
+        "identifier": "handler_12",
+        "file_path": "app/entry/e12.py",
+        "line": 94,
+        "method": "GET",
+        "route": null,
+        "auth_required": true
+      },
+      {
+        "kind": "route",
+        "identifier": "handler_13",
+        "file_path": "app/entry/e13.py",
+        "line": 101,
+        "method": "POST",
+        "route": "/v1/resource/13",
+        "auth_required": false
+      },
+      {
+        "kind": "cli",
+        "identifier": "handler_14",
+        "file_path": "app/entry/e14.py",
+        "line": 108,
+        "method": null,
+        "route": "/v1/resource/14",
+        "auth_required": null
+      },
+      {
+        "kind": "http",
+        "identifier": "handler_15",
+        "file_path": "app/entry/e15.py",
+        "line": 115,
+        "method": "PUT",
+        "route": null,
+        "auth_required": true
+      },
+      {
+        "kind": "websocket",
+        "identifier": "handler_16",
+        "file_path": "app/entry/e16.py",
+        "line": 122,
+        "method": "GET",
+        "route": "/v1/resource/16",
+        "auth_required": false
+      }
+    ],
+    "trust_boundaries": [
+      {
+        "name": "boundary_0",
+        "source_zone": "internet",
+        "target_zone": "app",
+        "description": "Transition 0",
+        "enforcement": []
+      },
+      {
+        "name": "boundary_1",
+        "source_zone": "dmz",
+        "target_zone": "db",
+        "description": "Transition 1",
+        "enforcement": [
+          "waf_1",
+          "mtls_1"
+        ]
+      },
+      {
+        "name": "boundary_2",
+        "source_zone": "vpc",
+        "target_zone": "cache",
+        "description": "Transition 2",
+        "enforcement": [
+          "waf_2",
+          "mtls_2"
+        ]
+      },
+      {
+        "name": "boundary_3",
+        "source_zone": "worker",
+        "target_zone": "queue",
+        "description": "Transition 3",
+        "enforcement": [
+          "waf_3",
+          "mtls_3"
+        ]
+      },
+      {
+        "name": "boundary_4",
+        "source_zone": "internet",
+        "target_zone": "app",
+        "description": "Transition 4",
+        "enforcement": []
+      },
+      {
+        "name": "boundary_5",
+        "source_zone": "dmz",
+        "target_zone": "db",
+        "description": "Transition 5",
+        "enforcement": [
+          "waf_5",
+          "mtls_5"
+        ]
+      },
+      {
+        "name": "boundary_6",
+        "source_zone": "vpc",
+        "target_zone": "cache",
+        "description": "Transition 6",
+        "enforcement": [
+          "waf_6",
+          "mtls_6"
+        ]
+      },
+      {
+        "name": "boundary_7",
+        "source_zone": "worker",
+        "target_zone": "queue",
+        "description": "Transition 7",
+        "enforcement": [
+          "waf_7",
+          "mtls_7"
+        ]
+      },
+      {
+        "name": "boundary_8",
+        "source_zone": "internet",
+        "target_zone": "app",
+        "description": "Transition 8",
+        "enforcement": []
+      },
+      {
+        "name": "boundary_9",
+        "source_zone": "dmz",
+        "target_zone": "db",
+        "description": "Transition 9",
+        "enforcement": [
+          "waf_9",
+          "mtls_9"
+        ]
+      },
+      {
+        "name": "boundary_10",
+        "source_zone": "vpc",
+        "target_zone": "cache",
+        "description": "Transition 10",
+        "enforcement": [
+          "waf_10",
+          "mtls_10"
+        ]
+      },
+      {
+        "name": "boundary_11",
+        "source_zone": "worker",
+        "target_zone": "queue",
+        "description": "Transition 11",
+        "enforcement": [
+          "waf_11",
+          "mtls_11"
+        ]
+      }
+    ],
+    "services": [
+      {
+        "name": "postgres",
+        "service_type": "database",
+        "endpoint": "postgres://db:5432",
+        "purpose": "primary store",
+        "auth_mechanism": "password"
+      },
+      {
+        "name": "redis",
+        "service_type": "cache",
+        "endpoint": null,
+        "purpose": "sessions",
+        "auth_mechanism": null
+      },
+      {
+        "name": "stripe",
+        "service_type": "payments",
+        "endpoint": "https://api.stripe.com",
+        "purpose": null,
+        "auth_mechanism": "api_key"
+      },
+      {
+        "name": "s3",
+        "service_type": "object_store",
+        "endpoint": "https://s3.amazonaws.com",
+        "purpose": "uploads",
+        "auth_mechanism": "iam"
+      },
+      {
+        "name": "smtp",
+        "service_type": "mail",
+        "endpoint": null,
+        "purpose": "transactional email",
+        "auth_mechanism": null
+      }
+    ],
+    "api_surface": [
+      {
+        "method": "GET",
+        "path": "/api/v1/thing/0",
+        "handler": "ThingController.action0",
+        "file_path": "app/api/thing_0.py",
+        "line": 100,
+        "auth_required": true,
+        "rate_limited": null
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/thing/1",
+        "handler": "ThingController.action1",
+        "file_path": "app/api/thing_1.py",
+        "line": 103,
+        "auth_required": false,
+        "rate_limited": false
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/thing/2",
+        "handler": "ThingController.action2",
+        "file_path": "app/api/thing_2.py",
+        "line": 106,
+        "auth_required": null,
+        "rate_limited": true
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/thing/3",
+        "handler": "ThingController.action3",
+        "file_path": "app/api/thing_3.py",
+        "line": 109,
+        "auth_required": false,
+        "rate_limited": false
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/thing/4",
+        "handler": "ThingController.action4",
+        "file_path": "app/api/thing_4.py",
+        "line": 112,
+        "auth_required": true,
+        "rate_limited": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/thing/5",
+        "handler": "ThingController.action5",
+        "file_path": "app/api/thing_5.py",
+        "line": 115,
+        "auth_required": null,
+        "rate_limited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/thing/6",
+        "handler": "ThingController.action6",
+        "file_path": "app/api/thing_6.py",
+        "line": 118,
+        "auth_required": true,
+        "rate_limited": null
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/thing/7",
+        "handler": "ThingController.action7",
+        "file_path": "app/api/thing_7.py",
+        "line": 121,
+        "auth_required": false,
+        "rate_limited": false
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/thing/8",
+        "handler": "ThingController.action8",
+        "file_path": "app/api/thing_8.py",
+        "line": 124,
+        "auth_required": null,
+        "rate_limited": true
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/thing/9",
+        "handler": "ThingController.action9",
+        "file_path": "app/api/thing_9.py",
+        "line": 127,
+        "auth_required": false,
+        "rate_limited": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/thing/10",
+        "handler": "ThingController.action10",
+        "file_path": "app/api/thing_10.py",
+        "line": 130,
+        "auth_required": true,
+        "rate_limited": null
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/thing/11",
+        "handler": "ThingController.action11",
+        "file_path": "app/api/thing_11.py",
+        "line": 133,
+        "auth_required": null,
+        "rate_limited": true
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/thing/12",
+        "handler": "ThingController.action12",
+        "file_path": "app/api/thing_12.py",
+        "line": 136,
+        "auth_required": true,
+        "rate_limited": null
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/thing/13",
+        "handler": "ThingController.action13",
+        "file_path": "app/api/thing_13.py",
+        "line": 139,
+        "auth_required": false,
+        "rate_limited": false
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/thing/14",
+        "handler": "ThingController.action14",
+        "file_path": "app/api/thing_14.py",
+        "line": 142,
+        "auth_required": null,
+        "rate_limited": true
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/thing/15",
+        "handler": "ThingController.action15",
+        "file_path": "app/api/thing_15.py",
+        "line": 145,
+        "auth_required": false,
+        "rate_limited": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/thing/16",
+        "handler": "ThingController.action16",
+        "file_path": "app/api/thing_16.py",
+        "line": 148,
+        "auth_required": true,
+        "rate_limited": null
+      },
+      {
+        "method": "PUT",
+        "path": "/api/v1/thing/17",
+        "handler": "ThingController.action17",
+        "file_path": "app/api/thing_17.py",
+        "line": 151,
+        "auth_required": null,
+        "rate_limited": true
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/thing/18",
+        "handler": "ThingController.action18",
+        "file_path": "app/api/thing_18.py",
+        "line": 154,
+        "auth_required": true,
+        "rate_limited": null
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/thing/19",
+        "handler": "ThingController.action19",
+        "file_path": "app/api/thing_19.py",
+        "line": 157,
+        "auth_required": false,
+        "rate_limited": false
+      }
+    ]
+  },
+  "data_flows": {
+    "flows": [
+      {
+        "source": "request.args['q']",
+        "path": [
+          {
+            "file_path": "app/search/index.ts",
+            "line": 20,
+            "component": "step_0_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/util/b.py",
+            "line": 40,
+            "component": "step_0_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "cursor.execute",
+        "sanitized": false,
+        "files": [
+          "app/search/index.ts",
+          "app/db/raw.py",
+          "app/util/a.py",
+          "app/util/b.py"
+        ]
+      },
+      {
+        "source": "request.cookies['session']",
+        "path": [
+          {
+            "file_path": "app/auth/session_store.py",
+            "line": 21,
+            "component": "step_1_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/auth/session_store.py",
+            "line": 41,
+            "component": "step_1_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "redis.set",
+        "sanitized": true,
+        "files": [
+          "app/auth/session_store.py"
+        ]
+      },
+      {
+        "source": "request.json['url']",
+        "path": [
+          {
+            "file_path": "app/integrations/webhooks.go",
+            "line": 22,
+            "component": "step_2_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/net/client.go",
+            "line": 42,
+            "component": "step_2_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "requests.get",
+        "sanitized": false,
+        "files": [
+          "app/integrations/webhooks.go",
+          "app/net/client.go"
+        ]
+      },
+      {
+        "source": "form['password']",
+        "path": [
+          {
+            "file_path": "app/auth/service.py",
+            "line": 23,
+            "component": "step_3_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/obs/telemetry.go",
+            "line": 43,
+            "component": "step_3_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "logger.info",
+        "sanitized": false,
+        "files": [
+          "app/auth/service.py",
+          "app/obs/telemetry.go"
+        ]
+      },
+      {
+        "source": "header['Authorization']",
+        "path": [
+          {
+            "file_path": "app/common/jwt_tools.py",
+            "line": 24,
+            "component": "step_4_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/common/jwt_tools.py",
+            "line": 44,
+            "component": "step_4_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "jwt.decode",
+        "sanitized": true,
+        "files": [
+          "app/common/jwt_tools.py"
+        ]
+      },
+      {
+        "source": "query['email']",
+        "path": [
+          {
+            "file_path": "app/notify/mailer.rb",
+            "line": 25,
+            "component": "step_5_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/notify/mailer.rb",
+            "line": 45,
+            "component": "step_5_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "smtp.send",
+        "sanitized": false,
+        "files": [
+          "app/notify/mailer.rb"
+        ]
+      },
+      {
+        "source": "body['card_number']",
+        "path": [
+          {
+            "file_path": "app/billing/payments.go",
+            "line": 26,
+            "component": "step_6_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/billing/core.py",
+            "line": 46,
+            "component": "step_6_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "stripe.Charge.create",
+        "sanitized": true,
+        "files": [
+          "app/billing/payments.go",
+          "app/billing/core.py"
+        ]
+      },
+      {
+        "source": "path_param['id']",
+        "path": [
+          {
+            "file_path": "app/api/thing_1.py",
+            "line": 27,
+            "component": "step_7_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/api/thing_1.py",
+            "line": 47,
+            "component": "step_7_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "orm.filter",
+        "sanitized": true,
+        "files": [
+          "app/api/thing_1.py"
+        ]
+      },
+      {
+        "source": "upload.filename",
+        "path": [
+          {
+            "file_path": "app/media/uploads.py",
+            "line": 28,
+            "component": "step_8_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/x/w.py",
+            "line": 48,
+            "component": "step_8_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "open",
+        "sanitized": false,
+        "files": [
+          "app/media/uploads.py",
+          "app/common/cache.py",
+          "app/common/guard.py",
+          "app/x/y.py",
+          "app/x/z.py",
+          "app/x/w.py"
+        ]
+      },
+      {
+        "source": "env['DEBUG']",
+        "path": [
+          {
+            "file_path": "app/web/render.py",
+            "line": 29,
+            "component": "step_9_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/web/render.py",
+            "line": 49,
+            "component": "step_9_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "template.render",
+        "sanitized": false,
+        "files": [
+          "app/web/render.py"
+        ]
+      },
+      {
+        "source": "request.body",
+        "path": [
+          {
+            "file_path": "app/admin/views.py",
+            "line": 30,
+            "component": "step_10_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/admin/views.py",
+            "line": 50,
+            "component": "step_10_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "eval",
+        "sanitized": false,
+        "files": [
+          "app/admin/views.py"
+        ]
+      },
+      {
+        "source": "websocket.msg",
+        "path": [
+          {
+            "file_path": "app/ws/handler.py",
+            "line": 31,
+            "component": "step_11_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/ws/exec.py",
+            "line": 51,
+            "component": "step_11_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "subprocess.run",
+        "sanitized": false,
+        "files": [
+          "app/ws/handler.py",
+          "app/ws/exec.py"
+        ]
+      },
+      {
+        "source": "cli.argv",
+        "path": [
+          {
+            "file_path": "tools/run.py",
+            "line": 32,
+            "component": "step_12_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "tools/run.py",
+            "line": 52,
+            "component": "step_12_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "os.system",
+        "sanitized": false,
+        "files": [
+          "tools/run.py"
+        ]
+      },
+      {
+        "source": "queue.payload",
+        "path": [
+          {
+            "file_path": "app/worker/task.py",
+            "line": 33,
+            "component": "step_13_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/worker/task.py",
+            "line": 53,
+            "component": "step_13_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "pickle.loads",
+        "sanitized": false,
+        "files": [
+          "app/worker/task.py"
+        ]
+      },
+      {
+        "source": "request.args['redirect']",
+        "path": [
+          {
+            "file_path": "app/web/redirect.py",
+            "line": 34,
+            "component": "step_14_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/web/redirect.py",
+            "line": 54,
+            "component": "step_14_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "HttpResponseRedirect",
+        "sanitized": false,
+        "files": [
+          "app/web/redirect.py"
+        ]
+      },
+      {
+        "source": "session['role']",
+        "path": [
+          {
+            "file_path": "app/auth/permissions.py",
+            "line": 35,
+            "component": "step_15_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/auth/rbac.py",
+            "line": 55,
+            "component": "step_15_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "permission_check",
+        "sanitized": true,
+        "files": [
+          "app/auth/permissions.py",
+          "app/auth/rbac.py"
+        ]
+      },
+      {
+        "source": "request.files['avatar']",
+        "path": [
+          {
+            "file_path": "app/media/uploads.py",
+            "line": 36,
+            "component": "step_16_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/media/uploads.py",
+            "line": 56,
+            "component": "step_16_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "s3.put_object",
+        "sanitized": true,
+        "files": [
+          "app/media/uploads.py"
+        ]
+      },
+      {
+        "source": "token",
+        "path": [
+          {
+            "file_path": "app/common/cache.py",
+            "line": 37,
+            "component": "step_17_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/common/cache.py",
+            "line": 57,
+            "component": "step_17_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "cache.set",
+        "sanitized": true,
+        "files": [
+          "app/common/cache.py"
+        ]
+      },
+      {
+        "source": "request.headers['X-User-Phone']",
+        "path": [
+          {
+            "file_path": "app/obs/audit.py",
+            "line": 38,
+            "component": "step_18_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/obs/audit.py",
+            "line": 58,
+            "component": "step_18_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "audit_log",
+        "sanitized": false,
+        "files": [
+          "app/obs/audit.py"
+        ]
+      },
+      {
+        "source": "graphql.variables",
+        "path": [
+          {
+            "file_path": "app/api/graphql.ts",
+            "line": 39,
+            "component": "step_19_a",
+            "operation": "read"
+          },
+          {
+            "file_path": "app/api/graphql.ts",
+            "line": 59,
+            "component": "step_19_b",
+            "operation": "write"
+          }
+        ],
+        "sink": "db.query",
+        "sanitized": false,
+        "files": [
+          "app/api/graphql.ts"
+        ]
+      }
+    ],
+    "sanitization_points": [
+      {
+        "file_path": "app/sanitize/s0.py",
+        "line": 5,
+        "function_name": null,
+        "sanitization_type": "escape",
+        "protects_against": []
+      },
+      {
+        "file_path": "app/sanitize/s1.py",
+        "line": 9,
+        "function_name": "clean_1",
+        "sanitization_type": "parameterize",
+        "protects_against": [
+          "CWE-80",
+          "CWE-90"
+        ]
+      },
+      {
+        "file_path": "app/sanitize/s2.py",
+        "line": 13,
+        "function_name": "clean_2",
+        "sanitization_type": "allowlist",
+        "protects_against": [
+          "CWE-81",
+          "CWE-91"
+        ]
+      },
+      {
+        "file_path": "app/sanitize/s3.py",
+        "line": 17,
+        "function_name": "clean_3",
+        "sanitization_type": "encode",
+        "protects_against": []
+      },
+      {
+        "file_path": "app/sanitize/s4.py",
+        "line": 21,
+        "function_name": "clean_4",
+        "sanitization_type": "escape",
+        "protects_against": [
+          "CWE-83",
+          "CWE-93"
+        ]
+      },
+      {
+        "file_path": "app/sanitize/s5.py",
+        "line": 25,
+        "function_name": null,
+        "sanitization_type": "parameterize",
+        "protects_against": [
+          "CWE-84",
+          "CWE-94"
+        ]
+      },
+      {
+        "file_path": "app/sanitize/s6.py",
+        "line": 29,
+        "function_name": "clean_6",
+        "sanitization_type": "allowlist",
+        "protects_against": []
+      },
+      {
+        "file_path": "app/sanitize/s7.py",
+        "line": 33,
+        "function_name": "clean_7",
+        "sanitization_type": "encode",
+        "protects_against": [
+          "CWE-86",
+          "CWE-96"
+        ]
+      },
+      {
+        "file_path": "app/sanitize/s8.py",
+        "line": 37,
+        "function_name": "clean_8",
+        "sanitization_type": "escape",
+        "protects_against": [
+          "CWE-87",
+          "CWE-97"
+        ]
+      },
+      {
+        "file_path": "app/sanitize/s9.py",
+        "line": 41,
+        "function_name": "clean_9",
+        "sanitization_type": "parameterize",
+        "protects_against": []
+      },
+      {
+        "file_path": "app/sanitize/s10.py",
+        "line": 45,
+        "function_name": null,
+        "sanitization_type": "allowlist",
+        "protects_against": [
+          "CWE-89",
+          "CWE-99"
+        ]
+      },
+      {
+        "file_path": "app/sanitize/s11.py",
+        "line": 49,
+        "function_name": "clean_11",
+        "sanitization_type": "encode",
+        "protects_against": [
+          "CWE-90",
+          "CWE-100"
+        ]
+      }
+    ],
+    "sinks": [
+      {
+        "sink_type": "sql",
+        "file_path": "app/sink/k0.py",
+        "line": 200,
+        "function_name": null,
+        "exploitability_notes": null
+      },
+      {
+        "sink_type": "command",
+        "file_path": "app/sink/k1.py",
+        "line": 202,
+        "function_name": "sink_fn_1",
+        "exploitability_notes": "note 1"
+      },
+      {
+        "sink_type": "template",
+        "file_path": "app/sink/k2.py",
+        "line": 204,
+        "function_name": "sink_fn_2",
+        "exploitability_notes": "note 2"
+      },
+      {
+        "sink_type": "file",
+        "file_path": "app/sink/k3.py",
+        "line": 206,
+        "function_name": "sink_fn_3",
+        "exploitability_notes": null
+      },
+      {
+        "sink_type": "network",
+        "file_path": "app/sink/k4.py",
+        "line": 208,
+        "function_name": null,
+        "exploitability_notes": "note 4"
+      },
+      {
+        "sink_type": "deserialization",
+        "file_path": "app/sink/k5.py",
+        "line": 210,
+        "function_name": "sink_fn_5",
+        "exploitability_notes": "note 5"
+      },
+      {
+        "sink_type": "sql",
+        "file_path": "app/sink/k6.py",
+        "line": 212,
+        "function_name": "sink_fn_6",
+        "exploitability_notes": null
+      },
+      {
+        "sink_type": "command",
+        "file_path": "app/sink/k7.py",
+        "line": 214,
+        "function_name": "sink_fn_7",
+        "exploitability_notes": "note 7"
+      },
+      {
+        "sink_type": "template",
+        "file_path": "app/sink/k8.py",
+        "line": 216,
+        "function_name": null,
+        "exploitability_notes": "note 8"
+      },
+      {
+        "sink_type": "file",
+        "file_path": "app/sink/k9.py",
+        "line": 218,
+        "function_name": "sink_fn_9",
+        "exploitability_notes": null
+      },
+      {
+        "sink_type": "network",
+        "file_path": "app/sink/k10.py",
+        "line": 220,
+        "function_name": "sink_fn_10",
+        "exploitability_notes": "note 10"
+      },
+      {
+        "sink_type": "deserialization",
+        "file_path": "app/sink/k11.py",
+        "line": 222,
+        "function_name": "sink_fn_11",
+        "exploitability_notes": "note 11"
+      },
+      {
+        "sink_type": "sql",
+        "file_path": "app/sink/k12.py",
+        "line": 224,
+        "function_name": null,
+        "exploitability_notes": null
+      },
+      {
+        "sink_type": "command",
+        "file_path": "app/sink/k13.py",
+        "line": 226,
+        "function_name": "sink_fn_13",
+        "exploitability_notes": "note 13"
+      },
+      {
+        "sink_type": "template",
+        "file_path": "app/sink/k14.py",
+        "line": 228,
+        "function_name": "sink_fn_14",
+        "exploitability_notes": "note 14"
+      },
+      {
+        "sink_type": "file",
+        "file_path": "app/sink/k15.py",
+        "line": 230,
+        "function_name": "sink_fn_15",
+        "exploitability_notes": null
+      },
+      {
+        "sink_type": "network",
+        "file_path": "app/sink/k16.py",
+        "line": 232,
+        "function_name": null,
+        "exploitability_notes": "note 16"
+      },
+      {
+        "sink_type": "deserialization",
+        "file_path": "app/sink/k17.py",
+        "line": 234,
+        "function_name": "sink_fn_17",
+        "exploitability_notes": "note 17"
+      }
+    ]
+  },
+  "dependencies": {
+    "sbom": [
+      {
+        "name": "django",
+        "version": "4.2.1",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "BSD-3-Clause"
+      },
+      {
+        "name": "requests",
+        "version": "2.31.0",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "urllib3",
+        "version": "1.26.5",
+        "ecosystem": "pypi",
+        "direct": false,
+        "license": "MIT"
+      },
+      {
+        "name": "jinja2",
+        "version": "3.1.2",
+        "ecosystem": "pypi",
+        "direct": false,
+        "license": null
+      },
+      {
+        "name": "lodash",
+        "version": "4.17.19",
+        "ecosystem": "npm",
+        "direct": true,
+        "license": "MIT"
+      },
+      {
+        "name": "express",
+        "version": "4.17.1",
+        "ecosystem": "npm",
+        "direct": true,
+        "license": "MIT"
+      },
+      {
+        "name": "minimist",
+        "version": "1.2.5",
+        "ecosystem": "npm",
+        "direct": false,
+        "license": "MIT"
+      },
+      {
+        "name": "axios",
+        "version": "0.21.1",
+        "ecosystem": "npm",
+        "direct": false,
+        "license": "MIT"
+      },
+      {
+        "name": "github.com/gin-gonic/gin",
+        "version": "1.9.0",
+        "ecosystem": "go",
+        "direct": true,
+        "license": "MIT"
+      },
+      {
+        "name": "golang.org/x/net",
+        "version": "0.7.0",
+        "ecosystem": "go",
+        "direct": false,
+        "license": "BSD-3-Clause"
+      },
+      {
+        "name": "rails",
+        "version": "7.0.4",
+        "ecosystem": "rubygems",
+        "direct": true,
+        "license": "MIT"
+      },
+      {
+        "name": "nokogiri",
+        "version": "1.13.6",
+        "ecosystem": "rubygems",
+        "direct": false,
+        "license": "MIT"
+      },
+      {
+        "name": "django",
+        "version": "4.2.1",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "BSD-3-Clause"
+      },
+      {
+        "name": "requests",
+        "version": "2.31.0",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "Apache-2.0"
+      }
+    ],
+    "known_cves": [
+      {
+        "cve_id": "CVE-2023-0001",
+        "package": "django",
+        "installed_version": "4.2.1",
+        "fixed_version": "4.2.5",
+        "cvss_v4_score": 9.8,
+        "epss_score": 0.5,
+        "direct": true,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0002",
+        "package": "urllib3",
+        "installed_version": "1.26.5",
+        "fixed_version": null,
+        "cvss_v4_score": 7.5,
+        "epss_score": 0.1,
+        "direct": false,
+        "reachable": false
+      },
+      {
+        "cve_id": "CVE-2023-0003",
+        "package": "lodash",
+        "installed_version": "4.17.19",
+        "fixed_version": "4.17.21",
+        "cvss_v4_score": 9.8,
+        "epss_score": 0.9,
+        "direct": true,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0004",
+        "package": "minimist",
+        "installed_version": "1.2.5",
+        "fixed_version": "1.2.6",
+        "cvss_v4_score": null,
+        "epss_score": null,
+        "direct": false,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0005",
+        "package": "axios",
+        "installed_version": "0.21.1",
+        "fixed_version": "0.21.2",
+        "cvss_v4_score": 5.3,
+        "epss_score": 0.02,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0006",
+        "package": "jinja2",
+        "installed_version": "3.1.2",
+        "fixed_version": null,
+        "cvss_v4_score": 6.1,
+        "epss_score": null,
+        "direct": false,
+        "reachable": false
+      },
+      {
+        "cve_id": "CVE-2023-0007",
+        "package": "express",
+        "installed_version": "4.17.1",
+        "fixed_version": "4.18.0",
+        "cvss_v4_score": 4.3,
+        "epss_score": 0.005,
+        "direct": true,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0008",
+        "package": "nokogiri",
+        "installed_version": "1.13.6",
+        "fixed_version": "1.13.10",
+        "cvss_v4_score": 8.8,
+        "epss_score": 0.3,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0009",
+        "package": "golang.org/x/net",
+        "installed_version": "0.7.0",
+        "fixed_version": "0.17.0",
+        "cvss_v4_score": 7.5,
+        "epss_score": 0.44,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0010",
+        "package": "rails",
+        "installed_version": "7.0.4",
+        "fixed_version": "7.0.7",
+        "cvss_v4_score": 9.1,
+        "epss_score": 0.6,
+        "direct": true,
+        "reachable": false
+      },
+      {
+        "cve_id": "CVE-2023-0011",
+        "package": "gin",
+        "installed_version": "1.9.0",
+        "fixed_version": null,
+        "cvss_v4_score": 3.7,
+        "epss_score": 0.001,
+        "direct": true,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0012",
+        "package": "requests",
+        "installed_version": "2.31.0",
+        "fixed_version": "2.32.0",
+        "cvss_v4_score": 6.5,
+        "epss_score": 0.07,
+        "direct": true,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0013",
+        "package": "pyyaml",
+        "installed_version": "5.3",
+        "fixed_version": "5.4",
+        "cvss_v4_score": 9.8,
+        "epss_score": 0.5,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0014",
+        "package": "log4j",
+        "installed_version": "2.14.0",
+        "fixed_version": "2.17.1",
+        "cvss_v4_score": 10.0,
+        "epss_score": 0.97,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0015",
+        "package": "openssl",
+        "installed_version": "1.1.1k",
+        "fixed_version": "1.1.1t",
+        "cvss_v4_score": 7.4,
+        "epss_score": 0.12,
+        "direct": false,
+        "reachable": null
+      },
+      {
+        "cve_id": "CVE-2023-0016",
+        "package": "zlib",
+        "installed_version": "1.2.11",
+        "fixed_version": "1.2.12",
+        "cvss_v4_score": 8.2,
+        "epss_score": 0.04,
+        "direct": false,
+        "reachable": false
+      },
+      {
+        "cve_id": "CVE-2023-0017",
+        "package": "libxml2",
+        "installed_version": "2.9.10",
+        "fixed_version": null,
+        "cvss_v4_score": null,
+        "epss_score": 0.25,
+        "direct": false,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2023-0018",
+        "package": "curl",
+        "installed_version": "7.68.0",
+        "fixed_version": "7.88.0",
+        "cvss_v4_score": 8.1,
+        "epss_score": null,
+        "direct": true,
+        "reachable": true
+      }
+    ],
+    "outdated": [
+      {
+        "package": "pkg-0",
+        "current_version": "1.0.0",
+        "latest_version": "2.0.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-1",
+        "current_version": "1.1.0",
+        "latest_version": "2.1.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-2",
+        "current_version": "1.2.0",
+        "latest_version": "2.2.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-3",
+        "current_version": "1.3.0",
+        "latest_version": "2.3.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-4",
+        "current_version": "1.4.0",
+        "latest_version": "2.4.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-5",
+        "current_version": "1.5.0",
+        "latest_version": "2.5.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-6",
+        "current_version": "1.6.0",
+        "latest_version": "2.6.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-7",
+        "current_version": "1.7.0",
+        "latest_version": "2.7.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-8",
+        "current_version": "1.8.0",
+        "latest_version": "2.8.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-9",
+        "current_version": "1.9.0",
+        "latest_version": "2.9.0",
+        "direct": false
+      },
+      {
+        "package": "pkg-10",
+        "current_version": "1.10.0",
+        "latest_version": "2.10.0",
+        "direct": true
+      },
+      {
+        "package": "pkg-11",
+        "current_version": "1.11.0",
+        "latest_version": "2.11.0",
+        "direct": false
+      }
+    ],
+    "direct_count": 7,
+    "transitive_count": 143
+  },
+  "config": {
+    "secrets": [
+      {
+        "id": "secret-00",
+        "secret_type": "aws_access_key",
+        "file_path": "config/env_0.yaml",
+        "line": 3,
+        "match": "AKIA****0000",
+        "confidence": "high",
+        "is_test_value": false
+      },
+      {
+        "id": "secret-01",
+        "secret_type": "github_token",
+        "file_path": "config/env_1.yaml",
+        "line": 4,
+        "match": "AKIA****0001",
+        "confidence": "medium",
+        "is_test_value": true
+      },
+      {
+        "id": "secret-02",
+        "secret_type": "private_key",
+        "file_path": "config/env_2.yaml",
+        "line": 5,
+        "match": "AKIA****0002",
+        "confidence": "low",
+        "is_test_value": null
+      },
+      {
+        "id": "secret-03",
+        "secret_type": "slack_webhook",
+        "file_path": "config/env_3.yaml",
+        "line": 6,
+        "match": "AKIA****0003",
+        "confidence": "high",
+        "is_test_value": false
+      },
+      {
+        "id": "secret-04",
+        "secret_type": "generic_api_key",
+        "file_path": "config/env_4.yaml",
+        "line": 7,
+        "match": "AKIA****0004",
+        "confidence": "medium",
+        "is_test_value": true
+      },
+      {
+        "id": "secret-05",
+        "secret_type": "aws_access_key",
+        "file_path": "config/env_5.yaml",
+        "line": 8,
+        "match": "AKIA****0005",
+        "confidence": "low",
+        "is_test_value": null
+      },
+      {
+        "id": "secret-06",
+        "secret_type": "github_token",
+        "file_path": "config/env_6.yaml",
+        "line": 9,
+        "match": "AKIA****0006",
+        "confidence": "high",
+        "is_test_value": false
+      },
+      {
+        "id": "secret-07",
+        "secret_type": "private_key",
+        "file_path": "config/env_7.yaml",
+        "line": 10,
+        "match": "AKIA****0007",
+        "confidence": "medium",
+        "is_test_value": true
+      },
+      {
+        "id": "secret-08",
+        "secret_type": "slack_webhook",
+        "file_path": "config/env_8.yaml",
+        "line": 11,
+        "match": "AKIA****0008",
+        "confidence": "low",
+        "is_test_value": null
+      },
+      {
+        "id": "secret-09",
+        "secret_type": "generic_api_key",
+        "file_path": "config/env_9.yaml",
+        "line": 12,
+        "match": "AKIA****0009",
+        "confidence": "high",
+        "is_test_value": false
+      },
+      {
+        "id": "secret-10",
+        "secret_type": "aws_access_key",
+        "file_path": "config/env_10.yaml",
+        "line": 13,
+        "match": "AKIA****0010",
+        "confidence": "medium",
+        "is_test_value": true
+      },
+      {
+        "id": "secret-11",
+        "secret_type": "github_token",
+        "file_path": "config/env_11.yaml",
+        "line": 14,
+        "match": "AKIA****0011",
+        "confidence": "low",
+        "is_test_value": null
+      },
+      {
+        "id": "secret-12",
+        "secret_type": "private_key",
+        "file_path": "config/env_12.yaml",
+        "line": 15,
+        "match": "AKIA****0012",
+        "confidence": "high",
+        "is_test_value": false
+      },
+      {
+        "id": "secret-13",
+        "secret_type": "slack_webhook",
+        "file_path": "config/env_13.yaml",
+        "line": 16,
+        "match": "AKIA****0013",
+        "confidence": "medium",
+        "is_test_value": true
+      },
+      {
+        "id": "secret-14",
+        "secret_type": "generic_api_key",
+        "file_path": "config/env_14.yaml",
+        "line": 17,
+        "match": "AKIA****0014",
+        "confidence": "low",
+        "is_test_value": null
+      },
+      {
+        "id": "secret-15",
+        "secret_type": "aws_access_key",
+        "file_path": "config/env_15.yaml",
+        "line": 18,
+        "match": "AKIA****0015",
+        "confidence": "high",
+        "is_test_value": false
+      },
+      {
+        "id": "secret-16",
+        "secret_type": "github_token",
+        "file_path": "config/env_16.yaml",
+        "line": 19,
+        "match": "AKIA****0016",
+        "confidence": "medium",
+        "is_test_value": true
+      }
+    ],
+    "misconfigs": [
+      {
+        "id": "misconfig-00",
+        "category": "logging",
+        "file_path": "config/app_0.ini",
+        "line": null,
+        "key": "LOG_LEVEL",
+        "value": "DEBUG",
+        "risk": "high",
+        "remediation": "Debug logging in production"
+      },
+      {
+        "id": "misconfig-01",
+        "category": "tls",
+        "file_path": "config/app_1.ini",
+        "line": 13,
+        "key": "SSL_VERIFY",
+        "value": "false",
+        "risk": "critical",
+        "remediation": "TLS verification disabled"
+      },
+      {
+        "id": "misconfig-02",
+        "category": "cors",
+        "file_path": "config/app_2.ini",
+        "line": 14,
+        "key": "ALLOW_ORIGIN",
+        "value": "*",
+        "risk": "high",
+        "remediation": null
+      },
+      {
+        "id": "misconfig-03",
+        "category": "headers",
+        "file_path": "config/app_3.ini",
+        "line": 0,
+        "key": "X_FRAME_OPTIONS",
+        "value": null,
+        "risk": "medium",
+        "remediation": "Missing clickjacking header"
+      },
+      {
+        "id": "misconfig-04",
+        "category": "debug",
+        "file_path": "config/app_4.ini",
+        "line": 16,
+        "key": "DJANGO_DEBUG",
+        "value": "True",
+        "risk": "critical",
+        "remediation": "Debug mode enabled"
+      },
+      {
+        "id": "misconfig-05",
+        "category": "storage",
+        "file_path": "config/app_5.ini",
+        "line": null,
+        "key": "BUCKET_ACL",
+        "value": "public-read",
+        "risk": "critical",
+        "remediation": "Public bucket"
+      },
+      {
+        "id": "misconfig-06",
+        "category": "auth",
+        "file_path": "config/app_6.ini",
+        "line": 18,
+        "key": "SESSION_TIMEOUT",
+        "value": "999999",
+        "risk": "medium",
+        "remediation": null
+      },
+      {
+        "id": "misconfig-07",
+        "category": "http",
+        "file_path": "config/app_7.ini",
+        "line": 19,
+        "key": "REDIRECT_HTTPS",
+        "value": "false",
+        "risk": "high",
+        "remediation": "Plain HTTP allowed"
+      },
+      {
+        "id": "misconfig-08",
+        "category": "secrets",
+        "file_path": "config/app_8.ini",
+        "line": 20,
+        "key": null,
+        "value": "inline",
+        "risk": "medium",
+        "remediation": "Inline secret"
+      },
+      {
+        "id": "misconfig-09",
+        "category": "trace",
+        "file_path": "config/app_9.ini",
+        "line": 21,
+        "key": "OTEL_TRACE_ALL",
+        "value": "true",
+        "risk": "low",
+        "remediation": "Verbose tracing"
+      },
+      {
+        "id": "misconfig-10",
+        "category": "network",
+        "file_path": "config/app_10.ini",
+        "line": null,
+        "key": "BIND_ADDR",
+        "value": "0.0.0.0",
+        "risk": "medium",
+        "remediation": null
+      },
+      {
+        "id": "misconfig-11",
+        "category": "errors",
+        "file_path": "config/app_11.ini",
+        "line": 23,
+        "key": "SHOW_STACKTRACE",
+        "value": "true",
+        "risk": "high",
+        "remediation": "Error stacktraces exposed"
+      },
+      {
+        "id": "misconfig-12",
+        "category": "cache",
+        "file_path": "config/app_12.ini",
+        "line": 24,
+        "key": "CACHE_TTL",
+        "value": "0",
+        "risk": "low",
+        "remediation": null
+      },
+      {
+        "id": "misconfig-13",
+        "category": "db",
+        "file_path": "config/app_13.ini",
+        "line": 25,
+        "key": "SSLMODE",
+        "value": "disable",
+        "risk": "critical",
+        "remediation": "Database TLS off"
+      },
+      {
+        "id": "misconfig-14",
+        "category": "queue",
+        "file_path": "config/app_14.ini",
+        "line": 26,
+        "key": "PREFETCH",
+        "value": "1000",
+        "risk": "low",
+        "remediation": null
+      },
+      {
+        "id": "misconfig-15",
+        "category": "exposure",
+        "file_path": "config/app_15.ini",
+        "line": null,
+        "key": "ADMIN_PATH",
+        "value": "/admin",
+        "risk": "medium",
+        "remediation": "Admin surface exposed"
+      }
+    ]
+  },
+  "security_context": {
+    "auth_model": "jwt",
+    "auth_details": "HS256 JWTs issued by app/auth/service.py, refresh tokens in Redis",
+    "crypto_usage": [
+      {
+        "algorithm": "AES",
+        "key_size": 256,
+        "mode": "GCM",
+        "usage_context": "at-rest encryption",
+        "is_weak": false
+      },
+      {
+        "algorithm": "MD5",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "password hashing",
+        "is_weak": true
+      },
+      {
+        "algorithm": "RSA",
+        "key_size": 1024,
+        "mode": null,
+        "usage_context": "token signing",
+        "is_weak": true
+      },
+      {
+        "algorithm": "SHA-256",
+        "key_size": null,
+        "mode": null,
+        "usage_context": null,
+        "is_weak": false
+      },
+      {
+        "algorithm": "DES",
+        "key_size": 56,
+        "mode": "CBC",
+        "usage_context": "legacy export",
+        "is_weak": true
+      },
+      {
+        "algorithm": "HMAC-SHA1",
+        "key_size": 160,
+        "mode": null,
+        "usage_context": "webhook signature",
+        "is_weak": true
+      },
+      {
+        "algorithm": "ChaCha20",
+        "key_size": 256,
+        "mode": "Poly1305",
+        "usage_context": "transport",
+        "is_weak": false
+      },
+      {
+        "algorithm": "bcrypt",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "password hashing",
+        "is_weak": false
+      },
+      {
+        "algorithm": "RC4",
+        "key_size": 128,
+        "mode": null,
+        "usage_context": null,
+        "is_weak": true
+      },
+      {
+        "algorithm": "ECDSA",
+        "key_size": 256,
+        "mode": null,
+        "usage_context": "JWT signing",
+        "is_weak": null
+      },
+      {
+        "algorithm": "PBKDF2",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "key derivation",
+        "is_weak": false
+      },
+      {
+        "algorithm": "SHA-1",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "checksum",
+        "is_weak": true
+      },
+      {
+        "algorithm": "AES",
+        "key_size": 128,
+        "mode": "ECB",
+        "usage_context": "legacy blob",
+        "is_weak": true
+      },
+      {
+        "algorithm": "Ed25519",
+        "key_size": 256,
+        "mode": null,
+        "usage_context": "package signing",
+        "is_weak": false
+      },
+      {
+        "algorithm": "3DES",
+        "key_size": 168,
+        "mode": "CBC",
+        "usage_context": "legacy tape",
+        "is_weak": true
+      },
+      {
+        "algorithm": "Argon2id",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "password hashing",
+        "is_weak": null
+      }
+    ],
+    "framework_security": [
+      "django.middleware.csrf.CsrfViewMiddleware",
+      "",
+      "helmet defaults",
+      "SecurityMiddleware",
+      "rack-protection",
+      "spring-security filter chain"
+    ],
+    "security_headers": [
+      "Content-Security-Policy: default-src 'self'",
+      "X-Content-Type-Options: nosniff",
+      "Strict-Transport-Security: max-age=31536000",
+      "X-Frame-Options: DENY",
+      "Referrer-Policy: no-referrer",
+      "",
+      "Permissions-Policy: geolocation=()"
+    ],
+    "deployment_signals": [
+      "kubernetes ingress with TLS termination",
+      "docker-compose exposes 5432",
+      "no WAF in front of /api",
+      "secrets mounted from vault",
+      "readiness probe on /healthz",
+      "single replica for the worker",
+      "TLS 1.2 minimum",
+      "internal service mesh mTLS"
+    ]
+  },
+  "languages": [
+    "Python",
+    "JavaScript",
+    "Go",
+    "Ruby",
+    "Rust",
+    "python"
+  ],
+  "frameworks": [
+    "Django",
+    "next.js",
+    "Spring Boot",
+    "  React  ",
+    "unknown-fw",
+    "NEXT",
+    "Vue"
+  ],
+  "lines_of_code": 184213,
+  "file_count": 2417,
+  "recon_duration_seconds": 42.5
+}
