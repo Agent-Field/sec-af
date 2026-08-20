@@ -1,32 +1,33 @@
-config_version: v1            # manifest schema version (omit = legacy v0)
+config_version: v1
+# This is THE SEC-AF node. It deliberately shares the root manifest's name: the
+# root declares `superseded_by` pointing here, so installing this repo installs
+# this package, and a user who already has the Python sec-af gets it replaced in
+# place — same name, same node id, same triggers, secrets kept. Installing the
+# root as a local path (the documented escape hatch) is the one way to get the
+# Python node, and it necessarily takes this name over.
 name: sec-af
 version: 0.1.0
-description: Security review agent node (scans repositories for vulnerabilities)
+description: AI-Native Security Analysis and Red-Teaming Agent
 author: Agent-Field
-
-# The Go node in go/ is the maintained security-audit node: same reasoners, same
-# interface, one static binary, no per-node venv to build. Installing this repo
-# installs that instead — so `af install https://github.com/Agent-Field/sec-af`
-# is the one thing a user has to know, before and after the switch.
-#
-# go/ declares this same name deliberately, so the switch is a replacement in
-# place: same node id, same triggers, node-scoped secrets kept. Only one of the
-# two can be installed at a time, which is the point.
-#
-# This manifest stays here as the redirect, so the Python node is still what
-# `python -m sec_af.app` and docker-compose run. The redirect is a git-install
-# behaviour only: to install this node deliberately, clone the repo and install
-# the checkout as a local path.
-superseded_by: https://github.com/Agent-Field/sec-af//go
+language: go                            # explicit (also auto-detected from go/go.mod)
 
 entrypoint:
-  start: python -m sec_af.app
+  build: ./cmd/sec-af
+  start: bin/sec-af
   healthcheck: /health
 
 agent_node:
   node_id: sec-af
-  default_port: 8080
+  # 8013 rather than the Python node's 8080/8003: during the changeover both may
+  # be running, and triggers resolve by node id, not port.
+  default_port: 8013
 
+# Same keys AND the same defaults as the root manifest — the Go node reads
+# exactly the same variables, and `af install https://github.com/Agent-Field/sec-af`
+# follows the root manifest's `superseded_by` to this one, replacing an existing
+# Python sec-af in place. The control plane materialises `default:` into the
+# node's environment when the user has stored no value, so a different default
+# here would silently switch the LLM out from under an in-place upgrade.
 user_environment:
   required:
     - name: OPENROUTER_API_KEY
