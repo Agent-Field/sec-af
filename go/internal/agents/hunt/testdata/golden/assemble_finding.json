@@ -1,0 +1,179 @@
+[
+  {
+    "name": "multiline_snippet_sast",
+    "location": {
+      "file_path": "app/api/users.py",
+      "start_line": 42,
+      "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+      "pattern_type": "sql_injection"
+    },
+    "enriched": {
+      "title": "SQL injection in user lookup",
+      "description": "user_id flows unescaped into an f-string query.",
+      "cwe_id": "CWE-89",
+      "severity": "HIGH",
+      "confidence": "high",
+      "data_flow_summary": "  request.args['id'] -> query -> cursor.execute  "
+    },
+    "finding_type": "sast",
+    "strategy": "injection",
+    "want": {
+      "id": "<uuid>",
+      "hunter_strategy": "injection",
+      "title": "SQL injection in user lookup",
+      "description": "user_id flows unescaped into an f-string query.",
+      "finding_type": "sast",
+      "cwe_id": "CWE-89",
+      "cwe_name": "CWE-89",
+      "owasp_category": null,
+      "file_path": "app/api/users.py",
+      "start_line": 42,
+      "end_line": 43,
+      "function_name": null,
+      "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+      "estimated_severity": "high",
+      "confidence": "high",
+      "data_flow": [
+        {
+          "file_path": "app/api/users.py",
+          "line": 42,
+          "component": "injection",
+          "operation": "request.args['id'] -> query -> cursor.execute"
+        }
+      ],
+      "related_files": [],
+      "fingerprint": "<uuid>"
+    }
+  },
+  {
+    "name": "single_line_bad_enums",
+    "location": {
+      "file_path": "app/utils/hash.py",
+      "start_line": 7,
+      "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+      "pattern_type": "weak_hash"
+    },
+    "enriched": {
+      "title": "Weak hash for password storage",
+      "description": "MD5 used to derive a credential digest.",
+      "cwe_id": "CWE-327",
+      "severity": "catastrophic",
+      "confidence": "certain",
+      "data_flow_summary": "   "
+    },
+    "finding_type": "sast",
+    "strategy": "crypto",
+    "want": {
+      "id": "<uuid>",
+      "hunter_strategy": "crypto",
+      "title": "Weak hash for password storage",
+      "description": "MD5 used to derive a credential digest.",
+      "finding_type": "sast",
+      "cwe_id": "CWE-327",
+      "cwe_name": "CWE-327",
+      "owasp_category": null,
+      "file_path": "app/utils/hash.py",
+      "start_line": 7,
+      "end_line": 7,
+      "function_name": null,
+      "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+      "estimated_severity": "medium",
+      "confidence": "medium",
+      "data_flow": null,
+      "related_files": [],
+      "fingerprint": "<uuid>"
+    }
+  },
+  {
+    "name": "empty_snippet_unknown_type",
+    "location": {
+      "file_path": "a.py",
+      "start_line": 0,
+      "code_snippet": "",
+      "pattern_type": ""
+    },
+    "enriched": {
+      "title": "t",
+      "description": "d",
+      "cwe_id": "",
+      "severity": "",
+      "confidence": "",
+      "data_flow_summary": "x"
+    },
+    "finding_type": "not_a_type",
+    "strategy": "logic",
+    "want": {
+      "id": "<uuid>",
+      "hunter_strategy": "logic",
+      "title": "t",
+      "description": "d",
+      "finding_type": "sast",
+      "cwe_id": "",
+      "cwe_name": "",
+      "owasp_category": null,
+      "file_path": "a.py",
+      "start_line": 0,
+      "end_line": 0,
+      "function_name": null,
+      "code_snippet": "",
+      "estimated_severity": "medium",
+      "confidence": "medium",
+      "data_flow": [
+        {
+          "file_path": "a.py",
+          "line": 0,
+          "component": "logic",
+          "operation": "x"
+        }
+      ],
+      "related_files": [],
+      "fingerprint": "<uuid>"
+    }
+  },
+  {
+    "name": "trailing_newline_snippet_uppercase_type",
+    "location": {
+      "file_path": "b/c.js",
+      "start_line": 10,
+      "code_snippet": "one\ntwo\n",
+      "pattern_type": "p"
+    },
+    "enriched": {
+      "title": "t",
+      "description": "d",
+      "cwe_id": "CWE-1",
+      "severity": "INFO",
+      "confidence": "LOW",
+      "data_flow_summary": "\n  flow  \n"
+    },
+    "finding_type": "SCA",
+    "strategy": "supply_chain",
+    "want": {
+      "id": "<uuid>",
+      "hunter_strategy": "supply_chain",
+      "title": "t",
+      "description": "d",
+      "finding_type": "sca",
+      "cwe_id": "CWE-1",
+      "cwe_name": "CWE-1",
+      "owasp_category": null,
+      "file_path": "b/c.js",
+      "start_line": 10,
+      "end_line": 12,
+      "function_name": null,
+      "code_snippet": "one\ntwo\n",
+      "estimated_severity": "info",
+      "confidence": "low",
+      "data_flow": [
+        {
+          "file_path": "b/c.js",
+          "line": 10,
+          "component": "supply_chain",
+          "operation": "flow"
+        }
+      ],
+      "related_files": [],
+      "fingerprint": "<uuid>"
+    }
+  }
+]

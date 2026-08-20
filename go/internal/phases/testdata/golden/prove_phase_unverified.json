@@ -1,0 +1,51 @@
+{
+  "drop_summary": {
+    "by_reason": {
+      "verdict_unverified": 1
+    },
+    "demoted_total": 1,
+    "findings": [
+      {
+        "original_verdict": "unverified",
+        "reason": "verdict_unverified",
+        "title": "Potential SQL injection"
+      }
+    ]
+  },
+  "not_verified": 0,
+  "total_findings": 1,
+  "total_selected": 1,
+  "verified": [
+    {
+      "compliance": [],
+      "cwe_id": "CWE-89",
+      "cwe_name": "SQL Injection",
+      "description": "Potential injection from request parameter",
+      "drop_reason": "verdict_unverified",
+      "evidence_level": 1,
+      "exploitability_score": 0.0,
+      "finding_type": "sast",
+      "fingerprint": "fp-1",
+      "id": "raw-1",
+      "location": {
+        "code_snippet": "cursor.execute(f\"SELECT * FROM users WHERE id = {user_id}\")",
+        "end_line": 12,
+        "file_path": "src/users.py",
+        "function_name": "get_user",
+        "start_line": 10
+      },
+      "owasp_category": "A03:2021",
+      "rationale": "Verification incomplete: Verifier returned unverified verdict; demoted for manual review (original verdict: unverified)",
+      "related_locations": [],
+      "reproduction_steps": [],
+      "sarif_rule_id": "sec-af/sast/sql-injection",
+      "sarif_security_severity": 0.0,
+      "severity": "high",
+      "tags": [
+        "low_confidence"
+      ],
+      "title": "Potential SQL injection",
+      "verdict": "inconclusive"
+    }
+  ]
+}

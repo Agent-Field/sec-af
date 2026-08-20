@@ -1,0 +1,33 @@
+{
+  "description": "Flat schema for AI policy evaluation. 4 fields.",
+  "properties": {
+    "description": {
+      "description": "How the policy is violated, or 'No violation' if compliant",
+      "title": "Description",
+      "type": "string"
+    },
+    "file_path": {
+      "description": "Primary file where violation occurs, or 'N/A'",
+      "title": "File Path",
+      "type": "string"
+    },
+    "severity": {
+      "description": "Severity: \"high\", \"medium\", or \"low\"",
+      "title": "Severity",
+      "type": "string"
+    },
+    "violated": {
+      "description": "Whether the policy is violated",
+      "title": "Violated",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "violated",
+    "description",
+    "file_path",
+    "severity"
+  ],
+  "title": "PolicyEvalResult",
+  "type": "object"
+}

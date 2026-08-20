@@ -1,0 +1,6 @@
+LANGUAGE-SPECIFIC GUIDANCE:
+Language: PYTHON
+  Key sinks: cursor.execute, os.system, subprocess.run, eval, exec, pickle.loads
+  Safe patterns (skip these): parameterized queries with %s placeholders, subprocess.run with list args (no shell=True)
+  DO NOT FLAG: Django ORM queries (uses parameterized queries internally), SQLAlchemy text() with bound params
+  Framework notes: Check for Django/Flask/FastAPI-specific patterns. Django auto-escapes templates. Flask Jinja2 auto-escapes.

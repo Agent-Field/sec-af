@@ -1,0 +1,105 @@
+# SEC-AF Go node — opt-in ADD-ON to the Python stack.
+#
+# The Python docker-compose.yml is the DEFAULT stack (the AgentField control
+# plane `agentfield` + the Python `sec-af` node on :8003) and is left 100%
+# untouched. This file adds ONLY the Go node, registered under a DISTINCT
+# identity so both nodes can run against one control plane simultaneously:
+#
+#     sec-af-go  ->  node id "sec-af-go", :8013
+#
+# Run story (two commands, Python stack first):
+#
+#     docker compose up -d                           # Python stack + control plane
+#     docker compose -f docker-compose.go.yml up -d  # adds the Go node
+#
+# This is a SEPARATE compose project (name: sec-af-go) that joins the Python
+# stack's network as an EXTERNAL reference, so AGENTFIELD_SERVER=
+# http://agentfield:8080 resolves and the Go node shares the Python stack's
+# workspaces volume over that network. The control plane (service `agentfield`)
+# lives in the Python project, so there is NO `depends_on` here — bring the
+# Python stack up first.
+#
+# AND WAIT FOR IT TO ANSWER. Unlike the Python node, which keeps serving in
+# "degraded mode" and retries registration every 10s, the Go SDK returns the
+# registration error from Serve and cmd/sec-af treats it as fatal — so this
+# container EXITS if the control plane is not reachable at start, and
+# `restart: unless-stopped` below turns that into a restart loop until it is.
+# The same applies when the control plane is restarted under a running Go node.
+# See "Parity notes" in go/README.md.
+#
+# COMPOSE_PROJECT_NAME caveat: the external network/volume names below
+# (sec-af_default, sec-af_workspaces) are the Python project's
+# default-project-name resources. The Python docker-compose.yml has NO explicit
+# `name:`, so its project name defaults to the compose directory's basename —
+# `sec-af` when the repo is checked out as a directory named `sec-af`. If you
+# set COMPOSE_PROJECT_NAME for the Python stack (or the checkout directory is
+# named something else), override the external `name:` fields below to match
+# `<project>_default` and `<project>_workspaces`.
+name: sec-af-go
+
+services:
+  sec-af-go:
+    build:
+      context: .
+      dockerfile: go/Dockerfile
+      args:
+        AFORGE_BASE_URL: ${AFORGE_BASE_URL:-https://agentfield.ai/downloads/aforge}
+        AFORGE_VERSION: ${AFORGE_VERSION:-v0.1.0}
+    environment:
+      - AGENTFIELD_SERVER=http://agentfield:8080   # CP service name in sec-af's compose is "agentfield"
+      - AGENTFIELD_API_KEY=${AGENTFIELD_API_KEY:-}
+      - NODE_ID=sec-af-go
+      - PORT=8013
+      - AGENT_CALLBACK_URL=http://sec-af-go:8013
+      - HARNESS_PROVIDER=${HARNESS_PROVIDER:-aforge}
+      - AGENTFIELD_AFORGE_COMMAND=${AGENTFIELD_AFORGE_COMMAND:-exec}
+      - HARNESS_MODEL=${HARNESS_MODEL:-openrouter/moonshotai/kimi-k2.5}
+      - AI_MODEL=${AI_MODEL:-openrouter/moonshotai/kimi-k2.5}
+      # SEC_AF_AFORGE_BIN is deliberately NOT forwarded, exactly as the Python
+      # sec-af service does not forward it (docker-compose.yml). Compose loads
+      # the repo-root .env for BOTH stacks and .env.example documents
+      # `SEC_AF_AFORGE_BIN=/absolute/path/to/aforge` as the way to point a
+      # non-container run at a HOST binary; a bare `- SEC_AF_AFORGE_BIN`
+      # passthrough would inject that host path into the container, where
+      # config.AIConfigFromEnv resolves it as the harness BinPath and every
+      # harness call fails on a missing executable instead of using the image's
+      # checksum-verified /usr/local/bin/aforge (go/Dockerfile).
+      # XDG_DATA_HOME is deliberately NOT set, matching the Python sec-af
+      # service (docker-compose.yml), so config.ProviderEnv falls back to
+      # <tempdir>/opencode-shared-data in both containers — same directory,
+      # same (ephemeral) lifetime. See go/Dockerfile for the long form.
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - SEC_AF_WORKSPACES_DIR=/workspaces
+    ports:
+      - "8013:8013"
+    volumes:
+      - workspaces:/workspaces
+    # Same cadence as the Python sec-af service (docker-compose.yml) and as the
+    # image's own HEALTHCHECK (go/Dockerfile), so both nodes in one stack report
+    # health on the same schedule. A compose-level healthcheck SUPERSEDES the
+    # image directive, so these values are the ones that actually run.
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8013/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+# Join the Python stack's default network so `agentfield` (the control plane)
+# resolves by service name. external => Compose does NOT create it; the Python
+# stack must be up first (see COMPOSE_PROJECT_NAME caveat in the header).
+networks:
+  default:
+    external: true
+    name: sec-af_default
+
+# Share the Python stack's workspaces volume (<project>_<volume> =
+# sec-af_workspaces). There is no opencode-data volume: the Python sec-af
+# service does not declare one either, and without XDG_DATA_HOME the opencode
+# shared-data directory lives under the container's tempdir, exactly as it does
+# for the Python node.
+volumes:
+  workspaces:
+    external: true
+    name: sec-af_workspaces

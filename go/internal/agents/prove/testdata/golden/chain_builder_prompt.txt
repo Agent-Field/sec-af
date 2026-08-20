@@ -1,0 +1,129 @@
+ROLE:
+You are a security attack-chain verifier for SEC-AF PROVE phase.
+
+CONTEXT:
+- Analysis depth: standard
+- Seed chain candidates from HUNT (validate and expand these): [
+  {
+    "chain_id": "chain-1",
+    "title": "SSRF to internal API",
+    "finding_ids": [
+      "v1",
+      "v2"
+    ],
+    "combined_impact": "Internal service access",
+    "estimated_severity": "critical"
+  }
+]
+- Individually verified findings: {
+  "v1": {
+    "id": "v1",
+    "fingerprint": "fp-v1",
+    "title": "finding v1",
+    "description": "d",
+    "finding_type": "sast",
+    "cwe_id": "CWE-89",
+    "cwe_name": "SQL Injection",
+    "owasp_category": null,
+    "tags": [],
+    "verdict": "confirmed",
+    "evidence_level": 4,
+    "rationale": "r",
+    "severity": "high",
+    "cvss_v4": null,
+    "epss": null,
+    "exploitability_score": 7.5,
+    "proof": null,
+    "location": {
+      "file_path": "src/users.py",
+      "start_line": 1,
+      "end_line": 2,
+      "start_column": null,
+      "end_column": null,
+      "function_name": null,
+      "code_snippet": null
+    },
+    "related_locations": [],
+    "chain_id": null,
+    "chain_step": null,
+    "enables": null,
+    "compliance": [],
+    "reproduction_steps": [],
+    "remediation": null,
+    "sarif_rule_id": "sec-af/sast/sql-injection",
+    "sarif_security_severity": 7.5,
+    "drop_reason": null
+  },
+  "v2": {
+    "id": "v2",
+    "fingerprint": "fp-v2",
+    "title": "finding v2",
+    "description": "d",
+    "finding_type": "sast",
+    "cwe_id": "CWE-89",
+    "cwe_name": "SQL Injection",
+    "owasp_category": null,
+    "tags": [],
+    "verdict": "confirmed",
+    "evidence_level": 2,
+    "rationale": "r",
+    "severity": "high",
+    "cvss_v4": null,
+    "epss": null,
+    "exploitability_score": 3.0,
+    "proof": null,
+    "location": {
+      "file_path": "src/users.py",
+      "start_line": 1,
+      "end_line": 2,
+      "start_column": null,
+      "end_column": null,
+      "function_name": null,
+      "code_snippet": null
+    },
+    "related_locations": [],
+    "chain_id": null,
+    "chain_step": null,
+    "enables": null,
+    "compliance": [],
+    "reproduction_steps": [],
+    "remediation": null,
+    "sarif_rule_id": "sec-af/sast/sql-injection",
+    "sarif_security_severity": 3.0,
+    "drop_reason": null
+  }
+}
+
+TASK:
+Use the HUNT chain candidates as seeds, but do not assume they are complete.
+Validate whether each step is exploitable and whether step N enables step N+1.
+Look for additional multi-step attack chains beyond the provided seeds when verified findings support them.
+A chain is multi-step when exploitation of one finding enables exploitation of another.
+
+OUTPUT:
+- Return JSON matching ChainAnalysisResult with this shape:
+  {
+    "chains": [
+      {
+        "chain_id": "...",
+        "title": "...",
+        "validated": true | false,
+        "rationale": "...",
+        "steps": [
+          {
+            "step_number": 1,
+            "finding_id": "...",
+            "description": "...",
+            "enables": "..."
+          }
+        ]
+      }
+    ]
+  }
+
+CONSTRAINTS:
+- Mark validated=true only when all links are plausible with evidence from verified findings.
+- Keep step order aligned with exploitation progression.
+- If not validated, include rationale and return empty steps.
+- You may include newly discovered chains that were not in the seed list.
+- Do not return markdown or prose outside JSON.

@@ -1,0 +1,796 @@
+{
+  "app_type": "web_api",
+  "frameworks": [
+    "Django",
+    "next.js",
+    "Spring Boot",
+    "  React  ",
+    "unknown-fw",
+    "NEXT",
+    "Vue"
+  ],
+  "languages": [
+    "Python",
+    "JavaScript",
+    "Go",
+    "Ruby",
+    "Rust",
+    "python"
+  ],
+  "auth_model": "jwt",
+  "auth_details": "HS256 JWTs issued by app/auth/service.py, refresh tokens in Redis",
+  "entry_points": [
+    {
+      "kind": "http",
+      "identifier": "handler_0",
+      "file_path": "app/entry/e0.py",
+      "line": 10,
+      "method": "GET",
+      "route": null,
+      "auth_required": true
+    },
+    {
+      "kind": "HTTP",
+      "identifier": "handler_1",
+      "file_path": "app/entry/e1.py",
+      "line": 17,
+      "method": "POST",
+      "route": "/v1/resource/1",
+      "auth_required": false
+    },
+    {
+      "kind": "cli",
+      "identifier": "handler_2",
+      "file_path": "app/entry/e2.py",
+      "line": 24,
+      "method": null,
+      "route": "/v1/resource/2",
+      "auth_required": null
+    },
+    {
+      "kind": "api",
+      "identifier": "handler_3",
+      "file_path": "app/entry/e3.py",
+      "line": 31,
+      "method": "PUT",
+      "route": null,
+      "auth_required": true
+    },
+    {
+      "kind": "graphql",
+      "identifier": "handler_4",
+      "file_path": "app/entry/e4.py",
+      "line": 38,
+      "method": "GET",
+      "route": "/v1/resource/4",
+      "auth_required": false
+    },
+    {
+      "kind": "rpc",
+      "identifier": "handler_5",
+      "file_path": "app/entry/e5.py",
+      "line": 45,
+      "method": "POST",
+      "route": "/v1/resource/5",
+      "auth_required": null
+    },
+    {
+      "kind": "route",
+      "identifier": "handler_6",
+      "file_path": "app/entry/e6.py",
+      "line": 52,
+      "method": null,
+      "route": null,
+      "auth_required": true
+    },
+    {
+      "kind": "cron",
+      "identifier": "handler_7",
+      "file_path": "app/entry/e7.py",
+      "line": 59,
+      "method": "PUT",
+      "route": "/v1/resource/7",
+      "auth_required": false
+    },
+    {
+      "kind": "queue",
+      "identifier": "handler_8",
+      "file_path": "app/entry/e8.py",
+      "line": 66,
+      "method": "GET",
+      "route": "/v1/resource/8",
+      "auth_required": null
+    },
+    {
+      "kind": "http",
+      "identifier": "handler_9",
+      "file_path": "app/entry/e9.py",
+      "line": 73,
+      "method": "POST",
+      "route": null,
+      "auth_required": true
+    },
+    {
+      "kind": "api",
+      "identifier": "handler_10",
+      "file_path": "app/entry/e10.py",
+      "line": 80,
+      "method": null,
+      "route": "/v1/resource/10",
+      "auth_required": false
+    },
+    {
+      "kind": "grpc",
+      "identifier": "handler_11",
+      "file_path": "app/entry/e11.py",
+      "line": 87,
+      "method": "PUT",
+      "route": "/v1/resource/11",
+      "auth_required": null
+    },
+    {
+      "kind": "http",
+      "identifier": "handler_12",
+      "file_path": "app/entry/e12.py",
+      "line": 94,
+      "method": "GET",
+      "route": null,
+      "auth_required": true
+    },
+    {
+      "kind": "route",
+      "identifier": "handler_13",
+      "file_path": "app/entry/e13.py",
+      "line": 101,
+      "method": "POST",
+      "route": "/v1/resource/13",
+      "auth_required": false
+    },
+    {
+      "kind": "cli",
+      "identifier": "handler_14",
+      "file_path": "app/entry/e14.py",
+      "line": 108,
+      "method": null,
+      "route": "/v1/resource/14",
+      "auth_required": null
+    }
+  ],
+  "api_surface": [
+    {
+      "method": "GET",
+      "path": "/api/v1/thing/0",
+      "handler": "ThingController.action0",
+      "file_path": "app/api/thing_0.py",
+      "line": 100,
+      "auth_required": true,
+      "rate_limited": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/thing/1",
+      "handler": "ThingController.action1",
+      "file_path": "app/api/thing_1.py",
+      "line": 103,
+      "auth_required": false,
+      "rate_limited": false
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/thing/2",
+      "handler": "ThingController.action2",
+      "file_path": "app/api/thing_2.py",
+      "line": 106,
+      "auth_required": null,
+      "rate_limited": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/thing/3",
+      "handler": "ThingController.action3",
+      "file_path": "app/api/thing_3.py",
+      "line": 109,
+      "auth_required": false,
+      "rate_limited": false
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/thing/4",
+      "handler": "ThingController.action4",
+      "file_path": "app/api/thing_4.py",
+      "line": 112,
+      "auth_required": true,
+      "rate_limited": null
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/thing/5",
+      "handler": "ThingController.action5",
+      "file_path": "app/api/thing_5.py",
+      "line": 115,
+      "auth_required": null,
+      "rate_limited": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/thing/6",
+      "handler": "ThingController.action6",
+      "file_path": "app/api/thing_6.py",
+      "line": 118,
+      "auth_required": true,
+      "rate_limited": null
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/thing/7",
+      "handler": "ThingController.action7",
+      "file_path": "app/api/thing_7.py",
+      "line": 121,
+      "auth_required": false,
+      "rate_limited": false
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/thing/8",
+      "handler": "ThingController.action8",
+      "file_path": "app/api/thing_8.py",
+      "line": 124,
+      "auth_required": null,
+      "rate_limited": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/thing/9",
+      "handler": "ThingController.action9",
+      "file_path": "app/api/thing_9.py",
+      "line": 127,
+      "auth_required": false,
+      "rate_limited": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/thing/10",
+      "handler": "ThingController.action10",
+      "file_path": "app/api/thing_10.py",
+      "line": 130,
+      "auth_required": true,
+      "rate_limited": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/thing/11",
+      "handler": "ThingController.action11",
+      "file_path": "app/api/thing_11.py",
+      "line": 133,
+      "auth_required": null,
+      "rate_limited": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/thing/12",
+      "handler": "ThingController.action12",
+      "file_path": "app/api/thing_12.py",
+      "line": 136,
+      "auth_required": true,
+      "rate_limited": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/thing/13",
+      "handler": "ThingController.action13",
+      "file_path": "app/api/thing_13.py",
+      "line": 139,
+      "auth_required": false,
+      "rate_limited": false
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/thing/14",
+      "handler": "ThingController.action14",
+      "file_path": "app/api/thing_14.py",
+      "line": 142,
+      "auth_required": null,
+      "rate_limited": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/thing/15",
+      "handler": "ThingController.action15",
+      "file_path": "app/api/thing_15.py",
+      "line": 145,
+      "auth_required": false,
+      "rate_limited": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/thing/16",
+      "handler": "ThingController.action16",
+      "file_path": "app/api/thing_16.py",
+      "line": 148,
+      "auth_required": true,
+      "rate_limited": null
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/thing/17",
+      "handler": "ThingController.action17",
+      "file_path": "app/api/thing_17.py",
+      "line": 151,
+      "auth_required": null,
+      "rate_limited": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/thing/18",
+      "handler": "ThingController.action18",
+      "file_path": "app/api/thing_18.py",
+      "line": 154,
+      "auth_required": true,
+      "rate_limited": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/thing/19",
+      "handler": "ThingController.action19",
+      "file_path": "app/api/thing_19.py",
+      "line": 157,
+      "auth_required": false,
+      "rate_limited": false
+    }
+  ],
+  "data_flows": [
+    {
+      "source": "request.args['q']",
+      "path": [
+        {
+          "file_path": "app/search/index.ts",
+          "line": 20,
+          "component": "step_0_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/util/b.py",
+          "line": 40,
+          "component": "step_0_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "cursor.execute",
+      "sanitized": false,
+      "files": [
+        "app/search/index.ts",
+        "app/db/raw.py",
+        "app/util/a.py",
+        "app/util/b.py"
+      ]
+    },
+    {
+      "source": "request.cookies['session']",
+      "path": [
+        {
+          "file_path": "app/auth/session_store.py",
+          "line": 21,
+          "component": "step_1_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/auth/session_store.py",
+          "line": 41,
+          "component": "step_1_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "redis.set",
+      "sanitized": true,
+      "files": [
+        "app/auth/session_store.py"
+      ]
+    },
+    {
+      "source": "request.json['url']",
+      "path": [
+        {
+          "file_path": "app/integrations/webhooks.go",
+          "line": 22,
+          "component": "step_2_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/net/client.go",
+          "line": 42,
+          "component": "step_2_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "requests.get",
+      "sanitized": false,
+      "files": [
+        "app/integrations/webhooks.go",
+        "app/net/client.go"
+      ]
+    },
+    {
+      "source": "form['password']",
+      "path": [
+        {
+          "file_path": "app/auth/service.py",
+          "line": 23,
+          "component": "step_3_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/obs/telemetry.go",
+          "line": 43,
+          "component": "step_3_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "logger.info",
+      "sanitized": false,
+      "files": [
+        "app/auth/service.py",
+        "app/obs/telemetry.go"
+      ]
+    },
+    {
+      "source": "header['Authorization']",
+      "path": [
+        {
+          "file_path": "app/common/jwt_tools.py",
+          "line": 24,
+          "component": "step_4_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/common/jwt_tools.py",
+          "line": 44,
+          "component": "step_4_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "jwt.decode",
+      "sanitized": true,
+      "files": [
+        "app/common/jwt_tools.py"
+      ]
+    },
+    {
+      "source": "query['email']",
+      "path": [
+        {
+          "file_path": "app/notify/mailer.rb",
+          "line": 25,
+          "component": "step_5_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/notify/mailer.rb",
+          "line": 45,
+          "component": "step_5_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "smtp.send",
+      "sanitized": false,
+      "files": [
+        "app/notify/mailer.rb"
+      ]
+    },
+    {
+      "source": "body['card_number']",
+      "path": [
+        {
+          "file_path": "app/billing/payments.go",
+          "line": 26,
+          "component": "step_6_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/billing/core.py",
+          "line": 46,
+          "component": "step_6_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "stripe.Charge.create",
+      "sanitized": true,
+      "files": [
+        "app/billing/payments.go",
+        "app/billing/core.py"
+      ]
+    },
+    {
+      "source": "path_param['id']",
+      "path": [
+        {
+          "file_path": "app/api/thing_1.py",
+          "line": 27,
+          "component": "step_7_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/api/thing_1.py",
+          "line": 47,
+          "component": "step_7_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "orm.filter",
+      "sanitized": true,
+      "files": [
+        "app/api/thing_1.py"
+      ]
+    },
+    {
+      "source": "upload.filename",
+      "path": [
+        {
+          "file_path": "app/media/uploads.py",
+          "line": 28,
+          "component": "step_8_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/x/w.py",
+          "line": 48,
+          "component": "step_8_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "open",
+      "sanitized": false,
+      "files": [
+        "app/media/uploads.py",
+        "app/common/cache.py",
+        "app/common/guard.py",
+        "app/x/y.py",
+        "app/x/z.py",
+        "app/x/w.py"
+      ]
+    },
+    {
+      "source": "env['DEBUG']",
+      "path": [
+        {
+          "file_path": "app/web/render.py",
+          "line": 29,
+          "component": "step_9_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/web/render.py",
+          "line": 49,
+          "component": "step_9_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "template.render",
+      "sanitized": false,
+      "files": [
+        "app/web/render.py"
+      ]
+    },
+    {
+      "source": "request.body",
+      "path": [
+        {
+          "file_path": "app/admin/views.py",
+          "line": 30,
+          "component": "step_10_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/admin/views.py",
+          "line": 50,
+          "component": "step_10_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "eval",
+      "sanitized": false,
+      "files": [
+        "app/admin/views.py"
+      ]
+    },
+    {
+      "source": "websocket.msg",
+      "path": [
+        {
+          "file_path": "app/ws/handler.py",
+          "line": 31,
+          "component": "step_11_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/ws/exec.py",
+          "line": 51,
+          "component": "step_11_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "subprocess.run",
+      "sanitized": false,
+      "files": [
+        "app/ws/handler.py",
+        "app/ws/exec.py"
+      ]
+    },
+    {
+      "source": "cli.argv",
+      "path": [
+        {
+          "file_path": "tools/run.py",
+          "line": 32,
+          "component": "step_12_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "tools/run.py",
+          "line": 52,
+          "component": "step_12_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "os.system",
+      "sanitized": false,
+      "files": [
+        "tools/run.py"
+      ]
+    },
+    {
+      "source": "queue.payload",
+      "path": [
+        {
+          "file_path": "app/worker/task.py",
+          "line": 33,
+          "component": "step_13_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/worker/task.py",
+          "line": 53,
+          "component": "step_13_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "pickle.loads",
+      "sanitized": false,
+      "files": [
+        "app/worker/task.py"
+      ]
+    },
+    {
+      "source": "request.args['redirect']",
+      "path": [
+        {
+          "file_path": "app/web/redirect.py",
+          "line": 34,
+          "component": "step_14_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/web/redirect.py",
+          "line": 54,
+          "component": "step_14_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "HttpResponseRedirect",
+      "sanitized": false,
+      "files": [
+        "app/web/redirect.py"
+      ]
+    },
+    {
+      "source": "session['role']",
+      "path": [
+        {
+          "file_path": "app/auth/permissions.py",
+          "line": 35,
+          "component": "step_15_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/auth/rbac.py",
+          "line": 55,
+          "component": "step_15_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "permission_check",
+      "sanitized": true,
+      "files": [
+        "app/auth/permissions.py",
+        "app/auth/rbac.py"
+      ]
+    },
+    {
+      "source": "request.files['avatar']",
+      "path": [
+        {
+          "file_path": "app/media/uploads.py",
+          "line": 36,
+          "component": "step_16_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/media/uploads.py",
+          "line": 56,
+          "component": "step_16_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "s3.put_object",
+      "sanitized": true,
+      "files": [
+        "app/media/uploads.py"
+      ]
+    },
+    {
+      "source": "token",
+      "path": [
+        {
+          "file_path": "app/common/cache.py",
+          "line": 37,
+          "component": "step_17_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/common/cache.py",
+          "line": 57,
+          "component": "step_17_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "cache.set",
+      "sanitized": true,
+      "files": [
+        "app/common/cache.py"
+      ]
+    },
+    {
+      "source": "request.headers['X-User-Phone']",
+      "path": [
+        {
+          "file_path": "app/obs/audit.py",
+          "line": 38,
+          "component": "step_18_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/obs/audit.py",
+          "line": 58,
+          "component": "step_18_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "audit_log",
+      "sanitized": false,
+      "files": [
+        "app/obs/audit.py"
+      ]
+    },
+    {
+      "source": "graphql.variables",
+      "path": [
+        {
+          "file_path": "app/api/graphql.ts",
+          "line": 39,
+          "component": "step_19_a",
+          "operation": "read"
+        },
+        {
+          "file_path": "app/api/graphql.ts",
+          "line": 59,
+          "component": "step_19_b",
+          "operation": "write"
+        }
+      ],
+      "sink": "db.query",
+      "sanitized": false,
+      "files": [
+        "app/api/graphql.ts"
+      ]
+    }
+  ]
+}

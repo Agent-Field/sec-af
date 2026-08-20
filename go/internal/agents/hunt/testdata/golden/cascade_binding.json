@@ -1,0 +1,170 @@
+{
+  "quick": {
+    "fixture": "small",
+    "hunters": {
+      "auth": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "quick",
+        "max_files_without_signal": 30
+      },
+      "data_exposure": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "quick"
+      },
+      "dos": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "quick",
+        "max_files_without_signal": 30
+      },
+      "injection": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "quick",
+        "max_files_without_signal": 30
+      },
+      "ssrf": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "quick",
+        "max_files_without_signal": 30
+      }
+    }
+  },
+  "standard": {
+    "fixture": "rich",
+    "hunters": {
+      "api_security": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "standard"
+      },
+      "auth": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "standard",
+        "max_files_without_signal": 30
+      },
+      "business_logic": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "standard",
+        "max_files_without_signal": 30,
+        "depth_prompt": ""
+      },
+      "config_secrets": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "standard"
+      },
+      "crypto": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "standard"
+      },
+      "data_exposure": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "standard"
+      },
+      "dos": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "standard",
+        "max_files_without_signal": 30
+      },
+      "injection": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "standard",
+        "max_files_without_signal": 30
+      },
+      "ssrf": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "standard",
+        "max_files_without_signal": 30
+      },
+      "supply_chain": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "standard"
+      },
+      "xss": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "standard",
+        "max_files_without_signal": 30
+      }
+    }
+  },
+  "thorough": {
+    "fixture": "small",
+    "hunters": {
+      "api_security": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "thorough"
+      },
+      "auth": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "thorough",
+        "max_files_without_signal": 30
+      },
+      "business_logic": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "thorough",
+        "max_files_without_signal": 30,
+        "depth_prompt": ""
+      },
+      "config_secrets": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "thorough"
+      },
+      "crypto": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "thorough"
+      },
+      "data_exposure": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "thorough"
+      },
+      "dos": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "thorough",
+        "max_files_without_signal": 30
+      },
+      "injection": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "thorough",
+        "max_files_without_signal": 30
+      },
+      "ssrf": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "thorough",
+        "max_files_without_signal": 30
+      },
+      "supply_chain": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon": "<recon>",
+        "max_files_without_signal": "thorough"
+      },
+      "xss": {
+        "repo_path": "/fixtures/demo-repo",
+        "recon_result": "<recon>",
+        "depth": "thorough",
+        "max_files_without_signal": 30
+      }
+    }
+  }
+}

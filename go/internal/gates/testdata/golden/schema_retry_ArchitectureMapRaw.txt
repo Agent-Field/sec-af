@@ -1,0 +1,62 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat harness output for architecture mapper. All list[str], no nesting.",
+  "properties": {
+    "app_type": {
+      "default": "unknown",
+      "description": "Application type: web_api, cli_tool, library, microservice, monolith",
+      "title": "App Type",
+      "type": "string"
+    },
+    "modules": {
+      "description": "One string per module. Format: 'name | path | language | description'. Example: 'auth | src/auth/ | python | Authentication and session management'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Modules",
+      "type": "array"
+    },
+    "entry_points": {
+      "description": "One string per entry point. Format: 'kind | route_or_id | file_path:line | auth_required'. Example: 'http | POST /api/login | src/routes.py:42 | false'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Entry Points",
+      "type": "array"
+    },
+    "trust_boundaries": {
+      "description": "One string per boundary. Format: 'name | source_zone | target_zone | description'. Example: 'API Gateway | external | internal | Rate limiting and auth'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Trust Boundaries",
+      "type": "array"
+    },
+    "services": {
+      "description": "One string per external service. Format: 'name | type | endpoint | auth_mechanism'. Example: 'PostgreSQL | database | localhost:5432 | password'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Services",
+      "type": "array"
+    },
+    "api_endpoints": {
+      "description": "One string per API endpoint. Format: 'method | path | handler | file_path:line | auth_required | rate_limited'. Example: 'GET | /api/users | get_users | src/api.py:15 | true | false'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Api Endpoints",
+      "type": "array"
+    }
+  },
+  "title": "ArchitectureMapRaw",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

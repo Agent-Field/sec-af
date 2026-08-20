@@ -1,0 +1,40 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "DESIGN.md \u00a75.5: quick duplicate check gate for dedup decisions.",
+  "properties": {
+    "is_duplicate": {
+      "title": "Is Duplicate",
+      "type": "boolean"
+    },
+    "duplicate_of": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Duplicate Of"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "is_duplicate",
+    "reason"
+  ],
+  "title": "DuplicateCheck",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

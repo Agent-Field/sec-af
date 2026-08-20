@@ -1,0 +1,18 @@
+FRAMEWORK-SPECIFIC GUIDANCE:
+Framework: NEXTJS
+  Security features: React JSX auto-escapes output by default, API routes can share centralized auth middleware, Server/client boundaries reduce accidental secret exposure
+  DO NOT FLAG: React JSX escaped rendering, getServerSideProps/getServerSession with proper auth checks, Typed route handlers with validated schema guards
+  Watch for: dangerouslySetInnerHTML, unprotected API routes under /api, secret leakage to client bundles, rewrites/redirects from untrusted user input
+  Common vulns: XSS through dangerous HTML rendering, IDOR/auth bypass in API handlers, Sensitive env/config exposure in client-side code
+
+Framework: SPRING
+  Security features: Spring Security provides auth, CSRF, and filter chain defaults, JPA/Hibernate prepared parameter binding by default, Bean validation can enforce request constraints
+  DO NOT FLAG: PreparedStatement/JPA named parameter usage, Spring Security CSRF/auth filters clearly active, Thymeleaf auto-escaped output
+  Watch for: @PreAuthorize missing on sensitive methods, JdbcTemplate/raw Statement with concatenation, csrf().disable() on browser session flows, Actuator endpoints exposed without auth
+  Common vulns: Authz bypass from weak method-level security, SQL injection in raw JDBC queries, Sensitive management endpoint exposure
+
+Framework: ASPNET
+  Security features: Razor encodes output by default, Model binding and data annotations aid validation, Anti-forgery tokens support CSRF defense
+  DO NOT FLAG: Entity Framework LINQ parameterized queries, Razor default HTML encoding, ValidateAntiForgeryToken in state-changing MVC actions
+  Watch for: Html.Raw() on untrusted input, FromBody models without validation, Authorize missing on privileged endpoints, custom SQL built via string interpolation
+  Common vulns: XSS through Html.Raw and unencoded output, Auth/authz bypass on unsecured controllers, SQL injection in handcrafted query strings

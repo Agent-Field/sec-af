@@ -1,0 +1,58 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "$defs": {
+    "VulnLocation": {
+      "description": "Flat schema for Step 1: location scanning. 4 fields.",
+      "properties": {
+        "file_path": {
+          "description": "Path to the file containing the potential vulnerability",
+          "title": "File Path",
+          "type": "string"
+        },
+        "start_line": {
+          "description": "Starting line number of the vulnerable code",
+          "title": "Start Line",
+          "type": "integer"
+        },
+        "code_snippet": {
+          "description": "Relevant code snippet around the vulnerability",
+          "title": "Code Snippet",
+          "type": "string"
+        },
+        "pattern_type": {
+          "description": "Type of vulnerability pattern detected (e.g. 'sql_injection', 'command_injection')",
+          "title": "Pattern Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_path",
+        "start_line",
+        "code_snippet",
+        "pattern_type"
+      ],
+      "title": "VulnLocation",
+      "type": "object"
+    }
+  },
+  "description": "Container for Step 1 results.",
+  "properties": {
+    "locations": {
+      "items": {
+        "$ref": "#/$defs/VulnLocation"
+      },
+      "title": "Locations",
+      "type": "array"
+    }
+  },
+  "title": "ScanLocationsResult",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

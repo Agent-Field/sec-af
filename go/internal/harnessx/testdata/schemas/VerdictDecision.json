@@ -1,0 +1,32 @@
+{
+  "description": "Flat schema for verdict sub-agent. Uses .ai() not .harness(). 4 fields.",
+  "properties": {
+    "confidence": {
+      "description": "One of: \"high\", \"medium\", \"low\"",
+      "title": "Confidence",
+      "type": "string"
+    },
+    "evidence_level": {
+      "description": "1-6 scale: 1=STATIC_MATCH to 6=FULL_EXPLOIT",
+      "title": "Evidence Level",
+      "type": "integer"
+    },
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    },
+    "verdict": {
+      "description": "One of: \"confirmed\", \"likely\", \"inconclusive\", \"not_exploitable\"",
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "verdict",
+    "evidence_level",
+    "rationale",
+    "confidence"
+  ],
+  "title": "VerdictDecision",
+  "type": "object"
+}

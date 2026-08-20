@@ -1,0 +1,42 @@
+{
+  "agent_invocations": 0,
+  "attack_chains": [],
+  "branch": "main",
+  "by_severity": {},
+  "commit_sha": "ffffffffffffffffffffffffffffffffffffffff",
+  "compliance_gaps": [],
+  "confirmed": 0,
+  "cost_breakdown": {
+    "denormal": 5e-324,
+    "exponent_low": 1e-06,
+    "huge": 1e+16,
+    "integral": 10.0,
+    "repr_tie": 0.30000000000000004,
+    "threshold": 1e-05
+  },
+  "cost_usd": 1.23e-05,
+  "depth_profile": "standard",
+  "duration_seconds": 1e-07,
+  "findings": [],
+  "inconclusive": 0,
+  "likely": 0,
+  "metadata": {
+    "findings_not_verified": 3,
+    "prove_drop_summary": {
+      "by_reason": {
+        "verifier_error": 2
+      },
+      "demoted_total": 2,
+      "findings": []
+    }
+  },
+  "noise_reduction_pct": 8e-05,
+  "not_exploitable": 0,
+  "policy_violations": [],
+  "provider": "aforge",
+  "repository": "Agent-Field/floats",
+  "sarif": "",
+  "strategies_used": [],
+  "timestamp": "2026-01-02T03:04:05Z",
+  "total_raw_findings": 0
+}

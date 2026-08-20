@@ -1,0 +1,42 @@
+LANGUAGE-SPECIFIC GUIDANCE:
+Language: PYTHON
+  Key sinks: cursor.execute, os.system, subprocess.run, eval, exec, pickle.loads
+  Safe patterns (skip these): parameterized queries with %s placeholders, subprocess.run with list args (no shell=True)
+  DO NOT FLAG: Django ORM queries (uses parameterized queries internally), SQLAlchemy text() with bound params
+  Framework notes: Check for Django/Flask/FastAPI-specific patterns. Django auto-escapes templates. Flask Jinja2 auto-escapes.
+
+Language: JAVASCRIPT
+  Key sinks: eval, Function(), innerHTML, document.write, child_process.exec, new Function
+  Safe patterns (skip these): DOMPurify.sanitize(), textContent assignment, parameterized pg queries
+  DO NOT FLAG: React JSX expressions (auto-escaped), Angular template bindings (sanitized by default)
+  Framework notes: Check for React/Vue/Angular-specific XSS patterns. React auto-escapes JSX. Vue v-html is dangerous.
+
+Language: TYPESCRIPT
+  Key sinks: eval, Function(), innerHTML, document.write, child_process.exec
+  Safe patterns (skip these): DOMPurify.sanitize(), textContent assignment, Prisma parameterized queries
+  DO NOT FLAG: React JSX expressions, Angular template bindings, Prisma ORM queries
+  Framework notes: TypeScript adds type safety but doesn't prevent injection. Check for any type assertions near user input.
+
+Language: GO
+  Key sinks: fmt.Sprintf into SQL, exec.Command with user input, template.HTML(), os.Exec
+  Safe patterns (skip these): database/sql with ? placeholders, html/template (auto-escapes), exec.Command with separate args
+  DO NOT FLAG: GORM parameterized queries, html/template default escaping, database/sql prepared statements
+  Framework notes: Go's html/template auto-escapes. text/template does NOT. Check for text/template serving HTML.
+
+Language: JAVA
+  Key sinks: Statement.execute, Runtime.exec, ProcessBuilder with concatenated strings, ScriptEngine.eval
+  Safe patterns (skip these): PreparedStatement with ?, JNDI lookup with allowlist, OWASP ESAPI encoding
+  DO NOT FLAG: JPA/Hibernate named parameters, Spring Security CSRF protection, PreparedStatement usage
+  Framework notes: Check Spring Boot auto-config. Thymeleaf auto-escapes. JSP needs explicit escaping.
+
+Language: RUBY
+  Key sinks: eval, system, exec, send, public_send, ERB.new with user input
+  Safe patterns (skip these): ActiveRecord parameterized queries, Rack::Utils.escape_html, sanitize helper in Rails
+  DO NOT FLAG: ActiveRecord where with hash conditions, Rails CSRF protection, Rails html_safe on constants
+  Framework notes: Rails auto-escapes ERB templates. raw/html_safe bypasses escaping. Check for mass assignment.
+
+Language: CSHARP
+  Key sinks: SqlCommand with concatenation, Process.Start with user input, Razor @Html.Raw()
+  Safe patterns (skip these): SqlParameter, Entity Framework LINQ, Razor auto-encoding
+  DO NOT FLAG: Entity Framework LINQ queries, ASP.NET anti-forgery tokens, Razor default encoding
+  Framework notes: ASP.NET Core Razor auto-encodes. @Html.Raw() is dangerous. Check for [ValidateAntiForgeryToken].

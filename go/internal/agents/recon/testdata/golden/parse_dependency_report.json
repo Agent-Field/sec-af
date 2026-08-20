@@ -1,0 +1,80 @@
+{
+  "input": {
+    "sbom": [
+      "django | 3.2.1 | pypi | true | BSD-3-Clause",
+      "urllib3 | 1.26.5 | pypi | false | n/a",
+      "left-pad | 1.0.0 | npm | notabool | "
+    ],
+    "known_cves": [
+      "CVE-2021-1 | django | 3.2.1 | 3.2.13 | 9.8 | true | true",
+      "CVE-2021-2 | urllib3 | 1.26.5 | none | notafloat | 0 | "
+    ],
+    "outdated": [
+      "django | 3.2.1 | 5.0.0 | true",
+      "requests | 2.0 | 2.31 | 0"
+    ]
+  },
+  "want": {
+    "sbom": [
+      {
+        "name": "django",
+        "version": "3.2.1",
+        "ecosystem": "pypi",
+        "direct": true,
+        "license": "BSD-3-Clause"
+      },
+      {
+        "name": "urllib3",
+        "version": "1.26.5",
+        "ecosystem": "pypi",
+        "direct": false,
+        "license": null
+      },
+      {
+        "name": "left-pad",
+        "version": "1.0.0",
+        "ecosystem": "npm",
+        "direct": false,
+        "license": null
+      }
+    ],
+    "known_cves": [
+      {
+        "cve_id": "CVE-2021-1",
+        "package": "django",
+        "installed_version": "3.2.1",
+        "fixed_version": "3.2.13",
+        "cvss_v4_score": 9.8,
+        "epss_score": null,
+        "direct": true,
+        "reachable": true
+      },
+      {
+        "cve_id": "CVE-2021-2",
+        "package": "urllib3",
+        "installed_version": "1.26.5",
+        "fixed_version": null,
+        "cvss_v4_score": null,
+        "epss_score": null,
+        "direct": false,
+        "reachable": null
+      }
+    ],
+    "outdated": [
+      {
+        "package": "django",
+        "current_version": "3.2.1",
+        "latest_version": "5.0.0",
+        "direct": true
+      },
+      {
+        "package": "requests",
+        "current_version": "2.0",
+        "latest_version": "2.31",
+        "direct": false
+      }
+    ],
+    "direct_count": 1,
+    "transitive_count": 2
+  }
+}

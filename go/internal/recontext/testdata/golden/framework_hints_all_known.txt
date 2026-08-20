@@ -1,0 +1,66 @@
+FRAMEWORK-SPECIFIC GUIDANCE:
+Framework: DJANGO
+  Security features: ORM queries are parameterized by default, Templates auto-escape variables by default, CsrfViewMiddleware enforces CSRF tokens for unsafe methods
+  DO NOT FLAG: Django ORM filter/exclude (parameterized), CSRF with CsrfViewMiddleware active, XSS in Django templates (auto-escaped)
+  Watch for: raw() queries, mark_safe(), |safe filter, CSRF_COOKIE_SECURE=False
+  Common vulns: SQL injection via raw SQL and string formatting, XSS via unsafe template escape bypasses, CSRF weakening via middleware/settings overrides
+
+Framework: FLASK
+  Security features: Jinja2 auto-escapes in HTML templates, Werkzeug handles request parsing safely by default, Blueprint/middleware patterns can centralize auth checks
+  DO NOT FLAG: Jinja2 auto-escaped template variables, Parameterized SQLAlchemy query usage, Server-side session signing with strong SECRET_KEY
+  Watch for: render_template_string() with user input, debug=True in production paths, string-concatenated SQL in execute(), hardcoded SECRET_KEY
+  Common vulns: SSTI through dynamic template rendering, XSS when auto-escaping is bypassed, session tampering risk with weak secret/config
+
+Framework: FASTAPI
+  Security features: Pydantic request validation reduces malformed input, Dependency injection supports reusable auth guards, OpenAPI schema generation improves contract visibility
+  DO NOT FLAG: Pydantic model validation errors, Dependency-based auth checks clearly enforced, Parameterized SQLAlchemy/async driver usage
+  Watch for: Depends() omitted on privileged routes, raw SQL in text()/execute() with interpolation, CORS allow_origins=['*'] with credentials, unsafe deserialization in background tasks
+  Common vulns: Auth bypass on unprotected routes, SQL injection in manually assembled queries, CORS misconfiguration exposing credentialed APIs
+
+Framework: EXPRESS
+  Security features: Router middleware can enforce auth and rate limits, helmet can apply secure HTTP headers, Validated schema middleware can constrain input
+  DO NOT FLAG: Parameterized ORM/database queries, helmet defaults correctly applied, router-level auth middleware consistently enforced
+  Watch for: res.send()/res.json() leaking sensitive internals, string-built SQL in query(), trust proxy misconfiguration, open CORS with credentials
+  Common vulns: Authz gaps from missing middleware on routes, NoSQL/SQL injection from unsanitized request bodies, Open redirect and SSRF through unvalidated URLs
+
+Framework: NEXTJS
+  Security features: React JSX auto-escapes output by default, API routes can share centralized auth middleware, Server/client boundaries reduce accidental secret exposure
+  DO NOT FLAG: React JSX escaped rendering, getServerSideProps/getServerSession with proper auth checks, Typed route handlers with validated schema guards
+  Watch for: dangerouslySetInnerHTML, unprotected API routes under /api, secret leakage to client bundles, rewrites/redirects from untrusted user input
+  Common vulns: XSS through dangerous HTML rendering, IDOR/auth bypass in API handlers, Sensitive env/config exposure in client-side code
+
+Framework: SPRING
+  Security features: Spring Security provides auth, CSRF, and filter chain defaults, JPA/Hibernate prepared parameter binding by default, Bean validation can enforce request constraints
+  DO NOT FLAG: PreparedStatement/JPA named parameter usage, Spring Security CSRF/auth filters clearly active, Thymeleaf auto-escaped output
+  Watch for: @PreAuthorize missing on sensitive methods, JdbcTemplate/raw Statement with concatenation, csrf().disable() on browser session flows, Actuator endpoints exposed without auth
+  Common vulns: Authz bypass from weak method-level security, SQL injection in raw JDBC queries, Sensitive management endpoint exposure
+
+Framework: RAILS
+  Security features: ActiveRecord parameterization for hash/array queries, ERB templates auto-escape by default, Built-in CSRF protection for non-GET requests
+  DO NOT FLAG: ActiveRecord where with hash conditions, Rails protect_from_forgery active, ERB escaped output without raw/html_safe
+  Watch for: where/order/find_by_sql with string interpolation, raw()/html_safe on untrusted content, skip_before_action on auth filters, mass assignment via permit!
+  Common vulns: SQL injection in manual query fragments, XSS via unsafe output helpers, Authz bypass from skipped controller guards
+
+Framework: ASPNET
+  Security features: Razor encodes output by default, Model binding and data annotations aid validation, Anti-forgery tokens support CSRF defense
+  DO NOT FLAG: Entity Framework LINQ parameterized queries, Razor default HTML encoding, ValidateAntiForgeryToken in state-changing MVC actions
+  Watch for: Html.Raw() on untrusted input, FromBody models without validation, Authorize missing on privileged endpoints, custom SQL built via string interpolation
+  Common vulns: XSS through Html.Raw and unencoded output, Auth/authz bypass on unsecured controllers, SQL injection in handcrafted query strings
+
+Framework: REACT
+  Security features: JSX escapes strings before DOM rendering, Component model encourages explicit data flow, Framework discourages direct DOM mutation
+  DO NOT FLAG: Standard JSX expression rendering, textContent assignment for untrusted text, sanitized HTML via trusted DOMPurify policy
+  Watch for: dangerouslySetInnerHTML, untrusted URL assignment to href/src, eval/new Function in client code, token/secret exposure in bundles
+  Common vulns: DOM XSS through unsafe HTML injection, Open redirect via unvalidated navigation targets, Sensitive data exposure in frontend artifacts
+
+Framework: VUE
+  Security features: Mustache template interpolation escapes HTML, Component props/events provide explicit boundaries, Router guards can enforce auth flows
+  DO NOT FLAG: escaped template interpolation {{ value }}, validated route guards protecting private routes, sanitized content rendered through safe components
+  Watch for: v-html with untrusted data, dynamic component/template compilation, unsafe URL bindings in href/src, client-side auth checks without server enforcement
+  Common vulns: XSS through v-html and unsafe render paths, Auth bypass from client-only route protection, Open redirect patterns in router navigation
+
+Framework: ANGULAR
+  Security features: Template binding sanitization for HTML/URL contexts, HttpClient and interceptor patterns support central controls, AOT compilation limits runtime template injection vectors
+  DO NOT FLAG: default Angular template binding sanitization, HttpClient usage with validated request schemas, route guards consistently applied
+  Watch for: bypassSecurityTrustHtml/Url/Script, [innerHTML] with unsanitized input, direct DOM APIs via ElementRef/nativeElement, auth only in client guard without server checks
+  Common vulns: XSS when sanitizer is explicitly bypassed, Token leakage in local storage/logging, Authorization gaps due to client-only enforcement

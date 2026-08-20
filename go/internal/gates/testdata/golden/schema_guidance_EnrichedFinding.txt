@@ -1,0 +1,10 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `title`: Human-readable title for the finding
+- `description`: Detailed description of the vulnerability
+- `cwe_id`: CWE identifier (e.g. 'CWE-89')
+- `severity`: One of: "critical", "high", "medium", "low", "info"
+- `confidence`: One of: "high", "medium", "low"
+- `data_flow_summary`: Natural language summary of the data flow (string, not nested)

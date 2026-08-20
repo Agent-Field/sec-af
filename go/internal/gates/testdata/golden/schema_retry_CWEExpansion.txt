@@ -1,0 +1,32 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "AI-suggested CWE additions based on recon context.",
+  "properties": {
+    "additional_cwes": {
+      "description": "CWE IDs to add beyond baseline, e.g. ['CWE-918', 'CWE-611'].",
+      "items": {
+        "type": "string"
+      },
+      "title": "Additional Cwes",
+      "type": "array"
+    },
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "additional_cwes",
+    "rationale"
+  ],
+  "title": "CWEExpansion",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

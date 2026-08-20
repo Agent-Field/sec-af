@@ -1,0 +1,7 @@
+{
+  "hunt_done": "{\"phase\":\"hunt\",\"phase_progress\":1.0,\"agents_total\":1,\"agents_completed\":1,\"agents_running\":0,\"findings_so_far\":7,\"elapsed_seconds\":2.5,\"estimated_remaining_seconds\":0.0,\"cost_so_far_usd\":0.1235}",
+  "overshoot": "{\"phase\":\"prove\",\"phase_progress\":1.0,\"agents_total\":2,\"agents_completed\":5,\"agents_running\":0,\"findings_so_far\":3,\"elapsed_seconds\":2.5,\"estimated_remaining_seconds\":0.0,\"cost_so_far_usd\":0.1235}",
+  "recon_full": "{\"phase\":\"recon\",\"phase_progress\":1.0,\"agents_total\":2,\"agents_completed\":2,\"agents_running\":0,\"findings_so_far\":0,\"elapsed_seconds\":2.5,\"estimated_remaining_seconds\":0.0,\"cost_so_far_usd\":0.1235}",
+  "recon_half": "{\"phase\":\"recon\",\"phase_progress\":0.5,\"agents_total\":2,\"agents_completed\":1,\"agents_running\":1,\"findings_so_far\":0,\"elapsed_seconds\":2.5,\"estimated_remaining_seconds\":2.5,\"cost_so_far_usd\":0.1235}",
+  "zero_total": "{\"phase\":\"prove\",\"phase_progress\":0.0,\"agents_total\":0,\"agents_completed\":0,\"agents_running\":0,\"findings_so_far\":0,\"elapsed_seconds\":2.5,\"estimated_remaining_seconds\":0.0,\"cost_so_far_usd\":0.1235}"
+}

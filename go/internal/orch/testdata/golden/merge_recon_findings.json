@@ -1,0 +1,60 @@
+{
+  "already_present": [
+    "recon",
+    "injection"
+  ],
+  "empty_recon_is_identity": true,
+  "merged": {
+    "chain_count": 0,
+    "chains": [],
+    "deduplicated_count": 2,
+    "findings": [
+      {
+        "code_snippet": "x",
+        "confidence": "low",
+        "cwe_id": "CWE-89",
+        "cwe_name": "SQL Injection",
+        "data_flow": null,
+        "description": "d",
+        "end_line": 3,
+        "estimated_severity": "critical",
+        "file_path": "c.py",
+        "finding_type": "sast",
+        "fingerprint": "fp-critical-low",
+        "function_name": null,
+        "hunter_strategy": "injection",
+        "id": "critical-low",
+        "owasp_category": null,
+        "related_files": [],
+        "start_line": 3,
+        "title": "Critical, low confidence"
+      },
+      {
+        "code_snippet": "x",
+        "confidence": "high",
+        "cwe_id": "CWE-200",
+        "cwe_name": "Information Exposure",
+        "data_flow": null,
+        "description": "d",
+        "end_line": 1,
+        "estimated_severity": "low",
+        "file_path": "a.py",
+        "finding_type": "sast",
+        "fingerprint": "fp-low-high",
+        "function_name": null,
+        "hunter_strategy": "injection",
+        "id": "low-high",
+        "owasp_category": null,
+        "related_files": [],
+        "start_line": 1,
+        "title": "Low severity, high confidence"
+      }
+    ],
+    "hunt_duration_seconds": 0.0,
+    "strategies_run": [
+      "recon",
+      "injection"
+    ],
+    "total_raw": 2
+  }
+}

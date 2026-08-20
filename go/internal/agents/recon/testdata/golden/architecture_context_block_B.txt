@@ -1,0 +1,8 @@
+{
+  "app_type": null,
+  "modules": [],
+  "entry_points": [],
+  "trust_boundaries": [],
+  "services": [],
+  "api_surface": []
+}

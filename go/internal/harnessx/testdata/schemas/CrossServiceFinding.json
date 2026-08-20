@@ -1,0 +1,36 @@
+{
+  "description": "Flat schema for cross-service attack chain analysis. 4 fields.",
+  "properties": {
+    "chain_description": {
+      "description": "Description of the cross-service attack path",
+      "title": "Chain Description",
+      "type": "string"
+    },
+    "entry_point": {
+      "description": "Public-facing entry point where attack begins",
+      "title": "Entry Point",
+      "type": "string"
+    },
+    "impact": {
+      "description": "Impact if the cross-service chain is exploited",
+      "title": "Impact",
+      "type": "string"
+    },
+    "services_involved": {
+      "description": "Service names in the attack chain",
+      "items": {
+        "type": "string"
+      },
+      "title": "Services Involved",
+      "type": "array"
+    }
+  },
+  "required": [
+    "chain_description",
+    "services_involved",
+    "entry_point",
+    "impact"
+  ],
+  "title": "CrossServiceFinding",
+  "type": "object"
+}

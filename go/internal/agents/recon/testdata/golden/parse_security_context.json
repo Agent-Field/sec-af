@@ -1,0 +1,58 @@
+{
+  "input": {
+    "auth_model": "jwt",
+    "auth_details": "Bearer token validated by middleware",
+    "crypto_usage": [
+      "AES | 256 | GCM | data encryption | false",
+      "TLSv1.0 | n/a | none | legacy tls terminator | true",
+      "MD5 | notanint |  |  | TRUE"
+    ],
+    "security_signals": [
+      "CSRF protection enabled",
+      "HSTS header present",
+      "Runs in Docker",
+      "CSP configured",
+      "Uses Kubernetes secrets",
+      "Input validation via pydantic"
+    ]
+  },
+  "want": {
+    "auth_model": "jwt",
+    "auth_details": "Bearer token validated by middleware",
+    "crypto_usage": [
+      {
+        "algorithm": "AES",
+        "key_size": 256,
+        "mode": "GCM",
+        "usage_context": "data encryption",
+        "is_weak": false
+      },
+      {
+        "algorithm": "TLSv1.0",
+        "key_size": null,
+        "mode": null,
+        "usage_context": "legacy tls terminator",
+        "is_weak": true
+      },
+      {
+        "algorithm": "MD5",
+        "key_size": 0,
+        "mode": null,
+        "usage_context": null,
+        "is_weak": true
+      }
+    ],
+    "framework_security": [
+      "CSRF protection enabled",
+      "Input validation via pydantic"
+    ],
+    "security_headers": [
+      "HSTS header present",
+      "CSP configured"
+    ],
+    "deployment_signals": [
+      "Runs in Docker",
+      "Uses Kubernetes secrets"
+    ]
+  }
+}

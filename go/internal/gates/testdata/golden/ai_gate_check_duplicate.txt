@@ -1,0 +1,4 @@
+Decide whether candidate finding is a duplicate of existing finding. Return duplicate decision only.
+
+Candidate: {'id': 'finding-1', 'file_path': 'app/db/raw.py', 'start_line': 42, 'cwe_id': 'CWE-89', 'confirmed': True, 'score': 9.5, 'notes': None}
+Existing: {'id': 'finding-0', 'file_path': 'app/db/raw.py', 'start_line': 41, 'cwe_id': 'CWE-89', 'confirmed': False, 'score': 1.0, 'notes': 'seen before'}

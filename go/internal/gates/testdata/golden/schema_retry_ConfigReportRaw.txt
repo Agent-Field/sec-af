@@ -1,0 +1,32 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat harness output for config scanner. All list[str], no nesting.",
+  "properties": {
+    "secrets": {
+      "description": "One string per secret finding. Format: 'type | file_path:line | match_preview | confidence | is_test(true/false)'. Example: 'aws_access_key | .env:3 | AKIA... | high | false'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Secrets",
+      "type": "array"
+    },
+    "misconfigs": {
+      "description": "One string per misconfiguration. Format: 'category | file_path:line | key | risk | remediation'. Example: 'debug_mode | config.py:15 | DEBUG=True | Exposes stack traces | Set DEBUG=False'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Misconfigs",
+      "type": "array"
+    }
+  },
+  "title": "ConfigReportRaw",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

@@ -1,0 +1,59 @@
+Business-logic-focused recon summary.
+
+Core modules likely to implement workflows and state transitions: 19 total, showing top 15:
+- app/auth/service.py (python) - Session and JWT issuance
+- app/auth/rbac.py (python)
+- app/billing/core.py (python) - Invoice state machine — handles refunds
+- app/web/middleware/csrf.js (javascript) - CSRF middleware
+- app/billing/payments.go (go) - Charge orchestration
+- app/reports/render.py (python) - PDF and CSV export
+- app/search/index.ts (typescript) - Elasticsearch query builder
+- app/auth/session_store.py (python) - Redis-backed sessions
+- app/notify/mailer.rb (ruby)
+- app/auth/permissions.py (python) - Role → permission table
+- app/media/uploads.py (python) - S3 multipart upload helper
+- app/integrations/webhooks.go (go) - Outbound webhook dispatcher
+- app/api/graphql.ts (typescript) - GraphQL resolvers — naïve depth limit
+- app/admin/views.py (python) - Django admin overrides
+- app/common/guard.py (python) - Assorted guard helpers
+
+Workflow entry points: 17 total, showing top 10:
+- http handler_0 (app/entry/e0.py:10)
+- HTTP /v1/resource/1 (app/entry/e1.py:17)
+- cli /v1/resource/2 (app/entry/e2.py:24)
+- api handler_3 (app/entry/e3.py:31)
+- graphql /v1/resource/4 (app/entry/e4.py:38)
+- rpc /v1/resource/5 (app/entry/e5.py:45)
+- route handler_6 (app/entry/e6.py:52)
+- cron /v1/resource/7 (app/entry/e7.py:59)
+- queue /v1/resource/8 (app/entry/e8.py:66)
+- http handler_9 (app/entry/e9.py:73)
+
+Cross-file data/control flow candidates: 20 total, showing top 15:
+- request.args['q'] -> cursor.execute; files=app/search/index.ts, app/db/raw.py, app/util/a.py, app/util/b.py; sanitized=False
+- request.cookies['session'] -> redis.set; files=app/auth/session_store.py; sanitized=True
+- request.json['url'] -> requests.get; files=app/integrations/webhooks.go, app/net/client.go; sanitized=False
+- form['password'] -> logger.info; files=app/auth/service.py, app/obs/telemetry.go; sanitized=False
+- header['Authorization'] -> jwt.decode; files=app/common/jwt_tools.py; sanitized=True
+- query['email'] -> smtp.send; files=app/notify/mailer.rb; sanitized=False
+- body['card_number'] -> stripe.Charge.create; files=app/billing/payments.go, app/billing/core.py; sanitized=True
+- path_param['id'] -> orm.filter; files=app/api/thing_1.py; sanitized=True
+- upload.filename -> open; files=app/media/uploads.py, app/common/cache.py, app/common/guard.py, app/x/y.py, app/x/z.py; sanitized=False
+- env['DEBUG'] -> template.render; files=app/web/render.py; sanitized=False
+- request.body -> eval; files=app/admin/views.py; sanitized=False
+- websocket.msg -> subprocess.run; files=app/ws/handler.py, app/ws/exec.py; sanitized=False
+- cli.argv -> os.system; files=tools/run.py; sanitized=False
+- queue.payload -> pickle.loads; files=app/worker/task.py; sanitized=False
+- request.args['redirect'] -> HttpResponseRedirect; files=app/web/redirect.py; sanitized=False
+
+Trust boundaries and external service transitions: 17 total, showing top 10:
+- boundary boundary_0: internet->app
+- boundary boundary_1: dmz->db
+- boundary boundary_2: vpc->cache
+- boundary boundary_3: worker->queue
+- boundary boundary_4: internet->app
+- boundary boundary_5: dmz->db
+- boundary boundary_6: vpc->cache
+- boundary boundary_7: worker->queue
+- boundary boundary_8: internet->app
+- boundary boundary_9: dmz->db

@@ -1,0 +1,7 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `fix_description`: Natural language description of the recommended fix
+- `patch_diff`: Unified diff format patch showing the code changes needed
+- `confidence`: Confidence in the fix: "high", "medium", or "low"

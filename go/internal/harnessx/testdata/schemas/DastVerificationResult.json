@@ -1,0 +1,33 @@
+{
+  "description": "Flat schema for DAST-like runtime verification. 4 fields.",
+  "properties": {
+    "exploit_confirmed": {
+      "description": "Whether the exploit was confirmed at runtime",
+      "title": "Exploit Confirmed",
+      "type": "boolean"
+    },
+    "payload_sent": {
+      "description": "The exploit payload or request that was sent",
+      "title": "Payload Sent",
+      "type": "string"
+    },
+    "response_summary": {
+      "description": "Summary of the application response",
+      "title": "Response Summary",
+      "type": "string"
+    },
+    "safety_notes": {
+      "description": "Safety measures taken during verification (sandbox, timeout, etc.)",
+      "title": "Safety Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "payload_sent",
+    "response_summary",
+    "exploit_confirmed",
+    "safety_notes"
+  ],
+  "title": "DastVerificationResult",
+  "type": "object"
+}

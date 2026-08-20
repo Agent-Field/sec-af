@@ -1,0 +1,93 @@
+{
+  "depth": "standard",
+  "chains": [
+    {
+      "chain_id": "chain-1",
+      "title": "SSRF to internal API",
+      "finding_ids": [
+        "v1",
+        "v2"
+      ],
+      "combined_impact": "Internal service access",
+      "estimated_severity": "critical"
+    }
+  ],
+  "findings": [
+    {
+      "id": "v1",
+      "fingerprint": "fp-v1",
+      "title": "finding v1",
+      "description": "d",
+      "finding_type": "sast",
+      "cwe_id": "CWE-89",
+      "cwe_name": "SQL Injection",
+      "owasp_category": null,
+      "tags": [],
+      "verdict": "confirmed",
+      "evidence_level": 4,
+      "rationale": "r",
+      "severity": "high",
+      "cvss_v4": null,
+      "epss": null,
+      "exploitability_score": 7.5,
+      "proof": null,
+      "location": {
+        "file_path": "src/users.py",
+        "start_line": 1,
+        "end_line": 2,
+        "start_column": null,
+        "end_column": null,
+        "function_name": null,
+        "code_snippet": null
+      },
+      "related_locations": [],
+      "chain_id": null,
+      "chain_step": null,
+      "enables": null,
+      "compliance": [],
+      "reproduction_steps": [],
+      "remediation": null,
+      "sarif_rule_id": "sec-af/sast/sql-injection",
+      "sarif_security_severity": 7.5,
+      "drop_reason": null
+    },
+    {
+      "id": "v2",
+      "fingerprint": "fp-v2",
+      "title": "finding v2",
+      "description": "d",
+      "finding_type": "sast",
+      "cwe_id": "CWE-89",
+      "cwe_name": "SQL Injection",
+      "owasp_category": null,
+      "tags": [],
+      "verdict": "confirmed",
+      "evidence_level": 2,
+      "rationale": "r",
+      "severity": "high",
+      "cvss_v4": null,
+      "epss": null,
+      "exploitability_score": 3.0,
+      "proof": null,
+      "location": {
+        "file_path": "src/users.py",
+        "start_line": 1,
+        "end_line": 2,
+        "start_column": null,
+        "end_column": null,
+        "function_name": null,
+        "code_snippet": null
+      },
+      "related_locations": [],
+      "chain_id": null,
+      "chain_step": null,
+      "enables": null,
+      "compliance": [],
+      "reproduction_steps": [],
+      "remediation": null,
+      "sarif_rule_id": "sec-af/sast/sql-injection",
+      "sarif_security_severity": 3.0,
+      "drop_reason": null
+    }
+  ]
+}

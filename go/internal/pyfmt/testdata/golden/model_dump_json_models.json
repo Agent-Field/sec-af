@@ -1,0 +1,5 @@
+{
+  "defaults": "{\"name\":\"\",\"ratio\":-0.0,\"count\":-5,\"flag\":false,\"opt\":null,\"items\":[],\"inner\":null,\"mapping\":{}}",
+  "rich": "{\"name\":\"h\u00e9llo <&> \\\" \\\\ \\t \ud83d\ude00 \\u0001\",\"ratio\":1.0,\"count\":3,\"flag\":true,\"opt\":null,\"items\":[\"a\",\"b\"],\"inner\":{\"x\":1000000000000000.0,\"y\":0},\"mapping\":{\"a\":2.0,\"b\":0.5}}",
+  "small_float": "{\"name\":\"x\",\"ratio\":0.00001,\"count\":0,\"flag\":false,\"opt\":null,\"items\":[],\"inner\":null,\"mapping\":{}}"
+}

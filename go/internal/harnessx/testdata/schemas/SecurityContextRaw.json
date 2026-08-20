@@ -1,0 +1,37 @@
+{
+  "description": "Flat harness output for security context profiler. All flat, no nesting.",
+  "properties": {
+    "auth_details": {
+      "default": "",
+      "description": "Brief description of auth implementation details",
+      "title": "Auth Details",
+      "type": "string"
+    },
+    "auth_model": {
+      "description": "Authentication model: jwt, session_cookie, oauth2, api_key, none, or other",
+      "title": "Auth Model",
+      "type": "string"
+    },
+    "crypto_usage": {
+      "description": "One string per crypto usage. Format: 'algorithm | key_size | mode | usage_context | is_weak(true/false)'. Example: 'AES | 256 | GCM | data encryption | false'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Crypto Usage",
+      "type": "array"
+    },
+    "security_signals": {
+      "description": "Framework security features, security headers, and deployment signals. One signal per entry. Examples: 'CSRF protection enabled', 'HSTS header present', 'Runs in Docker'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Security Signals",
+      "type": "array"
+    }
+  },
+  "required": [
+    "auth_model"
+  ],
+  "title": "SecurityContextRaw",
+  "type": "object"
+}

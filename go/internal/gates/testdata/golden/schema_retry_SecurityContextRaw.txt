@@ -1,0 +1,46 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat harness output for security context profiler. All flat, no nesting.",
+  "properties": {
+    "auth_model": {
+      "description": "Authentication model: jwt, session_cookie, oauth2, api_key, none, or other",
+      "title": "Auth Model",
+      "type": "string"
+    },
+    "auth_details": {
+      "default": "",
+      "description": "Brief description of auth implementation details",
+      "title": "Auth Details",
+      "type": "string"
+    },
+    "crypto_usage": {
+      "description": "One string per crypto usage. Format: 'algorithm | key_size | mode | usage_context | is_weak(true/false)'. Example: 'AES | 256 | GCM | data encryption | false'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Crypto Usage",
+      "type": "array"
+    },
+    "security_signals": {
+      "description": "Framework security features, security headers, and deployment signals. One signal per entry. Examples: 'CSRF protection enabled', 'HSTS header present', 'Runs in Docker'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Security Signals",
+      "type": "array"
+    }
+  },
+  "required": [
+    "auth_model"
+  ],
+  "title": "SecurityContextRaw",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

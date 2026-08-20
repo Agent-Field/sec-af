@@ -1,0 +1,710 @@
+{
+  "injection": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "injection",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "injection",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "injection",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "injection"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "xss": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "xss",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "xss",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "xss",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "xss"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "dos": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "dos",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "dos",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "dos",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "dos"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "ssrf": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "ssrf",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "ssrf",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "ssrf",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "ssrf"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "auth": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "auth",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "auth",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "auth",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "auth"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "crypto": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "crypto",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "crypto",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "crypto",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "crypto"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "business_logic": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "business_logic",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "logic",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "business_logic",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "business_logic",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "logic",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "business_logic"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "logic": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "business_logic",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "logic",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "business_logic",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "business_logic",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "logic",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "business_logic"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "data_exposure": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "data_exposure",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "data_exposure",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "data_exposure",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "sast",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "data_exposure"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "supply_chain": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "supply_chain",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "sca",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "supply_chain",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "supply_chain",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "sca",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "supply_chain"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "config_secrets": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "config_secrets",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "config",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "config_secrets",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "config_secrets",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "config",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "config_secrets"
+    ],
+    "hunt_duration_seconds": 0.0
+  },
+  "api_security": {
+    "findings": [
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "api_security",
+        "title": "SQL injection in user lookup",
+        "description": "user_id flows unescaped into an f-string query.",
+        "finding_type": "api",
+        "cwe_id": "CWE-89",
+        "cwe_name": "CWE-89",
+        "owasp_category": null,
+        "file_path": "app/api/users.py",
+        "start_line": 42,
+        "end_line": 43,
+        "function_name": null,
+        "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+        "estimated_severity": "high",
+        "confidence": "high",
+        "data_flow": [
+          {
+            "file_path": "app/api/users.py",
+            "line": 42,
+            "component": "api_security",
+            "operation": "request.args['id'] -> query -> cursor.execute"
+          }
+        ],
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      },
+      {
+        "id": "<uuid>",
+        "hunter_strategy": "api_security",
+        "title": "Weak hash for password storage",
+        "description": "MD5 used to derive a credential digest.",
+        "finding_type": "api",
+        "cwe_id": "CWE-327",
+        "cwe_name": "CWE-327",
+        "owasp_category": null,
+        "file_path": "app/utils/hash.py",
+        "start_line": 7,
+        "end_line": 7,
+        "function_name": null,
+        "code_snippet": "digest = hashlib.md5(password).hexdigest()",
+        "estimated_severity": "medium",
+        "confidence": "medium",
+        "data_flow": null,
+        "related_files": [],
+        "fingerprint": "<uuid>"
+      }
+    ],
+    "chains": [],
+    "total_raw": 2,
+    "deduplicated_count": 2,
+    "chain_count": 0,
+    "strategies_run": [
+      "api_security"
+    ],
+    "hunt_duration_seconds": 0.0
+  }
+}

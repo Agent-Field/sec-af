@@ -1,0 +1,18 @@
+FRAMEWORK-SPECIFIC GUIDANCE:
+Framework: REACT
+  Security features: JSX escapes strings before DOM rendering, Component model encourages explicit data flow, Framework discourages direct DOM mutation
+  DO NOT FLAG: Standard JSX expression rendering, textContent assignment for untrusted text, sanitized HTML via trusted DOMPurify policy
+  Watch for: dangerouslySetInnerHTML, untrusted URL assignment to href/src, eval/new Function in client code, token/secret exposure in bundles
+  Common vulns: DOM XSS through unsafe HTML injection, Open redirect via unvalidated navigation targets, Sensitive data exposure in frontend artifacts
+
+Framework: VUE
+  Security features: Mustache template interpolation escapes HTML, Component props/events provide explicit boundaries, Router guards can enforce auth flows
+  DO NOT FLAG: escaped template interpolation {{ value }}, validated route guards protecting private routes, sanitized content rendered through safe components
+  Watch for: v-html with untrusted data, dynamic component/template compilation, unsafe URL bindings in href/src, client-side auth checks without server enforcement
+  Common vulns: XSS through v-html and unsafe render paths, Auth bypass from client-only route protection, Open redirect patterns in router navigation
+
+Framework: DJANGO
+  Security features: ORM queries are parameterized by default, Templates auto-escape variables by default, CsrfViewMiddleware enforces CSRF tokens for unsafe methods
+  DO NOT FLAG: Django ORM filter/exclude (parameterized), CSRF with CsrfViewMiddleware active, XSS in Django templates (auto-escaped)
+  Watch for: raw() queries, mark_safe(), |safe filter, CSRF_COOKIE_SECURE=False
+  Common vulns: SQL injection via raw SQL and string formatting, XSS via unsafe template escape bypasses, CSRF weakening via middleware/settings overrides

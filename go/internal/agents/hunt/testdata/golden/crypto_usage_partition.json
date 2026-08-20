@@ -1,0 +1,41 @@
+{
+  "mixed": {
+    "usage_contexts": [
+      "password hashing",
+      "file integrity checksum",
+      "etag generation for cache",
+      "TLS session key derivation",
+      "unrelated purpose"
+    ],
+    "security_critical": [
+      "password hashing",
+      "TLS session key derivation"
+    ],
+    "non_security": [
+      "file integrity checksum",
+      "etag generation for cache"
+    ],
+    "should_run": true
+  },
+  "none": {
+    "usage_contexts": [
+      "unrelated purpose",
+      "widget rendering"
+    ],
+    "security_critical": [],
+    "non_security": [],
+    "should_run": true
+  },
+  "both_terms": {
+    "usage_contexts": [
+      "auth token cache"
+    ],
+    "security_critical": [
+      "auth token cache"
+    ],
+    "non_security": [
+      "auth token cache"
+    ],
+    "should_run": true
+  }
+}

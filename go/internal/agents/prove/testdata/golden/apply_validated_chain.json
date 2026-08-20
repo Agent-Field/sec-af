@@ -1,0 +1,159 @@
+{
+  "not_validated": {
+    "chain": {
+      "chain_id": "c1",
+      "title": "t",
+      "validated": false,
+      "rationale": "r",
+      "steps": [
+        {
+          "step_number": 1,
+          "finding_id": "v1",
+          "description": "d",
+          "enables": "e"
+        }
+      ]
+    },
+    "error": null,
+    "findings": [
+      {
+        "id": "v1",
+        "chain_id": null,
+        "chain_step": null,
+        "enables": null,
+        "tags": []
+      },
+      {
+        "id": "v2",
+        "chain_id": null,
+        "chain_step": null,
+        "enables": null,
+        "tags": []
+      }
+    ]
+  },
+  "no_steps": {
+    "chain": {
+      "chain_id": "c1",
+      "title": "t",
+      "validated": true,
+      "rationale": "r",
+      "steps": []
+    },
+    "error": null,
+    "findings": [
+      {
+        "id": "v1",
+        "chain_id": null,
+        "chain_step": null,
+        "enables": null,
+        "tags": []
+      }
+    ]
+  },
+  "no_matching_finding": {
+    "chain": {
+      "chain_id": "c1",
+      "title": "t",
+      "validated": true,
+      "rationale": "r",
+      "steps": [
+        {
+          "step_number": 2,
+          "finding_id": "zz",
+          "description": "d",
+          "enables": "e"
+        },
+        {
+          "step_number": 1,
+          "finding_id": "yy",
+          "description": "d",
+          "enables": "e"
+        }
+      ]
+    },
+    "error": null,
+    "findings": [
+      {
+        "id": "v1",
+        "chain_id": null,
+        "chain_step": null,
+        "enables": null,
+        "tags": []
+      }
+    ]
+  },
+  "matching_finding_raises": {
+    "chain": {
+      "chain_id": "c1",
+      "title": "t",
+      "validated": true,
+      "rationale": "r",
+      "steps": [
+        {
+          "step_number": 2,
+          "finding_id": "v2",
+          "description": "d",
+          "enables": "e"
+        },
+        {
+          "step_number": 1,
+          "finding_id": "v1",
+          "description": "d",
+          "enables": "e"
+        }
+      ]
+    },
+    "error": "'list' object has no attribute 'add'",
+    "findings": [
+      {
+        "id": "v1",
+        "chain_id": "c1",
+        "chain_step": 1,
+        "enables": [
+          "v2"
+        ],
+        "tags": []
+      },
+      {
+        "id": "v2",
+        "chain_id": null,
+        "chain_step": null,
+        "enables": null,
+        "tags": []
+      }
+    ]
+  },
+  "second_step_matches": {
+    "chain": {
+      "chain_id": "c9",
+      "title": "t",
+      "validated": true,
+      "rationale": "r",
+      "steps": [
+        {
+          "step_number": 1,
+          "finding_id": "missing",
+          "description": "d",
+          "enables": "e"
+        },
+        {
+          "step_number": 2,
+          "finding_id": "v1",
+          "description": "d",
+          "enables": "e"
+        }
+      ]
+    },
+    "error": "'list' object has no attribute 'add'",
+    "findings": [
+      {
+        "id": "v1",
+        "chain_id": "c9",
+        "chain_step": 2,
+        "enables": null,
+        "tags": []
+      }
+    ]
+  }
+}

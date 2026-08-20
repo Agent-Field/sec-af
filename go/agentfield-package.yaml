@@ -1,0 +1,61 @@
+config_version: v1
+# This is THE SEC-AF node. It deliberately shares the root manifest's name: the
+# root declares `superseded_by` pointing here, so installing this repo installs
+# this package, and a user who already has the Python sec-af gets it replaced in
+# place — same name, same node id, same triggers, secrets kept. Installing the
+# root as a local path (the documented escape hatch) is the one way to get the
+# Python node, and it necessarily takes this name over.
+name: sec-af
+version: 0.1.0
+description: AI-Native Security Analysis and Red-Teaming Agent
+author: Agent-Field
+language: go                            # explicit (also auto-detected from go/go.mod)
+
+entrypoint:
+  build: ./cmd/sec-af
+  start: bin/sec-af
+  healthcheck: /health
+
+agent_node:
+  node_id: sec-af
+  # 8013 rather than the Python node's 8080/8003: during the changeover both may
+  # be running, and triggers resolve by node id, not port.
+  default_port: 8013
+
+# Same keys AND the same defaults as the root manifest — the Go node reads
+# exactly the same variables, and `af install https://github.com/Agent-Field/sec-af`
+# follows the root manifest's `superseded_by` to this one, replacing an existing
+# Python sec-af in place. The control plane materialises `default:` into the
+# node's environment when the user has stored no value, so a different default
+# here would silently switch the LLM out from under an in-place upgrade.
+user_environment:
+  required:
+    - name: OPENROUTER_API_KEY
+      description: LLM provider key (OpenRouter)
+      type: secret
+      scope: global
+  optional:
+    - name: AGENTFIELD_SERVER
+      description: Control-plane URL
+      default: http://localhost:8080
+    - name: AGENTFIELD_API_KEY
+      description: Control-plane API key (if auth is enabled)
+      type: secret
+      scope: global
+    - name: HARNESS_PROVIDER
+      description: Coding-agent harness provider (aforge | claude-code | codex | gemini | opencode)
+      default: aforge
+    - name: AGENTFIELD_AFORGE_COMMAND
+      description: AForge headless command the SDK runs (`exec` or `do`); agentfield>=0.1.130 reads it, default `exec`
+      default: exec
+    - name: SEC_AF_AFORGE_BIN
+      description: Optional path to the AForge binary (defaults to aforge on PATH)
+    - name: HARNESS_MODEL
+      description: Model the harness uses
+      default: openrouter/moonshotai/kimi-k2.5
+    - name: AI_MODEL
+      description: Model for direct AI calls
+      default: openrouter/moonshotai/kimi-k2.5
+    - name: SEC_AF_WORKSPACES_DIR
+      description: Directory where repos to scan are cloned (falls back to ~/.sec-af/workspaces if not writable)
+      default: /workspaces

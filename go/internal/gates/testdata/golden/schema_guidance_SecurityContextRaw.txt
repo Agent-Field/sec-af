@@ -1,0 +1,8 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `auth_model`: Authentication model: jwt, session_cookie, oauth2, api_key, none, or other
+- `auth_details`: Brief description of auth implementation details
+- `crypto_usage`: One string per crypto usage. Format: 'algorithm | key_size | mode | usage_context | is_weak(true/false)'. Example: 'AES | 256 | GCM | data encryption | false'
+- `security_signals`: Framework security features, security headers, and deployment signals. One signal per entry. Examples: 'CSRF protection enabled', 'HSTS header present', 'Runs in Docker'

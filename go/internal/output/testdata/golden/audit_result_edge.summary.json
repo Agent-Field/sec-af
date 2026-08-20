@@ -1,0 +1,150 @@
+{
+  "repository": "Agent-Field/sec-af\u2014na\u00efve",
+  "commit_sha": "abc123",
+  "timestamp": "2026-03-04T10:30:00.123456+00:00",
+  "depth_profile": "thorough",
+  "summary": {
+    "total_findings": 4,
+    "confirmed": 1,
+    "likely": 1,
+    "inconclusive": 1,
+    "not_exploitable": 1,
+    "noise_reduction_pct": 0.0,
+    "by_severity": {
+      "critical": 1,
+      "info": 1,
+      "low": 1,
+      "medium": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "dup-a",
+      "title": "Na\u00efve \"quote\" & <tag> handling",
+      "severity": "medium",
+      "verdict": "likely",
+      "evidence_level": 3,
+      "exploitability_score": 4.5,
+      "cwe_id": "CWE-89",
+      "location": {
+        "file": "src/na\u00efve.py",
+        "line": 3
+      },
+      "chain_id": "chain-x"
+    },
+    {
+      "id": "dup-b",
+      "title": "Second finding on the same rule",
+      "severity": "critical",
+      "verdict": "confirmed",
+      "evidence_level": 6,
+      "exploitability_score": 9.25,
+      "cwe_id": "CWE-89",
+      "location": {
+        "file": "src/dup.py",
+        "line": 7
+      },
+      "chain_id": null
+    },
+    {
+      "id": "rule-fallback",
+      "title": "Rule id with an empty last segment",
+      "severity": "info",
+      "verdict": "inconclusive",
+      "evidence_level": 1,
+      "exploitability_score": 0.0,
+      "cwe_id": "cwe-79",
+      "location": {
+        "file": "src/views.py",
+        "line": 1
+      },
+      "chain_id": null
+    },
+    {
+      "id": "dropped",
+      "title": "Filtered out of SARIF",
+      "severity": "low",
+      "verdict": "not_exploitable",
+      "evidence_level": 1,
+      "exploitability_score": 1.0,
+      "cwe_id": "CWE-798",
+      "location": {
+        "file": "src/config.py",
+        "line": 5
+      },
+      "chain_id": null
+    }
+  ],
+  "attack_chains": [
+    {
+      "chain_id": "chain-x",
+      "title": "Chain naming a missing finding",
+      "description": "The second id is not in result.findings.",
+      "combined_severity": "high",
+      "combined_impact": "Impact <script> & co.",
+      "findings": [
+        "dup-a",
+        "not-in-result"
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "finding_id": "dup-a",
+          "title": "Na\u00efve \"quote\" & <tag> handling",
+          "verdict": "likely",
+          "severity": "medium",
+          "location": {
+            "file": "src/na\u00efve.py",
+            "line": 3
+          }
+        },
+        {
+          "step": 2,
+          "finding_id": "not-in-result",
+          "title": null,
+          "verdict": null,
+          "severity": null,
+          "location": null
+        }
+      ],
+      "mitre_attack_mapping": []
+    }
+  ],
+  "compliance_gaps": [
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection",
+      "finding_count": 7,
+      "max_severity": "info",
+      "cwe_ids": [
+        "CWE-78",
+        "CWE-79",
+        "CWE-89",
+        "CWE-90",
+        "CWE-91",
+        "CWE-94",
+        "CWE-917"
+      ]
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control",
+      "finding_count": 1,
+      "max_severity": "unknown-severity",
+      "cwe_ids": [
+        "CWE-862"
+      ]
+    }
+  ],
+  "performance": {
+    "duration_seconds": 0.05,
+    "cost_usd": 1.005,
+    "cost_breakdown": {
+      "hunt": 1.0,
+      "prove": 0.0
+    },
+    "agent_invocations": 3
+  }
+}

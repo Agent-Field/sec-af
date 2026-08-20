@@ -1,0 +1,35 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Reachability assessment for findings without explicit reachability tags.",
+  "properties": {
+    "reachability": {
+      "description": "One of: \"externally_reachable\", \"requires_auth\", \"internal_only\", \"unreachable\".",
+      "title": "Reachability",
+      "type": "string"
+    },
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    },
+    "confidence": {
+      "description": "One of: \"high\", \"medium\", \"low\".",
+      "title": "Confidence",
+      "type": "string"
+    }
+  },
+  "required": [
+    "reachability",
+    "rationale",
+    "confidence"
+  ],
+  "title": "ReachabilityGate",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

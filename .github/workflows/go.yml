@@ -1,0 +1,53 @@
+name: Go
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "go/**"
+      - ".github/workflows/go.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "go/**"
+      - ".github/workflows/go.yml"
+
+jobs:
+  go:
+    name: build / vet / test / gofmt
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: go
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          # Track the module's own directive so a go.mod bump moves CI with it.
+          go-version-file: go/go.mod
+          cache-dependency-path: go/go.sum
+
+      - name: Build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./...
+
+      - name: Gofmt
+        run: test -z "$(gofmt -l .)"
+
+  docker:
+    name: docker build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The Dockerfile COPYs go/go.mod and go/, so the build context is the
+      # REPO ROOT, not go/.
+      - name: Build the Go node image
+        run: docker build -f go/Dockerfile -t sec-af-go:test .

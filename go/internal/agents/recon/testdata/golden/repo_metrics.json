@@ -1,0 +1,36 @@
+{
+  "files": {
+    "main.py": "aW1wb3J0IG9zCnByaW50KDEpCg==",
+    "trailing_none.go": "cGFja2FnZSBtYWluCmZ1bmMgbWFpbigpIHt9",
+    "crlf.ts": "Y29uc3QgYSA9IDE7DQpjb25zdCBiID0gMjsNCg==",
+    "cr_only.rb": "cHV0cyAxDXB1dHMgMg0=",
+    "empty.py": "",
+    "just_newline.sql": "Cg==",
+    "invalid_utf8.js": "dmFyIGEgPSAn//4nOwp2YXIgYiA9IDI7Cg==",
+    "UPPER.PY": "YQpiCg==",
+    "archive.tar.gz": "bm90IHJlYWxseSBnemlwCg==",
+    ".gitignore": "bm9kZV9tb2R1bGVzCi52ZW52Cg==",
+    "Makefile": "YWxsOgoJZ28gYnVpbGQK",
+    "trailingdot.": "eAo=",
+    "README.md": "IyBkb2NzCm5vdCBjb2RlCg==",
+    "pkg/lib.go": "cGFja2FnZSBwa2cKCmZ1bmMgRigpIHt9Cg==",
+    "pkg/deep/nested/util.rs": "Zm4gbWFpbigpIHt9Cg==",
+    "conf/app.yaml": "YTogMQpiOiAyCmM6IDMK",
+    "conf/app.YML": "eDogMQo=",
+    ".git/config": "W2NvcmVdCg==",
+    "node_modules/left-pad/index.js": "bW9kdWxlLmV4cG9ydHMgPSAxOwo=",
+    "vendor/dep/dep.go": "cGFja2FnZSBkZXAK",
+    ".venv/lib/site.py": "cGFzcwo=",
+    "venv/lib/site.py": "cGFzcwo=",
+    "__pycache__/main.cpython-311.pyc": "AAE=",
+    "src/.hg/store.py": "cGFzcwo=",
+    "src/.svn/entries.py": "cGFzcwo="
+  },
+  "symlinks": {
+    "link_to_main.py": "main.py",
+    "broken_link.py": "does_not_exist.py",
+    "link_to_pkg": "pkg"
+  },
+  "lines_of_code": 23,
+  "file_count": 18
+}

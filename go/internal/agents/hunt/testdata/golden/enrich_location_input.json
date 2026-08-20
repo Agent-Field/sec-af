@@ -1,0 +1,11 @@
+{
+  "location": {
+    "file_path": "app/api/users.py",
+    "start_line": 42,
+    "code_snippet": "query = f\"SELECT * FROM users WHERE id = {user_id}\"\ncursor.execute(query)",
+    "pattern_type": "sql_injection"
+  },
+  "finding_type": "sast",
+  "strategy": "injection",
+  "recon_context": "RECON CONTEXT LINE 1\nRECON CONTEXT LINE 2"
+}

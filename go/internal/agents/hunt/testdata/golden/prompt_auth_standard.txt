@@ -1,0 +1,189 @@
+ROLE:
+You are Step 1 LocationScanner for SEC-AF HUNT phase.
+
+TASK:
+Find only plausible vulnerable code locations.
+
+OUTPUT:
+- Return JSON that strictly matches the schema provided below.
+- Populate the locations array with entries only.
+- Each location must include file_path, start_line, code_snippet, and pattern_type.
+- Keep results focused and deduplicated by location.
+
+CONSTRAINTS:
+- Scan broadly and prioritize source-to-sink candidates.
+- Do not enrich with severity, confidence, exploitability, or remediation details.
+- If no credible locations exist, return an empty locations list.
+- Do not include markdown or prose outside JSON.
+
+HUNTER CONTEXT:
+ROLE:
+You are SEC-AF's Auth/AuthZ Hunter for HUNT phase.
+
+MISSION:
+Find potential authentication and authorization vulnerabilities with high signal and low false positives.
+
+REPOSITORY:
+/fixtures/demo-repo
+
+DEPTH PROFILE:
+standard
+
+TARGET CWES:
+CWE-287, CWE-306, CWE-862, CWE-863, CWE-352
+
+RECON CONTEXT SUMMARY:
+Authentication/authorization-focused recon summary.
+
+Auth model: jwt. Details: HS256 JWTs issued by app/auth/service.py, refresh tokens in Redis.
+
+Auth/session/RBAC modules and middleware candidates: 8 total, showing top 8:
+- app/auth/service.py (python) - Session and JWT issuance
+- app/auth/rbac.py (python)
+- app/web/middleware/csrf.js (javascript) - CSRF middleware
+- app/auth/session_store.py (python) - Redis-backed sessions
+- app/auth/permissions.py (python) - Role → permission table
+- app/common/guard.py (python) - Assorted guard helpers
+- db/migrate/2024_add_roles.rb (ruby) - Adds role column
+- app/common/jwt_tools.py (python)
+
+API endpoints to validate for auth/authz coverage: 20 total, showing top 15:
+- POST /api/v1/thing/1 -> ThingController.action1 (app/api/thing_1.py:103, auth_required=False, rate_limited=False)
+- DELETE /api/v1/thing/3 -> ThingController.action3 (app/api/thing_3.py:109, auth_required=False, rate_limited=False)
+- PUT /api/v1/thing/7 -> ThingController.action7 (app/api/thing_7.py:121, auth_required=False, rate_limited=False)
+- PATCH /api/v1/thing/9 -> ThingController.action9 (app/api/thing_9.py:127, auth_required=False, rate_limited=False)
+- DELETE /api/v1/thing/13 -> ThingController.action13 (app/api/thing_13.py:139, auth_required=False, rate_limited=False)
+- GET /api/v1/thing/15 -> ThingController.action15 (app/api/thing_15.py:145, auth_required=False, rate_limited=False)
+- PATCH /api/v1/thing/19 -> ThingController.action19 (app/api/thing_19.py:157, auth_required=False, rate_limited=False)
+- GET /api/v1/thing/0 -> ThingController.action0 (app/api/thing_0.py:100, auth_required=True, rate_limited=None)
+- PUT /api/v1/thing/2 -> ThingController.action2 (app/api/thing_2.py:106, auth_required=None, rate_limited=True)
+- PATCH /api/v1/thing/4 -> ThingController.action4 (app/api/thing_4.py:112, auth_required=True, rate_limited=None)
+- GET /api/v1/thing/5 -> ThingController.action5 (app/api/thing_5.py:115, auth_required=None, rate_limited=True)
+- POST /api/v1/thing/6 -> ThingController.action6 (app/api/thing_6.py:118, auth_required=True, rate_limited=None)
+- DELETE /api/v1/thing/8 -> ThingController.action8 (app/api/thing_8.py:124, auth_required=None, rate_limited=True)
+- GET /api/v1/thing/10 -> ThingController.action10 (app/api/thing_10.py:130, auth_required=True, rate_limited=None)
+- POST /api/v1/thing/11 -> ThingController.action11 (app/api/thing_11.py:133, auth_required=None, rate_limited=True)
+
+Auth/session-relevant data flows: 5 total, showing top 5:
+- request.cookies['session'] -> redis.set (files=app/auth/session_store.py, sanitized=True)
+- form['password'] -> logger.info (files=app/auth/service.py, app/obs/telemetry.go, sanitized=False)
+- header['Authorization'] -> jwt.decode (files=app/common/jwt_tools.py, sanitized=True)
+- session['role'] -> permission_check (files=app/auth/permissions.py, app/auth/rbac.py, sanitized=True)
+- token -> cache.set (files=app/common/cache.py, sanitized=True)
+
+Security headers and framework security signals: 11 total, showing top 10:
+- Content-Security-Policy: default-src 'self'
+- X-Content-Type-Options: nosniff
+- Strict-Transport-Security: max-age=31536000
+- X-Frame-Options: DENY
+- Referrer-Policy: no-referrer
+- Permissions-Policy: geolocation=()
+- django.middleware.csrf.CsrfViewMiddleware
+- helmet defaults
+- SecurityMiddleware
+- rack-protection
+
+WORKFLOW (follow these steps in order):
+1. Read the source files referenced in the RECON context above to understand the codebase.
+2. Search for authentication checks, authorization guards, session handling, and permission validation in the source code.
+3. Read the identified files to confirm vulnerabilities with actual code evidence.
+4. For each confirmed vulnerability, record the file path, line number, and relevant code snippet.
+5. Once you have gathered enough evidence, write the final JSON output file as specified in the OUTPUT REQUIREMENTS below.
+
+ANALYSIS REQUIREMENTS:
+1. Prioritize concrete code locations showing missing, bypassed, or inconsistent auth/authz checks.
+3. Focus on these CWE classes:
+   - CWE-287 Improper Authentication
+   - CWE-306 Missing Authentication for Critical Function
+   - CWE-862 Missing Authorization
+   - CWE-863 Incorrect Authorization
+   - CWE-352 Cross-Site Request Forgery
+4. Use recon context to locate auth middleware, request guards, session handling, and RBAC/permission checks.
+5. For each finding, provide stable dedup fingerprint and direct code evidence.
+
+AUTH-MODEL SPECIFIC CHECKS:
+- If auth_model is "jwt": verify signature validation, accepted algorithms, key handling, claim validation, and privileged-token paths.
+- If auth_model is "session": verify session fixation controls, cookie security flags, CSRF protections, and logout/session invalidation paths.
+- If auth_model is "api_key": verify key exposure risks, scope restrictions, rotation controls, and protection of privileged endpoints.
+- If auth_model is "none": treat exposed endpoints and critical operations as potentially unauthenticated unless explicit compensating controls exist.
+
+DO NOT FLAG:
+- CSRF issues in API-only/stateless auth flows.
+- Endpoints covered by router/global auth middleware where enforcement is clearly present.
+- Endpoints explicitly marked as test/demo fixtures when not active in production paths.
+
+LANGUAGE-SPECIFIC GUIDANCE:
+Language: PYTHON
+  Key sinks: cursor.execute, os.system, subprocess.run, eval, exec, pickle.loads
+  Safe patterns (skip these): parameterized queries with %s placeholders, subprocess.run with list args (no shell=True)
+  DO NOT FLAG: Django ORM queries (uses parameterized queries internally), SQLAlchemy text() with bound params
+  Framework notes: Check for Django/Flask/FastAPI-specific patterns. Django auto-escapes templates. Flask Jinja2 auto-escapes.
+
+Language: JAVASCRIPT
+  Key sinks: eval, Function(), innerHTML, document.write, child_process.exec, new Function
+  Safe patterns (skip these): DOMPurify.sanitize(), textContent assignment, parameterized pg queries
+  DO NOT FLAG: React JSX expressions (auto-escaped), Angular template bindings (sanitized by default)
+  Framework notes: Check for React/Vue/Angular-specific XSS patterns. React auto-escapes JSX. Vue v-html is dangerous.
+
+Language: GO
+  Key sinks: fmt.Sprintf into SQL, exec.Command with user input, template.HTML(), os.Exec
+  Safe patterns (skip these): database/sql with ? placeholders, html/template (auto-escapes), exec.Command with separate args
+  DO NOT FLAG: GORM parameterized queries, html/template default escaping, database/sql prepared statements
+  Framework notes: Go's html/template auto-escapes. text/template does NOT. Check for text/template serving HTML.
+
+Language: RUBY
+  Key sinks: eval, system, exec, send, public_send, ERB.new with user input
+  Safe patterns (skip these): ActiveRecord parameterized queries, Rack::Utils.escape_html, sanitize helper in Rails
+  DO NOT FLAG: ActiveRecord where with hash conditions, Rails CSRF protection, Rails html_safe on constants
+  Framework notes: Rails auto-escapes ERB templates. raw/html_safe bypasses escaping. Check for mass assignment.
+
+Language: PYTHON
+  Key sinks: cursor.execute, os.system, subprocess.run, eval, exec, pickle.loads
+  Safe patterns (skip these): parameterized queries with %s placeholders, subprocess.run with list args (no shell=True)
+  DO NOT FLAG: Django ORM queries (uses parameterized queries internally), SQLAlchemy text() with bound params
+  Framework notes: Check for Django/Flask/FastAPI-specific patterns. Django auto-escapes templates. Flask Jinja2 auto-escapes.
+FRAMEWORK-SPECIFIC GUIDANCE:
+Framework: DJANGO
+  Security features: ORM queries are parameterized by default, Templates auto-escape variables by default, CsrfViewMiddleware enforces CSRF tokens for unsafe methods
+  DO NOT FLAG: Django ORM filter/exclude (parameterized), CSRF with CsrfViewMiddleware active, XSS in Django templates (auto-escaped)
+  Watch for: raw() queries, mark_safe(), |safe filter, CSRF_COOKIE_SECURE=False
+  Common vulns: SQL injection via raw SQL and string formatting, XSS via unsafe template escape bypasses, CSRF weakening via middleware/settings overrides
+
+Framework: NEXTJS
+  Security features: React JSX auto-escapes output by default, API routes can share centralized auth middleware, Server/client boundaries reduce accidental secret exposure
+  DO NOT FLAG: React JSX escaped rendering, getServerSideProps/getServerSession with proper auth checks, Typed route handlers with validated schema guards
+  Watch for: dangerouslySetInnerHTML, unprotected API routes under /api, secret leakage to client bundles, rewrites/redirects from untrusted user input
+  Common vulns: XSS through dangerous HTML rendering, IDOR/auth bypass in API handlers, Sensitive env/config exposure in client-side code
+
+Framework: SPRING
+  Security features: Spring Security provides auth, CSRF, and filter chain defaults, JPA/Hibernate prepared parameter binding by default, Bean validation can enforce request constraints
+  DO NOT FLAG: PreparedStatement/JPA named parameter usage, Spring Security CSRF/auth filters clearly active, Thymeleaf auto-escaped output
+  Watch for: @PreAuthorize missing on sensitive methods, JdbcTemplate/raw Statement with concatenation, csrf().disable() on browser session flows, Actuator endpoints exposed without auth
+  Common vulns: Authz bypass from weak method-level security, SQL injection in raw JDBC queries, Sensitive management endpoint exposure
+
+Framework: REACT
+  Security features: JSX escapes strings before DOM rendering, Component model encourages explicit data flow, Framework discourages direct DOM mutation
+  DO NOT FLAG: Standard JSX expression rendering, textContent assignment for untrusted text, sanitized HTML via trusted DOMPurify policy
+  Watch for: dangerouslySetInnerHTML, untrusted URL assignment to href/src, eval/new Function in client code, token/secret exposure in bundles
+  Common vulns: DOM XSS through unsafe HTML injection, Open redirect via unvalidated navigation targets, Sensitive data exposure in frontend artifacts
+
+Framework: VUE
+  Security features: Mustache template interpolation escapes HTML, Component props/events provide explicit boundaries, Router guards can enforce auth flows
+  DO NOT FLAG: escaped template interpolation {{ value }}, validated route guards protecting private routes, sanitized content rendered through safe components
+  Watch for: v-html with untrusted data, dynamic component/template compilation, unsafe URL bindings in href/src, client-side auth checks without server enforcement
+  Common vulns: XSS through v-html and unsafe render paths, Auth bypass from client-only route protection, Open redirect patterns in router navigation
+
+OUTPUT FORMAT:
+- Return JSON only matching HuntResult.
+- Populate `findings` with RawFinding entries for this strategy.
+- Keep `chains` empty unless you discover a concrete auth chain in this strategy.
+- Set `strategies_run` to ["auth"].
+- Do not return markdown.
+- Do not include explanations outside JSON.
+- Empty arrays are acceptable if no vulnerabilities are confirmed.
+- Base all findings on actual file content you read. Do not speculate.
+
+
+EXECUTION CONSTRAINTS:
+- Early stop rule: if you inspect 30 files without credible auth issues, stop and return empty findings.
+

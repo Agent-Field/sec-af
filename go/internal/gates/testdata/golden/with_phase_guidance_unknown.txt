@@ -1,0 +1,15 @@
+Context:
+- Build conclusions from repository evidence in iterative passes. Prefer explicit evidence over speculation, and clearly separate confirmed facts from uncertainty.
+
+Constraints:
+- Use evidence-first reasoning; do not speculate beyond available artifacts.
+- Keep analysis bounded to the task scope and produce only schema-conformant output.
+- Cite concrete repository evidence whenever making security-relevant claims.
+- If output is large or complex, use the file-write pattern and ensure final JSON is written to /tmp/secaf-golden/.agentfield_output.json.
+
+Task:
+Analyze the repository for SQL injection.
+Cite file:line for every claim.
+
+Output:
+- Return a single JSON object matching the requested schema.

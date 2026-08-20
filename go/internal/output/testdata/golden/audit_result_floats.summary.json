@@ -1,0 +1,31 @@
+{
+  "repository": "Agent-Field/floats",
+  "commit_sha": "ffffffffffffffffffffffffffffffffffffffff",
+  "timestamp": "2026-01-02T03:04:05+00:00",
+  "depth_profile": "standard",
+  "summary": {
+    "total_findings": 0,
+    "confirmed": 0,
+    "likely": 0,
+    "inconclusive": 0,
+    "not_exploitable": 0,
+    "noise_reduction_pct": 8e-05,
+    "by_severity": {}
+  },
+  "findings": [],
+  "attack_chains": [],
+  "compliance_gaps": [],
+  "performance": {
+    "duration_seconds": 1e-07,
+    "cost_usd": 1.23e-05,
+    "cost_breakdown": {
+      "denormal": 5e-324,
+      "exponent_low": 1e-06,
+      "huge": 1e+16,
+      "integral": 10.0,
+      "repr_tie": 0.30000000000000004,
+      "threshold": 1e-05
+    },
+    "agent_invocations": 0
+  }
+}

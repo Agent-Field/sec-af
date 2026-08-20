@@ -1,0 +1,43 @@
+{
+  "phase": "recon",
+  "created_at": "2026-01-02T03:04:05.123456+00:00",
+  "data": {
+    "architecture": {
+      "app_type": null,
+      "modules": [],
+      "entry_points": [],
+      "trust_boundaries": [],
+      "services": [],
+      "api_surface": []
+    },
+    "data_flows": {
+      "flows": [],
+      "sanitization_points": [],
+      "sinks": []
+    },
+    "dependencies": {
+      "sbom": [],
+      "known_cves": [],
+      "outdated": [],
+      "direct_count": 0,
+      "transitive_count": 0
+    },
+    "config": {
+      "secrets": [],
+      "misconfigs": []
+    },
+    "security_context": {
+      "auth_model": "",
+      "auth_details": "",
+      "crypto_usage": [],
+      "framework_security": [],
+      "security_headers": [],
+      "deployment_signals": []
+    },
+    "languages": [],
+    "frameworks": [],
+    "lines_of_code": 0,
+    "file_count": 0,
+    "recon_duration_seconds": 0.0
+  }
+}

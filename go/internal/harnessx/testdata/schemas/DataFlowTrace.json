@@ -1,0 +1,36 @@
+{
+  "description": "Flat schema for data flow tracing sub-agent. 4 fields.",
+  "properties": {
+    "sink": {
+      "description": "Security-sensitive operation reached (e.g. 'sql.execute(query)')",
+      "title": "Sink",
+      "type": "string"
+    },
+    "sink_reached": {
+      "description": "Whether tainted data actually reaches the sink",
+      "title": "Sink Reached",
+      "type": "boolean"
+    },
+    "source": {
+      "description": "Where tainted input enters (e.g. 'request.params.id')",
+      "title": "Source",
+      "type": "string"
+    },
+    "steps": {
+      "description": "Ordered list of file:line descriptions showing flow path",
+      "items": {
+        "type": "string"
+      },
+      "title": "Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source",
+    "sink",
+    "steps",
+    "sink_reached"
+  ],
+  "title": "DataFlowTrace",
+  "type": "object"
+}

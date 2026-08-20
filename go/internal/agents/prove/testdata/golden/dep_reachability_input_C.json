@@ -1,0 +1,10 @@
+{
+  "cve": 1234,
+  "package": null,
+  "vulnerable_function": 3.5,
+  "version": true,
+  "evidence": [
+    1,
+    "two"
+  ]
+}

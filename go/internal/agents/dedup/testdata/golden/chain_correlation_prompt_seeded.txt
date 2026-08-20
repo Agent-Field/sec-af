@@ -1,0 +1,15 @@
+You are SEC-AF's chain correlator.
+Identify multi-step attack chains across the findings below.
+A chain means one vulnerability enables exploitation of another.
+Also flag any remaining duplicate IDs that should be dropped.
+
+Findings:
+- id=F2 cwe=CWE-89 file=src/db/users.py:42 title=SQL injection in user lookup severity=critical
+- id=F1 cwe=CWE-918 file=src/net/webhook.py:17 title=SSRF in webhook fetcher severity=high
+- id=F3 cwe=cwe-798 file=src/config/settings.py:8 title=Hard-coded AWS key severity=medium
+- id=F4 cwe=CWE-200 file=src/api/errors.py:55 title=Stack trace leaked to client severity=low
+
+Seed chain candidates (validate and expand these):
+- Potential chain: Server-Side Request Forgery (SSRF) -> Use of Hard-coded Credentials (findings F1, F3)
+- Potential chain: SQL Injection -> Exposure of Sensitive Information (findings F2, F4)
+Look for additional multi-step attack chains beyond these seeds.

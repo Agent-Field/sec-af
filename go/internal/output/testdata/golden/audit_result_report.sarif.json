@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "SEC-AF",
+          "semanticVersion": "0.1.0",
+          "informationUri": "https://github.com/Agent-Field/sec-af",
+          "rules": [
+            {
+              "id": "sec-af/sast/cwe-89",
+              "name": "Cwe89",
+              "shortDescription": {
+                "text": "Test Finding vulnerability"
+              },
+              "fullDescription": {
+                "text": "Test description"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/89.html",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "CWE-89",
+                  "compliance:OWASP:A03:2021",
+                  "compliance:PCI-DSS:Req-6.2.4",
+                  "security"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "sec-af/sast/cwe-89",
+          "level": "error",
+          "message": {
+            "text": "[CONFIRMED] Test Finding: Test description. Evidence level: REACHABILITY_CONFIRMED."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 10,
+                  "endLine": 15
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "test-fp"
+          },
+          "properties": {
+            "security-severity": "7.5",
+            "sec-af/verdict": "confirmed",
+            "sec-af/evidence_level": 3,
+            "sec-af/exploitability_score": 7.5,
+            "sec-af/chain_id": null,
+            "sec-af/compliance": [
+              "OWASP:A03:2021",
+              "PCI-DSS:Req-6.2.4"
+            ],
+            "tags": [
+              "CWE-89",
+              "compliance:OWASP:A03:2021",
+              "compliance:PCI-DSS:Req-6.2.4",
+              "security"
+            ]
+          }
+        }
+      ],
+      "automationDetails": {
+        "id": "sec-af/audit/https://github.com/test/repo/2025-01-15T10:30:00+00:00"
+      }
+    }
+  ]
+}

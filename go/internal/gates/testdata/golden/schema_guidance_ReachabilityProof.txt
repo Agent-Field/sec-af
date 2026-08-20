@@ -1,0 +1,8 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `vulnerable_function`: The vulnerable function/method in the dependency
+- `call_chain`: Import/call chain from app code to vulnerable function
+- `reachable`: Whether the vulnerable function is actually called
+- `direct`: Whether the dependency is direct or transitive

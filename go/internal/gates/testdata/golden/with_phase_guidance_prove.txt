@@ -1,0 +1,26 @@
+Context:
+- APPROACH: You are verifying a specific candidate vulnerability for exploitability.
+PROCESS:
+1. Read the specific code location cited in the finding
+2. Trace the data flow from source to sink
+3. Check for sanitization, validation, or other mitigations on the path
+4. If exploitable, construct a concrete exploit hypothesis
+5. Synthesize your verdict with evidence level
+CONSTRAINTS:
+- You must READ the actual code — do not rely on the finding description alone
+- INCONCLUSIVE is a valid verdict — do not force confirmation or denial
+- Cite specific lines where sanitization exists or is missing
+- If code has changed since the finding was generated, note the discrepancy
+
+Constraints:
+- Use evidence-first reasoning; do not speculate beyond available artifacts.
+- Keep analysis bounded to the task scope and produce only schema-conformant output.
+- Cite concrete repository evidence whenever making security-relevant claims.
+- If output is large or complex, use the file-write pattern and ensure final JSON is written to /tmp/secaf-golden/.agentfield_output.json.
+
+Task:
+Analyze the repository for SQL injection.
+Cite file:line for every claim.
+
+Output:
+- Return a single JSON object matching the requested schema.

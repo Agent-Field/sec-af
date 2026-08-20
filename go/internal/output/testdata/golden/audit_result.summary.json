@@ -1,0 +1,129 @@
+{
+  "repository": "Agent-Field/sec-af",
+  "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "timestamp": "2026-03-04T10:30:00+00:00",
+  "depth_profile": "standard",
+  "summary": {
+    "total_findings": 3,
+    "confirmed": 1,
+    "likely": 1,
+    "inconclusive": 0,
+    "not_exploitable": 1,
+    "noise_reduction_pct": 66.7,
+    "by_severity": {
+      "critical": 1,
+      "high": 1,
+      "low": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "finding-confirmed",
+      "title": "SQL Injection",
+      "severity": "critical",
+      "verdict": "confirmed",
+      "evidence_level": 6,
+      "exploitability_score": 10.0,
+      "cwe_id": "CWE-89",
+      "location": {
+        "file": "src/users.py",
+        "line": 42
+      },
+      "chain_id": "chain-1"
+    },
+    {
+      "id": "finding-likely",
+      "title": "Missing Authentication",
+      "severity": "high",
+      "verdict": "likely",
+      "evidence_level": 2,
+      "exploitability_score": 4.8,
+      "cwe_id": "CWE-306",
+      "location": {
+        "file": "src/api/admin.py",
+        "line": 11
+      },
+      "chain_id": null
+    },
+    {
+      "id": "finding-noise",
+      "title": "Potential XSS",
+      "severity": "low",
+      "verdict": "not_exploitable",
+      "evidence_level": 1,
+      "exploitability_score": 0.6,
+      "cwe_id": "CWE-79",
+      "location": {
+        "file": "src/views.py",
+        "line": 88
+      },
+      "chain_id": null
+    }
+  ],
+  "attack_chains": [
+    {
+      "chain_id": "chain-1",
+      "title": "Input to DB read",
+      "description": "Untrusted input reaches SQL sink",
+      "combined_severity": "critical",
+      "combined_impact": "Unauthorized DB disclosure",
+      "findings": [
+        "finding-confirmed",
+        "finding-likely"
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "finding_id": "finding-confirmed",
+          "title": "SQL Injection",
+          "verdict": "confirmed",
+          "severity": "critical",
+          "location": {
+            "file": "src/users.py",
+            "line": 42
+          }
+        },
+        {
+          "step": 2,
+          "finding_id": "finding-likely",
+          "title": "Missing Authentication",
+          "verdict": "likely",
+          "severity": "high",
+          "location": {
+            "file": "src/api/admin.py",
+            "line": 11
+          }
+        }
+      ],
+      "mitre_attack_mapping": [
+        {
+          "tactic": "Initial Access",
+          "technique_id": "T1190",
+          "technique_name": "Exploit Public-Facing Application"
+        }
+      ]
+    }
+  ],
+  "compliance_gaps": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Prevent injection",
+      "finding_count": 1,
+      "max_severity": "critical",
+      "cwe_ids": [
+        "CWE-89"
+      ]
+    }
+  ],
+  "performance": {
+    "duration_seconds": 182.4,
+    "cost_usd": 3.21,
+    "cost_breakdown": {
+      "hunt": 1.2,
+      "prove": 1.51,
+      "recon": 0.5
+    },
+    "agent_invocations": 24
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "description": "Flat schema for Step 2: finding enrichment. 6 fields.",
+  "properties": {
+    "confidence": {
+      "description": "One of: \"high\", \"medium\", \"low\"",
+      "title": "Confidence",
+      "type": "string"
+    },
+    "cwe_id": {
+      "description": "CWE identifier (e.g. 'CWE-89')",
+      "title": "Cwe Id",
+      "type": "string"
+    },
+    "data_flow_summary": {
+      "description": "Natural language summary of the data flow (string, not nested)",
+      "title": "Data Flow Summary",
+      "type": "string"
+    },
+    "description": {
+      "description": "Detailed description of the vulnerability",
+      "title": "Description",
+      "type": "string"
+    },
+    "severity": {
+      "description": "One of: \"critical\", \"high\", \"medium\", \"low\", \"info\"",
+      "title": "Severity",
+      "type": "string"
+    },
+    "title": {
+      "description": "Human-readable title for the finding",
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "cwe_id",
+    "severity",
+    "confidence",
+    "data_flow_summary"
+  ],
+  "title": "EnrichedFinding",
+  "type": "object"
+}

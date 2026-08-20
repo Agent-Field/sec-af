@@ -1,0 +1,24 @@
+Context:
+- APPROACH: You are performing reconnaissance on a codebase to build an accurate structural map.
+PROCESS:
+1. Survey the codebase structure — identify key directories, entry points, and configuration
+2. Identify the technology stack — languages, frameworks, and external services
+3. Map security-relevant boundaries — auth layers, data inputs, API surfaces
+4. Only after surveying, synthesize findings into the required schema
+CONSTRAINTS:
+- Report what IS there, not what MIGHT be there
+- If uncertain about a detail, omit it rather than guess
+- Prioritize breadth over depth — cover the full surface
+
+Constraints:
+- Use evidence-first reasoning; do not speculate beyond available artifacts.
+- Keep analysis bounded to the task scope and produce only schema-conformant output.
+- Cite concrete repository evidence whenever making security-relevant claims.
+- If output is large or complex, use the file-write pattern and ensure final JSON is written to /tmp/secaf-golden/.agentfield_output.json.
+
+Task:
+Analyze the repository for SQL injection.
+Cite file:line for every claim.
+
+Output:
+- Return a single JSON object matching the requested schema.

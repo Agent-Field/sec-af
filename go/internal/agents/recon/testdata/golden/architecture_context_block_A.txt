@@ -1,0 +1,73 @@
+{
+  "app_type": "web_api",
+  "modules": [
+    {
+      "name": "auth",
+      "path": "src/auth/",
+      "language": "Python",
+      "description": "Sessions & tokens",
+      "dependencies": [
+        "db",
+        "cache"
+      ]
+    },
+    {
+      "name": "ui",
+      "path": "web/",
+      "language": "TypeScript",
+      "description": null,
+      "dependencies": []
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "http",
+      "identifier": "POST /api/login",
+      "file_path": "src/routes.py",
+      "line": 42,
+      "method": "POST",
+      "route": "/api/login",
+      "auth_required": false
+    },
+    {
+      "kind": "cli",
+      "identifier": "migrate",
+      "file_path": "src/cli.py",
+      "line": 8,
+      "method": null,
+      "route": null,
+      "auth_required": null
+    }
+  ],
+  "trust_boundaries": [
+    {
+      "name": "API Gateway",
+      "source_zone": "external",
+      "target_zone": "internal",
+      "description": "Rate limiting <and> auth \u2014 caf\u00e9 \u2192 app",
+      "enforcement": [
+        "waf"
+      ]
+    }
+  ],
+  "services": [
+    {
+      "name": "PostgreSQL",
+      "service_type": "database",
+      "endpoint": "localhost:5432",
+      "purpose": "primary store",
+      "auth_mechanism": "password"
+    }
+  ],
+  "api_surface": [
+    {
+      "method": "GET",
+      "path": "/api/users",
+      "handler": "get_users",
+      "file_path": "src/api.py",
+      "line": 15,
+      "auth_required": true,
+      "rate_limited": false
+    }
+  ]
+}

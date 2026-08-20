@@ -1,0 +1,8 @@
+Output format:
+- Return valid JSON only (no markdown fences, no extra text).
+- Follow the provided Pydantic schema exactly.
+- Field guidance from schema descriptions:
+- `payload_sent`: The exploit payload or request that was sent
+- `response_summary`: Summary of the application response
+- `exploit_confirmed`: Whether the exploit was confirmed at runtime
+- `safety_notes`: Safety measures taken during verification (sandbox, timeout, etc.)

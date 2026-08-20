@@ -1,0 +1,39 @@
+General recon summary.
+
+Profile: 2417 files, 184213 LOC, languages=Python, JavaScript, Go, Ruby, Rust, python, frameworks=Django, next.js, Spring Boot,   React  , unknown-fw, NEXT, Vue.
+
+Top entry points: 17 total, showing top 10:
+- http handler_0 (app/entry/e0.py:10)
+- HTTP /v1/resource/1 (app/entry/e1.py:17)
+- cli /v1/resource/2 (app/entry/e2.py:24)
+- api handler_3 (app/entry/e3.py:31)
+- graphql /v1/resource/4 (app/entry/e4.py:38)
+- rpc /v1/resource/5 (app/entry/e5.py:45)
+- route handler_6 (app/entry/e6.py:52)
+- cron /v1/resource/7 (app/entry/e7.py:59)
+- queue /v1/resource/8 (app/entry/e8.py:66)
+- http handler_9 (app/entry/e9.py:73)
+
+Top API endpoints: 20 total, showing top 10:
+- GET /api/v1/thing/0 (app/api/thing_0.py:100)
+- POST /api/v1/thing/1 (app/api/thing_1.py:103)
+- PUT /api/v1/thing/2 (app/api/thing_2.py:106)
+- DELETE /api/v1/thing/3 (app/api/thing_3.py:109)
+- PATCH /api/v1/thing/4 (app/api/thing_4.py:112)
+- GET /api/v1/thing/5 (app/api/thing_5.py:115)
+- POST /api/v1/thing/6 (app/api/thing_6.py:118)
+- PUT /api/v1/thing/7 (app/api/thing_7.py:121)
+- DELETE /api/v1/thing/8 (app/api/thing_8.py:124)
+- PATCH /api/v1/thing/9 (app/api/thing_9.py:127)
+
+Top data-flow candidates: 20 total, showing top 10:
+- request.args['q'] -> cursor.execute; sanitized=False
+- request.cookies['session'] -> redis.set; sanitized=True
+- request.json['url'] -> requests.get; sanitized=False
+- form['password'] -> logger.info; sanitized=False
+- header['Authorization'] -> jwt.decode; sanitized=True
+- query['email'] -> smtp.send; sanitized=False
+- body['card_number'] -> stripe.Charge.create; sanitized=True
+- path_param['id'] -> orm.filter; sanitized=True
+- upload.filename -> open; sanitized=False
+- env['DEBUG'] -> template.render; sanitized=False

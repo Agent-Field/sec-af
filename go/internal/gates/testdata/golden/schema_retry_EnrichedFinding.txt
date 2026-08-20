@@ -1,0 +1,54 @@
+The JSON output at /tmp/secaf-golden/.agentfield_output.json failed validation.
+Error: Retry attempt 1/3
+
+Your response must conform to this JSON schema:
+```json
+{
+  "description": "Flat schema for Step 2: finding enrichment. 6 fields.",
+  "properties": {
+    "title": {
+      "description": "Human-readable title for the finding",
+      "title": "Title",
+      "type": "string"
+    },
+    "description": {
+      "description": "Detailed description of the vulnerability",
+      "title": "Description",
+      "type": "string"
+    },
+    "cwe_id": {
+      "description": "CWE identifier (e.g. 'CWE-89')",
+      "title": "Cwe Id",
+      "type": "string"
+    },
+    "severity": {
+      "description": "One of: \"critical\", \"high\", \"medium\", \"low\", \"info\"",
+      "title": "Severity",
+      "type": "string"
+    },
+    "confidence": {
+      "description": "One of: \"high\", \"medium\", \"low\"",
+      "title": "Confidence",
+      "type": "string"
+    },
+    "data_flow_summary": {
+      "description": "Natural language summary of the data flow (string, not nested)",
+      "title": "Data Flow Summary",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "cwe_id",
+    "severity",
+    "confidence",
+    "data_flow_summary"
+  ],
+  "title": "EnrichedFinding",
+  "type": "object"
+}
+```
+
+Rewrite the COMPLETE, corrected JSON to: /tmp/secaf-golden/.agentfield_output.json
+The file must contain ONLY valid JSON matching the schema above. No markdown fences, no extra text, no comments.

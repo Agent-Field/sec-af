@@ -1,0 +1,26 @@
+{
+  "description": "Reachability assessment for findings without explicit reachability tags.",
+  "properties": {
+    "confidence": {
+      "description": "One of: \"high\", \"medium\", \"low\".",
+      "title": "Confidence",
+      "type": "string"
+    },
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    },
+    "reachability": {
+      "description": "One of: \"externally_reachable\", \"requires_auth\", \"internal_only\", \"unreachable\".",
+      "title": "Reachability",
+      "type": "string"
+    }
+  },
+  "required": [
+    "reachability",
+    "rationale",
+    "confidence"
+  ],
+  "title": "ReachabilityGate",
+  "type": "object"
+}

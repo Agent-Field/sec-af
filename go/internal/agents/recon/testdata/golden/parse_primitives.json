@@ -1,0 +1,361 @@
+{
+  "split_pipe": [
+    {
+      "s": "a | b | c | d",
+      "expected": 4,
+      "want": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "s": "a|b",
+      "expected": 4,
+      "want": [
+        "a",
+        "b",
+        "",
+        ""
+      ]
+    },
+    {
+      "s": "",
+      "expected": 4,
+      "want": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "s": "  a  |  b  |  c  |  d | e  ",
+      "expected": 4,
+      "want": [
+        "a",
+        "b",
+        "c",
+        "d | e"
+      ]
+    },
+    {
+      "s": "a|b|c|d|e|f|g",
+      "expected": 6,
+      "want": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f|g"
+      ]
+    },
+    {
+      "s": "only",
+      "expected": 1,
+      "want": [
+        "only"
+      ]
+    },
+    {
+      "s": "a|b|c",
+      "expected": 1,
+      "want": [
+        "a|b|c"
+      ]
+    },
+    {
+      "s": "|||",
+      "expected": 4,
+      "want": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "s": " x ",
+      "expected": 2,
+      "want": [
+        "x",
+        ""
+      ]
+    }
+  ],
+  "parse_bool": [
+    {
+      "s": "true",
+      "want": true
+    },
+    {
+      "s": "TRUE",
+      "want": true
+    },
+    {
+      "s": " True ",
+      "want": true
+    },
+    {
+      "s": "yes",
+      "want": true
+    },
+    {
+      "s": "1",
+      "want": true
+    },
+    {
+      "s": "false",
+      "want": false
+    },
+    {
+      "s": "No",
+      "want": false
+    },
+    {
+      "s": "0",
+      "want": false
+    },
+    {
+      "s": "",
+      "want": null
+    },
+    {
+      "s": "maybe",
+      "want": null
+    },
+    {
+      "s": "n/a",
+      "want": null
+    },
+    {
+      "s": " 01 ",
+      "want": null
+    }
+  ],
+  "parse_int": [
+    {
+      "s": "0",
+      "want": 0
+    },
+    {
+      "s": "12",
+      "want": 12
+    },
+    {
+      "s": " 42 ",
+      "want": 42
+    },
+    {
+      "s": "-7",
+      "want": -7
+    },
+    {
+      "s": "+3",
+      "want": 3
+    },
+    {
+      "s": "1_0",
+      "want": 10
+    },
+    {
+      "s": "abc",
+      "want": 0
+    },
+    {
+      "s": "",
+      "want": 0
+    },
+    {
+      "s": "3.5",
+      "want": 0
+    },
+    {
+      "s": "0x10",
+      "want": 0
+    },
+    {
+      "s": "  ",
+      "want": 0
+    }
+  ],
+  "parse_int_default9": [
+    {
+      "s": "0",
+      "want": 0
+    },
+    {
+      "s": "12",
+      "want": 12
+    },
+    {
+      "s": " 42 ",
+      "want": 42
+    },
+    {
+      "s": "-7",
+      "want": -7
+    },
+    {
+      "s": "+3",
+      "want": 3
+    },
+    {
+      "s": "1_0",
+      "want": 10
+    },
+    {
+      "s": "abc",
+      "want": 9
+    },
+    {
+      "s": "",
+      "want": 9
+    },
+    {
+      "s": "3.5",
+      "want": 9
+    },
+    {
+      "s": "0x10",
+      "want": 9
+    },
+    {
+      "s": "  ",
+      "want": 9
+    }
+  ],
+  "parse_float": [
+    {
+      "s": "1.5",
+      "want": "1.5"
+    },
+    {
+      "s": " 9.8 ",
+      "want": "9.8"
+    },
+    {
+      "s": "0",
+      "want": "0.0"
+    },
+    {
+      "s": "-2",
+      "want": "-2.0"
+    },
+    {
+      "s": "1e3",
+      "want": "1000.0"
+    },
+    {
+      "s": "abc",
+      "want": null
+    },
+    {
+      "s": "",
+      "want": null
+    },
+    {
+      "s": "inf",
+      "want": "inf"
+    },
+    {
+      "s": "nan",
+      "want": "nan"
+    },
+    {
+      "s": "1_0.5",
+      "want": "10.5"
+    },
+    {
+      "s": "+.5",
+      "want": "0.5"
+    }
+  ],
+  "parse_file_line": [
+    {
+      "s": "src/api.py:15",
+      "path": "src/api.py",
+      "line": 15
+    },
+    {
+      "s": "src/api.py",
+      "path": "src/api.py",
+      "line": 0
+    },
+    {
+      "s": "a:b:12",
+      "path": "a:b",
+      "line": 12
+    },
+    {
+      "s": "src/x.py:0",
+      "path": "src/x.py:0",
+      "line": 0
+    },
+    {
+      "s": "src/x.py:-3",
+      "path": "src/x.py:-3",
+      "line": 0
+    },
+    {
+      "s": ":",
+      "path": ":",
+      "line": 0
+    },
+    {
+      "s": "",
+      "path": "",
+      "line": 0
+    },
+    {
+      "s": " a.py : 4 ",
+      "path": "a.py ",
+      "line": 4
+    },
+    {
+      "s": "C:/x.py:9",
+      "path": "C:/x.py",
+      "line": 9
+    }
+  ],
+  "is_na": [
+    {
+      "s": "",
+      "want": true
+    },
+    {
+      "s": " ",
+      "want": true
+    },
+    {
+      "s": "na",
+      "want": true
+    },
+    {
+      "s": "N/A",
+      "want": true
+    },
+    {
+      "s": "None",
+      "want": true
+    },
+    {
+      "s": "UNKNOWN",
+      "want": true
+    },
+    {
+      "s": "unknown ",
+      "want": true
+    },
+    {
+      "s": "value",
+      "want": false
+    },
+    {
+      "s": "0",
+      "want": false
+    }
+  ]
+}

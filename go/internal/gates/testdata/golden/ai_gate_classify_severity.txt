@@ -1,0 +1,3 @@
+Classify severity for this potential security finding. Use only critical/high/medium/low and keep rationale brief.
+
+SQL injection in app/db/raw.py:42 — request.args['q'] reaches cursor.execute unsanitized.

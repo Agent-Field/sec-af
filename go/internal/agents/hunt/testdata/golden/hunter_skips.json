@@ -1,0 +1,76 @@
+{
+  "crypto_no_usage": {
+    "harness_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "crypto_empty_recon": {
+    "harness_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "supply_chain_no_direct_deps": {
+    "harness_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "api_security_no_surface": {
+    "harness_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [
+        "api_security"
+      ],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "business_logic_quick": {
+    "harness_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  },
+  "logic_quick": {
+    "harness_calls": 0,
+    "want": {
+      "findings": [],
+      "chains": [],
+      "total_raw": 0,
+      "deduplicated_count": 0,
+      "chain_count": 0,
+      "strategies_run": [],
+      "hunt_duration_seconds": 0.0
+    }
+  }
+}

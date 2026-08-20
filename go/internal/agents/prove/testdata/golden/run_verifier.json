@@ -1,0 +1,197 @@
+{
+  "not_exploitable": {
+    "id": "raw-1",
+    "fingerprint": "fp-1",
+    "title": "Potential SQL injection in user lookup",
+    "description": "Request parameter reaches a formatted SQL string. Marker: {{TITLE}}",
+    "finding_type": "sast",
+    "cwe_id": "CWE-89",
+    "cwe_name": "Improper Neutralization/Escaping of Special Elements",
+    "owasp_category": "A03:2021 - Injection",
+    "tags": [],
+    "verdict": "not_exploitable",
+    "evidence_level": 1,
+    "rationale": "canned rationale",
+    "severity": "high",
+    "cvss_v4": null,
+    "epss": null,
+    "exploitability_score": 0.0,
+    "proof": {
+      "exploit_hypothesis": "Attacker supplies id=1 OR 1=1 to dump the table",
+      "verification_method": "composite_subagent_chain:sast",
+      "evidence_level": 1,
+      "data_flow_trace": [
+        {
+          "file": "trace_step_1",
+          "line": 1,
+          "description": "src/routes.py:10 read request.args",
+          "tainted": true
+        },
+        {
+          "file": "trace_step_2",
+          "line": 2,
+          "description": "src/users.py:42 execute",
+          "tainted": true
+        }
+      ],
+      "data_flow_evidence": {
+        "steps": [
+          {
+            "file": "trace_step_1",
+            "line": 1,
+            "description": "src/routes.py:10 read request.args",
+            "tainted": true
+          },
+          {
+            "file": "trace_step_2",
+            "line": 2,
+            "description": "src/users.py:42 execute",
+            "tainted": true
+          }
+        ],
+        "source": "request.args['id']",
+        "sink": "cursor.execute(query)",
+        "sink_reached": true
+      },
+      "sanitization_analysis": {
+        "sanitization_found": true,
+        "sanitization_type": "parameterized query",
+        "sanitization_sufficient": false,
+        "bypass_possible": true,
+        "bypass_method": "second-order injection through the audit log"
+      },
+      "vulnerable_code": null,
+      "exploit_payload": "1 OR 1=1",
+      "expected_outcome": "Full users table returned",
+      "poc_code": null,
+      "poc_execution_output": null,
+      "http_request": null,
+      "http_response": null,
+      "reachability": null,
+      "chain_steps": null
+    },
+    "location": {
+      "file_path": "src/users.py",
+      "start_line": 42,
+      "end_line": 44,
+      "start_column": null,
+      "end_column": null,
+      "function_name": "get_user",
+      "code_snippet": "cursor.execute(\"SELECT * FROM users WHERE id = \" + user_id)  # depth={{DEPTH}}"
+    },
+    "related_locations": [],
+    "chain_id": null,
+    "chain_step": null,
+    "enables": null,
+    "compliance": [],
+    "reproduction_steps": [],
+    "remediation": null,
+    "sarif_rule_id": "sec-af/sast/improper-neutralization-escaping-of-special-elements",
+    "sarif_security_severity": 0.0,
+    "drop_reason": null
+  },
+  "likely": {
+    "id": "raw-2",
+    "fingerprint": "fp-2",
+    "title": "Weak hash",
+    "description": "MD5 used for password hashing",
+    "finding_type": "sast",
+    "cwe_id": "CWE-327",
+    "cwe_name": "Broken Crypto",
+    "owasp_category": null,
+    "tags": [],
+    "verdict": "likely",
+    "evidence_level": 3,
+    "rationale": "canned rationale",
+    "severity": "medium",
+    "cvss_v4": null,
+    "epss": null,
+    "exploitability_score": 0.0,
+    "proof": {
+      "exploit_hypothesis": "Attacker supplies id=1 OR 1=1 to dump the table",
+      "verification_method": "composite_subagent_chain:sast",
+      "evidence_level": 3,
+      "data_flow_trace": [
+        {
+          "file": "trace_step_1",
+          "line": 1,
+          "description": "src/routes.py:10 read request.args",
+          "tainted": true
+        },
+        {
+          "file": "trace_step_2",
+          "line": 2,
+          "description": "src/users.py:42 execute",
+          "tainted": true
+        }
+      ],
+      "data_flow_evidence": {
+        "steps": [
+          {
+            "file": "trace_step_1",
+            "line": 1,
+            "description": "src/routes.py:10 read request.args",
+            "tainted": true
+          },
+          {
+            "file": "trace_step_2",
+            "line": 2,
+            "description": "src/users.py:42 execute",
+            "tainted": true
+          }
+        ],
+        "source": "request.args['id']",
+        "sink": "cursor.execute(query)",
+        "sink_reached": true
+      },
+      "sanitization_analysis": {
+        "sanitization_found": true,
+        "sanitization_type": "parameterized query",
+        "sanitization_sufficient": false,
+        "bypass_possible": true,
+        "bypass_method": "second-order injection through the audit log"
+      },
+      "vulnerable_code": null,
+      "exploit_payload": "1 OR 1=1",
+      "expected_outcome": "Full users table returned",
+      "poc_code": null,
+      "poc_execution_output": null,
+      "http_request": null,
+      "http_response": null,
+      "reachability": null,
+      "chain_steps": null
+    },
+    "location": {
+      "file_path": "src/hash.py",
+      "start_line": 7,
+      "end_line": 7,
+      "start_column": null,
+      "end_column": null,
+      "function_name": null,
+      "code_snippet": "hashlib.md5(pw).hexdigest()"
+    },
+    "related_locations": [],
+    "chain_id": null,
+    "chain_step": null,
+    "enables": null,
+    "compliance": [],
+    "reproduction_steps": [
+      {
+        "step": 1,
+        "description": "Trace attacker-controlled input from source to sink in target code path.",
+        "command": null,
+        "expected_output": "Input reaches a sensitive sink."
+      },
+      {
+        "step": 2,
+        "description": "Attacker supplies id=1 OR 1=1 to dump the table",
+        "command": "1 OR 1=1",
+        "expected_output": "Full users table returned"
+      }
+    ],
+    "remediation": null,
+    "sarif_rule_id": "sec-af/sast/broken-crypto",
+    "sarif_security_severity": 0.0,
+    "drop_reason": null
+  }
+}

@@ -1,0 +1,6 @@
+Select SEC-AF hunt strategies from recon context. Return only selected strategies and rationale.
+Depth profile: quick
+Default candidates: []
+Recon summary: General recon summary.
+
+Profile: 3 files, 120 LOC.

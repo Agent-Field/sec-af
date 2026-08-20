@@ -1,0 +1,3 @@
+Assess the reachability of this security finding. Determine if it is externally_reachable, requires_auth, internal_only, or unreachable. Consider the attack surface, authentication requirements, and network exposure.
+
+Hardcoded AWS key in config/prod.yaml:12, repository is public.

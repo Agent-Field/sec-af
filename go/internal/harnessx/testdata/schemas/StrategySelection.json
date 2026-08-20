@@ -1,0 +1,22 @@
+{
+  "description": "DESIGN.md \u00a75.3: strategy selection gate for HUNT routing.",
+  "properties": {
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    },
+    "strategies": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Strategies",
+      "type": "array"
+    }
+  },
+  "required": [
+    "strategies",
+    "rationale"
+  ],
+  "title": "StrategySelection",
+  "type": "object"
+}

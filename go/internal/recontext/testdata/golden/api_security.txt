@@ -1,0 +1,54 @@
+API security-focused recon summary.
+
+API endpoints prioritized by missing auth/rate-limits: 20 total, showing top 15:
+- POST /api/v1/thing/1 -> ThingController.action1 (app/api/thing_1.py:103, auth_required=False, rate_limited=False)
+- DELETE /api/v1/thing/3 -> ThingController.action3 (app/api/thing_3.py:109, auth_required=False, rate_limited=False)
+- PUT /api/v1/thing/7 -> ThingController.action7 (app/api/thing_7.py:121, auth_required=False, rate_limited=False)
+- PATCH /api/v1/thing/9 -> ThingController.action9 (app/api/thing_9.py:127, auth_required=False, rate_limited=False)
+- DELETE /api/v1/thing/13 -> ThingController.action13 (app/api/thing_13.py:139, auth_required=False, rate_limited=False)
+- GET /api/v1/thing/15 -> ThingController.action15 (app/api/thing_15.py:145, auth_required=False, rate_limited=False)
+- PATCH /api/v1/thing/19 -> ThingController.action19 (app/api/thing_19.py:157, auth_required=False, rate_limited=False)
+- GET /api/v1/thing/0 -> ThingController.action0 (app/api/thing_0.py:100, auth_required=True, rate_limited=None)
+- PUT /api/v1/thing/2 -> ThingController.action2 (app/api/thing_2.py:106, auth_required=None, rate_limited=True)
+- PATCH /api/v1/thing/4 -> ThingController.action4 (app/api/thing_4.py:112, auth_required=True, rate_limited=None)
+- GET /api/v1/thing/5 -> ThingController.action5 (app/api/thing_5.py:115, auth_required=None, rate_limited=True)
+- POST /api/v1/thing/6 -> ThingController.action6 (app/api/thing_6.py:118, auth_required=True, rate_limited=None)
+- DELETE /api/v1/thing/8 -> ThingController.action8 (app/api/thing_8.py:124, auth_required=None, rate_limited=True)
+- GET /api/v1/thing/10 -> ThingController.action10 (app/api/thing_10.py:130, auth_required=True, rate_limited=None)
+- POST /api/v1/thing/11 -> ThingController.action11 (app/api/thing_11.py:133, auth_required=None, rate_limited=True)
+
+HTTP/API entry points: 11 total, showing top 10:
+- http handler_0 (app/entry/e0.py:10, auth_required=True)
+- HTTP /v1/resource/1 (app/entry/e1.py:17, auth_required=False)
+- api handler_3 (app/entry/e3.py:31, auth_required=True)
+- graphql /v1/resource/4 (app/entry/e4.py:38, auth_required=False)
+- rpc /v1/resource/5 (app/entry/e5.py:45, auth_required=None)
+- route handler_6 (app/entry/e6.py:52, auth_required=True)
+- http handler_9 (app/entry/e9.py:73, auth_required=True)
+- api /v1/resource/10 (app/entry/e10.py:80, auth_required=False)
+- http handler_12 (app/entry/e12.py:94, auth_required=True)
+- route /v1/resource/13 (app/entry/e13.py:101, auth_required=False)
+
+Trust boundaries relevant to API calls: 12 total, showing top 10:
+- boundary_0: internet -> app; enforcement=none
+- boundary_1: dmz -> db; enforcement=waf_1, mtls_1
+- boundary_2: vpc -> cache; enforcement=waf_2, mtls_2
+- boundary_3: worker -> queue; enforcement=waf_3, mtls_3
+- boundary_4: internet -> app; enforcement=none
+- boundary_5: dmz -> db; enforcement=waf_5, mtls_5
+- boundary_6: vpc -> cache; enforcement=waf_6, mtls_6
+- boundary_7: worker -> queue; enforcement=waf_7, mtls_7
+- boundary_8: internet -> app; enforcement=none
+- boundary_9: dmz -> db; enforcement=waf_9, mtls_9
+
+Framework/deployment API security signals: 13 total, showing top 10:
+- django.middleware.csrf.CsrfViewMiddleware
+- helmet defaults
+- SecurityMiddleware
+- rack-protection
+- spring-security filter chain
+- kubernetes ingress with TLS termination
+- docker-compose exposes 5432
+- no WAF in front of /api
+- secrets mounted from vault
+- readiness probe on /healthz

@@ -1,0 +1,142 @@
+{
+  "": [
+    "architecture",
+    "config",
+    "data_flows",
+    "dependencies",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "recon_duration_seconds",
+    "security_context"
+  ],
+  "api_security": [
+    "architecture",
+    "data_flows",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "security_context"
+  ],
+  "auth": [
+    "architecture",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "security_context"
+  ],
+  "business_logic": [
+    "architecture",
+    "data_flows",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "security_context"
+  ],
+  "config_secrets": [
+    "architecture",
+    "config",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code"
+  ],
+  "crypto": [
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "security_context"
+  ],
+  "data_exposure": [
+    "architecture",
+    "config",
+    "data_flows",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code"
+  ],
+  "dos": [
+    "architecture",
+    "data_flows",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code"
+  ],
+  "injection": [
+    "architecture",
+    "data_flows",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "security_context"
+  ],
+  "javascript_specific": [
+    "architecture",
+    "config",
+    "data_flows",
+    "dependencies",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "recon_duration_seconds",
+    "security_context"
+  ],
+  "python_specific": [
+    "architecture",
+    "config",
+    "data_flows",
+    "dependencies",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "recon_duration_seconds",
+    "security_context"
+  ],
+  "ssrf": [
+    "architecture",
+    "data_flows",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "security_context"
+  ],
+  "supply_chain": [
+    "dependencies",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code"
+  ],
+  "unknown_strategy": [
+    "architecture",
+    "config",
+    "data_flows",
+    "dependencies",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "recon_duration_seconds",
+    "security_context"
+  ],
+  "xss": [
+    "architecture",
+    "data_flows",
+    "file_count",
+    "frameworks",
+    "languages",
+    "lines_of_code",
+    "security_context"
+  ]
+}

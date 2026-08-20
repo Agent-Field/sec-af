@@ -1,0 +1,9 @@
+bin/
+go.work
+go.work.sum
+coverage.out
+*.test
+
+# Python bytecode from scripts/gen_*.py (the generators run under the repo's venv).
+__pycache__/
+*.pyc

@@ -1,0 +1,576 @@
+{
+  "repo_path": "/fixtures/demo-repo",
+  "canned": {
+    "architecture": {
+      "app_type": "web_api",
+      "modules": [
+        "auth | src/auth | Python | sessions",
+        "ui | web | TypeScript | ",
+        "api | src/api | python | dup-language",
+        "legacy | old | | no language"
+      ],
+      "entry_points": [
+        "http | POST /login | src/routes.py:42 | false"
+      ],
+      "trust_boundaries": [
+        "edge | external | internal | tls"
+      ],
+      "services": [
+        "pg | database | localhost:5432 | password"
+      ],
+      "api_endpoints": [
+        "GET | /users | list | src/api.py:15 | true | false"
+      ]
+    },
+    "dependencies": {
+      "sbom": [
+        "django | 3.2 | pypi | true | BSD"
+      ],
+      "known_cves": [
+        "CVE-1 | django | 3.2 | 3.3 | 9.8 | true | true"
+      ],
+      "outdated": [
+        "django | 3.2 | 5.0 | true"
+      ]
+    },
+    "config_scanner": {
+      "secrets": [
+        "api_key | src/config.py:7 | KEY=1 | high | false"
+      ],
+      "misconfigs": [
+        "debug | deploy/prod.yaml:22 | DEBUG | on in prod | turn it off"
+      ]
+    },
+    "data_flow": {
+      "flows": [
+        "request.body | sql.execute | false | src/db.py"
+      ],
+      "sanitization_points": [
+        "src/valid.py:12 | clean | escape | sqli"
+      ],
+      "sinks": [
+        "sql | src/db.py:88 | execute | tainted"
+      ]
+    },
+    "security_context": {
+      "auth_model": "jwt",
+      "auth_details": "bearer",
+      "crypto_usage": [
+        "AES | 256 | GCM | data | false"
+      ],
+      "security_signals": [
+        "Uses Flask-Login",
+        "HSTS header present",
+        "Runs in Docker",
+        "Uses Flask-Login"
+      ]
+    }
+  },
+  "standard": {
+    "architecture": {
+      "app_type": "web_api",
+      "modules": [
+        {
+          "name": "auth",
+          "path": "src/auth",
+          "language": "Python",
+          "description": "sessions",
+          "dependencies": []
+        },
+        {
+          "name": "ui",
+          "path": "web",
+          "language": "TypeScript",
+          "description": null,
+          "dependencies": []
+        },
+        {
+          "name": "api",
+          "path": "src/api",
+          "language": "python",
+          "description": "dup-language",
+          "dependencies": []
+        },
+        {
+          "name": "legacy",
+          "path": "old",
+          "language": "",
+          "description": "no language",
+          "dependencies": []
+        }
+      ],
+      "entry_points": [
+        {
+          "kind": "http",
+          "identifier": "POST /login",
+          "file_path": "src/routes.py",
+          "line": 42,
+          "method": null,
+          "route": "POST /login",
+          "auth_required": false
+        }
+      ],
+      "trust_boundaries": [
+        {
+          "name": "edge",
+          "source_zone": "external",
+          "target_zone": "internal",
+          "description": "tls",
+          "enforcement": []
+        }
+      ],
+      "services": [
+        {
+          "name": "pg",
+          "service_type": "database",
+          "endpoint": "localhost:5432",
+          "purpose": null,
+          "auth_mechanism": "password"
+        }
+      ],
+      "api_surface": [
+        {
+          "method": "GET",
+          "path": "/users",
+          "handler": "list",
+          "file_path": "src/api.py",
+          "line": 15,
+          "auth_required": true,
+          "rate_limited": false
+        }
+      ]
+    },
+    "data_flows": {
+      "flows": [
+        {
+          "source": "request.body",
+          "path": [],
+          "sink": "sql.execute",
+          "sanitized": false,
+          "files": [
+            "src/db.py"
+          ]
+        }
+      ],
+      "sanitization_points": [
+        {
+          "file_path": "src/valid.py",
+          "line": 12,
+          "function_name": "clean",
+          "sanitization_type": "escape",
+          "protects_against": [
+            "sqli"
+          ]
+        }
+      ],
+      "sinks": [
+        {
+          "sink_type": "sql",
+          "file_path": "src/db.py",
+          "line": 88,
+          "function_name": "execute",
+          "exploitability_notes": "tainted"
+        }
+      ]
+    },
+    "dependencies": {
+      "sbom": [
+        {
+          "name": "django",
+          "version": "3.2",
+          "ecosystem": "pypi",
+          "direct": true,
+          "license": "BSD"
+        }
+      ],
+      "known_cves": [
+        {
+          "cve_id": "CVE-1",
+          "package": "django",
+          "installed_version": "3.2",
+          "fixed_version": "3.3",
+          "cvss_v4_score": 9.8,
+          "epss_score": null,
+          "direct": true,
+          "reachable": true
+        }
+      ],
+      "outdated": [
+        {
+          "package": "django",
+          "current_version": "3.2",
+          "latest_version": "5.0",
+          "direct": true
+        }
+      ],
+      "direct_count": 1,
+      "transitive_count": 0
+    },
+    "config": {
+      "secrets": [
+        {
+          "id": "<uuid>",
+          "secret_type": "api_key",
+          "file_path": "src/config.py",
+          "line": 7,
+          "match": "KEY=1",
+          "confidence": "high",
+          "is_test_value": false
+        }
+      ],
+      "misconfigs": [
+        {
+          "id": "<uuid>",
+          "category": "debug",
+          "file_path": "deploy/prod.yaml",
+          "line": 22,
+          "key": "DEBUG",
+          "value": null,
+          "risk": "on in prod",
+          "remediation": "turn it off"
+        }
+      ]
+    },
+    "security_context": {
+      "auth_model": "jwt",
+      "auth_details": "bearer",
+      "crypto_usage": [
+        {
+          "algorithm": "AES",
+          "key_size": 256,
+          "mode": "GCM",
+          "usage_context": "data",
+          "is_weak": false
+        }
+      ],
+      "framework_security": [
+        "Uses Flask-Login",
+        "Uses Flask-Login"
+      ],
+      "security_headers": [
+        "HSTS header present"
+      ],
+      "deployment_signals": [
+        "Runs in Docker"
+      ]
+    },
+    "languages": [
+      "python",
+      "typescript"
+    ],
+    "frameworks": [
+      "Uses Flask-Login"
+    ],
+    "lines_of_code": 0,
+    "file_count": 0,
+    "recon_duration_seconds": 0.0
+  },
+  "quick": {
+    "architecture": {
+      "app_type": "web_api",
+      "modules": [
+        {
+          "name": "auth",
+          "path": "src/auth",
+          "language": "Python",
+          "description": "sessions",
+          "dependencies": []
+        },
+        {
+          "name": "ui",
+          "path": "web",
+          "language": "TypeScript",
+          "description": null,
+          "dependencies": []
+        },
+        {
+          "name": "api",
+          "path": "src/api",
+          "language": "python",
+          "description": "dup-language",
+          "dependencies": []
+        },
+        {
+          "name": "legacy",
+          "path": "old",
+          "language": "",
+          "description": "no language",
+          "dependencies": []
+        }
+      ],
+      "entry_points": [
+        {
+          "kind": "http",
+          "identifier": "POST /login",
+          "file_path": "src/routes.py",
+          "line": 42,
+          "method": null,
+          "route": "POST /login",
+          "auth_required": false
+        }
+      ],
+      "trust_boundaries": [
+        {
+          "name": "edge",
+          "source_zone": "external",
+          "target_zone": "internal",
+          "description": "tls",
+          "enforcement": []
+        }
+      ],
+      "services": [
+        {
+          "name": "pg",
+          "service_type": "database",
+          "endpoint": "localhost:5432",
+          "purpose": null,
+          "auth_mechanism": "password"
+        }
+      ],
+      "api_surface": [
+        {
+          "method": "GET",
+          "path": "/users",
+          "handler": "list",
+          "file_path": "src/api.py",
+          "line": 15,
+          "auth_required": true,
+          "rate_limited": false
+        }
+      ]
+    },
+    "data_flows": {
+      "flows": [],
+      "sanitization_points": [],
+      "sinks": []
+    },
+    "dependencies": {
+      "sbom": [
+        {
+          "name": "django",
+          "version": "3.2",
+          "ecosystem": "pypi",
+          "direct": true,
+          "license": "BSD"
+        }
+      ],
+      "known_cves": [
+        {
+          "cve_id": "CVE-1",
+          "package": "django",
+          "installed_version": "3.2",
+          "fixed_version": "3.3",
+          "cvss_v4_score": 9.8,
+          "epss_score": null,
+          "direct": true,
+          "reachable": true
+        }
+      ],
+      "outdated": [
+        {
+          "package": "django",
+          "current_version": "3.2",
+          "latest_version": "5.0",
+          "direct": true
+        }
+      ],
+      "direct_count": 1,
+      "transitive_count": 0
+    },
+    "config": {
+      "secrets": [
+        {
+          "id": "<uuid>",
+          "secret_type": "api_key",
+          "file_path": "src/config.py",
+          "line": 7,
+          "match": "KEY=1",
+          "confidence": "high",
+          "is_test_value": false
+        }
+      ],
+      "misconfigs": [
+        {
+          "id": "<uuid>",
+          "category": "debug",
+          "file_path": "deploy/prod.yaml",
+          "line": 22,
+          "key": "DEBUG",
+          "value": null,
+          "risk": "on in prod",
+          "remediation": "turn it off"
+        }
+      ]
+    },
+    "security_context": {
+      "auth_model": "unknown",
+      "auth_details": "unknown",
+      "crypto_usage": [],
+      "framework_security": [],
+      "security_headers": [],
+      "deployment_signals": []
+    },
+    "languages": [
+      "python",
+      "typescript"
+    ],
+    "frameworks": [],
+    "lines_of_code": 0,
+    "file_count": 0,
+    "recon_duration_seconds": 0.0
+  },
+  "fast": {
+    "architecture": {
+      "app_type": "web_api",
+      "modules": [
+        {
+          "name": "auth",
+          "path": "src/auth",
+          "language": "Python",
+          "description": "sessions",
+          "dependencies": []
+        },
+        {
+          "name": "ui",
+          "path": "web",
+          "language": "TypeScript",
+          "description": null,
+          "dependencies": []
+        },
+        {
+          "name": "api",
+          "path": "src/api",
+          "language": "python",
+          "description": "dup-language",
+          "dependencies": []
+        },
+        {
+          "name": "legacy",
+          "path": "old",
+          "language": "",
+          "description": "no language",
+          "dependencies": []
+        }
+      ],
+      "entry_points": [
+        {
+          "kind": "http",
+          "identifier": "POST /login",
+          "file_path": "src/routes.py",
+          "line": 42,
+          "method": null,
+          "route": "POST /login",
+          "auth_required": false
+        }
+      ],
+      "trust_boundaries": [
+        {
+          "name": "edge",
+          "source_zone": "external",
+          "target_zone": "internal",
+          "description": "tls",
+          "enforcement": []
+        }
+      ],
+      "services": [
+        {
+          "name": "pg",
+          "service_type": "database",
+          "endpoint": "localhost:5432",
+          "purpose": null,
+          "auth_mechanism": "password"
+        }
+      ],
+      "api_surface": [
+        {
+          "method": "GET",
+          "path": "/users",
+          "handler": "list",
+          "file_path": "src/api.py",
+          "line": 15,
+          "auth_required": true,
+          "rate_limited": false
+        }
+      ]
+    },
+    "data_flows": {
+      "flows": [],
+      "sanitization_points": [],
+      "sinks": []
+    },
+    "dependencies": {
+      "sbom": [
+        {
+          "name": "django",
+          "version": "3.2",
+          "ecosystem": "pypi",
+          "direct": true,
+          "license": "BSD"
+        }
+      ],
+      "known_cves": [
+        {
+          "cve_id": "CVE-1",
+          "package": "django",
+          "installed_version": "3.2",
+          "fixed_version": "3.3",
+          "cvss_v4_score": 9.8,
+          "epss_score": null,
+          "direct": true,
+          "reachable": true
+        }
+      ],
+      "outdated": [
+        {
+          "package": "django",
+          "current_version": "3.2",
+          "latest_version": "5.0",
+          "direct": true
+        }
+      ],
+      "direct_count": 1,
+      "transitive_count": 0
+    },
+    "config": {
+      "secrets": [
+        {
+          "id": "<uuid>",
+          "secret_type": "api_key",
+          "file_path": "src/config.py",
+          "line": 7,
+          "match": "KEY=1",
+          "confidence": "high",
+          "is_test_value": false
+        }
+      ],
+      "misconfigs": [
+        {
+          "id": "<uuid>",
+          "category": "debug",
+          "file_path": "deploy/prod.yaml",
+          "line": 22,
+          "key": "DEBUG",
+          "value": null,
+          "risk": "on in prod",
+          "remediation": "turn it off"
+        }
+      ]
+    },
+    "security_context": {
+      "auth_model": "unknown",
+      "auth_details": "unknown",
+      "crypto_usage": [],
+      "framework_security": [],
+      "security_headers": [],
+      "deployment_signals": []
+    },
+    "languages": [
+      "python",
+      "typescript"
+    ],
+    "frameworks": [],
+    "lines_of_code": 0,
+    "file_count": 0,
+    "recon_duration_seconds": 0.0
+  }
+}

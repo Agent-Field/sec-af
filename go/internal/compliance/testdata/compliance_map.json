@@ -1,0 +1,920 @@
+{
+  "CWE-78": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.28",
+      "control_name": "Secure coding"
+    }
+  ],
+  "CWE-79": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.28",
+      "control_name": "Secure coding"
+    }
+  ],
+  "CWE-89": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.28",
+      "control_name": "Secure coding"
+    }
+  ],
+  "CWE-90": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.28",
+      "control_name": "Secure coding"
+    }
+  ],
+  "CWE-91": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.28",
+      "control_name": "Secure coding"
+    }
+  ],
+  "CWE-94": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.28",
+      "control_name": "Secure coding"
+    }
+  ],
+  "CWE-917": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A03:2021",
+      "control_name": "Injection"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.28",
+      "control_name": "Secure coding"
+    }
+  ],
+  "CWE-287": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A07:2021",
+      "control_name": "Identification and Authentication Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(d)",
+      "control_name": "Person or entity authentication"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.5.17",
+      "control_name": "Authentication information"
+    }
+  ],
+  "CWE-306": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A07:2021",
+      "control_name": "Identification and Authentication Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.5.15",
+      "control_name": "Access control"
+    }
+  ],
+  "CWE-352": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6.2.4",
+      "control_name": "Custom software addresses common coding vulnerabilities"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.5",
+      "control_name": "Secure authentication"
+    }
+  ],
+  "CWE-862": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.5.15",
+      "control_name": "Access control"
+    }
+  ],
+  "CWE-863": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.5.18",
+      "control_name": "Access rights"
+    }
+  ],
+  "CWE-326": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A02:2021",
+      "control_name": "Cryptographic Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(2)(iv)",
+      "control_name": "Encryption and decryption"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.24",
+      "control_name": "Use of cryptography"
+    }
+  ],
+  "CWE-327": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A02:2021",
+      "control_name": "Cryptographic Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(2)(iv)",
+      "control_name": "Encryption and decryption"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.24",
+      "control_name": "Use of cryptography"
+    }
+  ],
+  "CWE-328": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A02:2021",
+      "control_name": "Cryptographic Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(2)(iv)",
+      "control_name": "Encryption and decryption"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.24",
+      "control_name": "Use of cryptography"
+    }
+  ],
+  "CWE-330": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A02:2021",
+      "control_name": "Cryptographic Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.24",
+      "control_name": "Use of cryptography"
+    }
+  ],
+  "CWE-916": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A07:2021",
+      "control_name": "Identification and Authentication Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(d)",
+      "control_name": "Person or entity authentication"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.24",
+      "control_name": "Use of cryptography"
+    }
+  ],
+  "CWE-840": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6",
+      "control_name": "Develop and maintain secure systems and software"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A04:2021",
+      "control_name": "Insecure Design"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.308(a)(1)(ii)(A)",
+      "control_name": "Risk analysis"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.25",
+      "control_name": "Secure development lifecycle"
+    }
+  ],
+  "CWE-841": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6",
+      "control_name": "Develop and maintain secure systems and software"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A04:2021",
+      "control_name": "Insecure Design"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.308(a)(1)(ii)(A)",
+      "control_name": "Risk analysis"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.25",
+      "control_name": "Secure development lifecycle"
+    }
+  ],
+  "CWE-200": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.12",
+      "control_name": "Data leakage prevention"
+    }
+  ],
+  "CWE-209": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6",
+      "control_name": "Develop and maintain secure systems and software"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A09:2021",
+      "control_name": "Security Logging and Monitoring Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(b)",
+      "control_name": "Audit controls"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.15",
+      "control_name": "Logging"
+    }
+  ],
+  "CWE-312": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A02:2021",
+      "control_name": "Cryptographic Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(2)(iv)",
+      "control_name": "Encryption and decryption"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.24",
+      "control_name": "Use of cryptography"
+    }
+  ],
+  "CWE-319": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 4",
+      "control_name": "Protect cardholder data with strong cryptography during transmission"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A02:2021",
+      "control_name": "Cryptographic Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(e)(1)",
+      "control_name": "Transmission security"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.20",
+      "control_name": "Network security"
+    }
+  ],
+  "CWE-532": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A09:2021",
+      "control_name": "Security Logging and Monitoring Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(b)",
+      "control_name": "Audit controls"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.15",
+      "control_name": "Logging"
+    }
+  ],
+  "CWE-829": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6",
+      "control_name": "Develop and maintain secure systems and software"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC8",
+      "control_name": "Change management"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A08:2021",
+      "control_name": "Software and Data Integrity Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.308(a)(1)(ii)(B)",
+      "control_name": "Risk management"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.25",
+      "control_name": "Secure development lifecycle"
+    }
+  ],
+  "CWE-1104": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6",
+      "control_name": "Develop and maintain secure systems and software"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC8",
+      "control_name": "Change management"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A06:2021",
+      "control_name": "Vulnerable and Outdated Components"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.308(a)(1)(ii)(B)",
+      "control_name": "Risk management"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.8",
+      "control_name": "Management of technical vulnerabilities"
+    }
+  ],
+  "CWE-16": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 2",
+      "control_name": "Apply secure configurations to all system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A05:2021",
+      "control_name": "Security Misconfiguration"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.308(a)(1)(ii)(B)",
+      "control_name": "Risk management"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.9",
+      "control_name": "Configuration management"
+    }
+  ],
+  "CWE-259": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A07:2021",
+      "control_name": "Identification and Authentication Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(d)",
+      "control_name": "Person or entity authentication"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.5.17",
+      "control_name": "Authentication information"
+    }
+  ],
+  "CWE-321": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 3",
+      "control_name": "Protect stored account data"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A02:2021",
+      "control_name": "Cryptographic Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(2)(iv)",
+      "control_name": "Encryption and decryption"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.24",
+      "control_name": "Use of cryptography"
+    }
+  ],
+  "CWE-798": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A07:2021",
+      "control_name": "Identification and Authentication Failures"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(d)",
+      "control_name": "Person or entity authentication"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.5.17",
+      "control_name": "Authentication information"
+    }
+  ],
+  "CWE-285": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.5.15",
+      "control_name": "Access control"
+    }
+  ],
+  "CWE-346": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 8",
+      "control_name": "Identify users and authenticate access to system components"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC6",
+      "control_name": "Logical and physical access controls"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(a)(1)",
+      "control_name": "Access control"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.5.16",
+      "control_name": "Identity management"
+    }
+  ],
+  "CWE-601": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6",
+      "control_name": "Develop and maintain secure systems and software"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A01:2021",
+      "control_name": "Broken Access Control"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(c)(1)",
+      "control_name": "Integrity"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.28",
+      "control_name": "Secure coding"
+    }
+  ],
+  "CWE-918": [
+    {
+      "framework": "PCI-DSS",
+      "control_id": "Req 6",
+      "control_name": "Develop and maintain secure systems and software"
+    },
+    {
+      "framework": "SOC2",
+      "control_id": "CC7",
+      "control_name": "System operations"
+    },
+    {
+      "framework": "OWASP",
+      "control_id": "A10:2021",
+      "control_name": "Server-Side Request Forgery"
+    },
+    {
+      "framework": "HIPAA",
+      "control_id": "§164.312(e)(1)",
+      "control_name": "Transmission security"
+    },
+    {
+      "framework": "ISO27001",
+      "control_id": "A.8.20",
+      "control_name": "Network security"
+    }
+  ]
+}
