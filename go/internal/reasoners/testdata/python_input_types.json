@@ -1,0 +1,902 @@
+{
+ "audit": [
+  {
+   "name": "repo_url",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": false,
+   "default": "standard"
+  },
+  {
+   "name": "branch",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": false,
+   "default": "main"
+  },
+  {
+   "name": "commit_sha",
+   "kind": "any",
+   "annotation": "str | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "base_commit_sha",
+   "kind": "any",
+   "annotation": "str | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "severity_threshold",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": false,
+   "default": "low"
+  },
+  {
+   "name": "scan_types",
+   "kind": "any",
+   "annotation": "list[str] | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "output_formats",
+   "kind": "any",
+   "annotation": "list[str] | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "compliance_frameworks",
+   "kind": "any",
+   "annotation": "list[str] | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "max_cost_usd",
+   "kind": "any",
+   "annotation": "float | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "max_provers",
+   "kind": "any",
+   "annotation": "int | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "max_duration_seconds",
+   "kind": "any",
+   "annotation": "int | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "include_paths",
+   "kind": "any",
+   "annotation": "list[str] | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "exclude_paths",
+   "kind": "any",
+   "annotation": "list[str] | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "is_pr",
+   "kind": "bool",
+   "annotation": "<class 'bool'>",
+   "required": false,
+   "default": false
+  },
+  {
+   "name": "pr_id",
+   "kind": "any",
+   "annotation": "str | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "post_pr_comments",
+   "kind": "bool",
+   "annotation": "<class 'bool'>",
+   "required": false,
+   "default": false
+  },
+  {
+   "name": "fail_on_findings",
+   "kind": "bool",
+   "annotation": "<class 'bool'>",
+   "required": false,
+   "default": false
+  },
+  {
+   "name": "enable_dast",
+   "kind": "bool",
+   "annotation": "<class 'bool'>",
+   "required": false,
+   "default": false
+  },
+  {
+   "name": "resume_from_checkpoint",
+   "kind": "any",
+   "annotation": "str | None",
+   "required": false,
+   "default": null
+  }
+ ],
+ "hunt_phase": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": false,
+   "default": "standard"
+  },
+  {
+   "name": "ai_gate",
+   "kind": "any",
+   "annotation": "typing.Any | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "max_concurrent_hunters",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 4
+  },
+  {
+   "name": "early_stop_file_threshold",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "prove_phase": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "hunt_result",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": false,
+   "default": "standard"
+  },
+  {
+   "name": "max_provers",
+   "kind": "any",
+   "annotation": "int | None",
+   "required": false,
+   "default": null
+  },
+  {
+   "name": "max_concurrent_provers",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 3
+  }
+ ],
+ "recon_phase": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": false,
+   "default": "standard"
+  }
+ ],
+ "remediation_phase": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "verified_findings",
+   "kind": "list",
+   "annotation": "list[dict[str, typing.Any]]",
+   "required": true
+  },
+  {
+   "name": "max_concurrent_remediations",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 3
+  }
+ ],
+ "run_api_security_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_architecture_mapper": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_auth_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_business_logic_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_config_scanner": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_config_secrets_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_cross_service_analyzer": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "services",
+   "kind": "list",
+   "annotation": "list[str]",
+   "required": true
+  },
+  {
+   "name": "findings_summary",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_crypto_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_cwe_expansion": [
+  {
+   "name": "recon_summary",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "strategies",
+   "kind": "list",
+   "annotation": "list[str]",
+   "required": true
+  }
+ ],
+ "run_dast_verifier": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "exploit_payload",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_data_exposure_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_data_flow_mapper": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "architecture",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  }
+ ],
+ "run_deduplicator": [
+  {
+   "name": "findings",
+   "kind": "list",
+   "annotation": "list[dict[str, typing.Any]]",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_dep_reachability": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_dependency_auditor": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_dos_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_exploit_hypothesizer": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "data_flow",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "sanitization",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_injection_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_logic_bugs_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_remediation": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  }
+ ],
+ "run_remediation_agent": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "verdict",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "rationale",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_sanitization_analyzer": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "data_flow",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_security_context_profiler": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "architecture",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  }
+ ],
+ "run_ssrf_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_supply_chain_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ],
+ "run_tracer": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_verdict_agent": [
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "data_flow",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "sanitization",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "exploit",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  }
+ ],
+ "run_verifier": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "finding",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  }
+ ],
+ "run_xss_hunter": [
+  {
+   "name": "repo_path",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "recon_context",
+   "kind": "dict",
+   "annotation": "dict[str, typing.Any]",
+   "required": true
+  },
+  {
+   "name": "depth",
+   "kind": "str",
+   "annotation": "<class 'str'>",
+   "required": true
+  },
+  {
+   "name": "max_files_without_signal",
+   "kind": "int",
+   "annotation": "<class 'int'>",
+   "required": false,
+   "default": 30
+  }
+ ]
+}

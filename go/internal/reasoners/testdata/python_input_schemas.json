@@ -1,0 +1,774 @@
+{
+ "audit": {
+  "properties": {
+   "base_commit_sha": {
+    "type": "object"
+   },
+   "branch": {
+    "type": "string"
+   },
+   "commit_sha": {
+    "type": "object"
+   },
+   "compliance_frameworks": {
+    "type": "object"
+   },
+   "depth": {
+    "type": "string"
+   },
+   "enable_dast": {
+    "type": "boolean"
+   },
+   "exclude_paths": {
+    "type": "object"
+   },
+   "fail_on_findings": {
+    "type": "boolean"
+   },
+   "include_paths": {
+    "type": "object"
+   },
+   "is_pr": {
+    "type": "boolean"
+   },
+   "max_cost_usd": {
+    "type": "object"
+   },
+   "max_duration_seconds": {
+    "type": "object"
+   },
+   "max_provers": {
+    "type": "object"
+   },
+   "output_formats": {
+    "type": "object"
+   },
+   "post_pr_comments": {
+    "type": "boolean"
+   },
+   "pr_id": {
+    "type": "object"
+   },
+   "repo_url": {
+    "type": "string"
+   },
+   "resume_from_checkpoint": {
+    "type": "object"
+   },
+   "scan_types": {
+    "type": "object"
+   },
+   "severity_threshold": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_url"
+  ],
+  "type": "object"
+ },
+ "hunt_phase": {
+  "properties": {
+   "ai_gate": {
+    "type": "object"
+   },
+   "depth": {
+    "type": "string"
+   },
+   "early_stop_file_threshold": {
+    "type": "integer"
+   },
+   "max_concurrent_hunters": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context"
+  ],
+  "type": "object"
+ },
+ "prove_phase": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "hunt_result": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "max_concurrent_provers": {
+    "type": "integer"
+   },
+   "max_provers": {
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "hunt_result"
+  ],
+  "type": "object"
+ },
+ "recon_phase": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path"
+  ],
+  "type": "object"
+ },
+ "remediation_phase": {
+  "properties": {
+   "max_concurrent_remediations": {
+    "type": "integer"
+   },
+   "repo_path": {
+    "type": "string"
+   },
+   "verified_findings": {
+    "items": {
+     "additionalProperties": true,
+     "type": "object"
+    },
+    "type": "array"
+   }
+  },
+  "required": [
+   "repo_path",
+   "verified_findings"
+  ],
+  "type": "object"
+ },
+ "run_api_security_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_architecture_mapper": {
+  "properties": {
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path"
+  ],
+  "type": "object"
+ },
+ "run_auth_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_business_logic_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_config_scanner": {
+  "properties": {
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path"
+  ],
+  "type": "object"
+ },
+ "run_config_secrets_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_cross_service_analyzer": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "findings_summary": {
+    "type": "string"
+   },
+   "repo_path": {
+    "type": "string"
+   },
+   "services": {
+    "items": {
+     "type": "string"
+    },
+    "type": "array"
+   }
+  },
+  "required": [
+   "repo_path",
+   "services",
+   "findings_summary",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_crypto_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_cwe_expansion": {
+  "properties": {
+   "recon_summary": {
+    "type": "string"
+   },
+   "strategies": {
+    "items": {
+     "type": "string"
+    },
+    "type": "array"
+   }
+  },
+  "required": [
+   "recon_summary",
+   "strategies"
+  ],
+  "type": "object"
+ },
+ "run_dast_verifier": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "exploit_payload": {
+    "type": "string"
+   },
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "finding",
+   "exploit_payload",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_data_exposure_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_data_flow_mapper": {
+  "properties": {
+   "architecture": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "architecture"
+  ],
+  "type": "object"
+ },
+ "run_deduplicator": {
+  "properties": {
+   "findings": {
+    "items": {
+     "additionalProperties": true,
+     "type": "object"
+    },
+    "type": "array"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "findings",
+   "recon_context",
+   "repo_path"
+  ],
+  "type": "object"
+ },
+ "run_dep_reachability": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "finding",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_dependency_auditor": {
+  "properties": {
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path"
+  ],
+  "type": "object"
+ },
+ "run_dos_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_exploit_hypothesizer": {
+  "properties": {
+   "data_flow": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "depth": {
+    "type": "string"
+   },
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   },
+   "sanitization": {
+    "additionalProperties": true,
+    "type": "object"
+   }
+  },
+  "required": [
+   "repo_path",
+   "finding",
+   "data_flow",
+   "sanitization",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_injection_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_logic_bugs_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_remediation": {
+  "properties": {
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "finding"
+  ],
+  "type": "object"
+ },
+ "run_remediation_agent": {
+  "properties": {
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "rationale": {
+    "type": "string"
+   },
+   "repo_path": {
+    "type": "string"
+   },
+   "verdict": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "finding",
+   "verdict",
+   "rationale"
+  ],
+  "type": "object"
+ },
+ "run_sanitization_analyzer": {
+  "properties": {
+   "data_flow": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "depth": {
+    "type": "string"
+   },
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "finding",
+   "data_flow",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_security_context_profiler": {
+  "properties": {
+   "architecture": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "architecture"
+  ],
+  "type": "object"
+ },
+ "run_ssrf_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_supply_chain_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_tracer": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "finding",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_verdict_agent": {
+  "properties": {
+   "data_flow": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "exploit": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "sanitization": {
+    "additionalProperties": true,
+    "type": "object"
+   }
+  },
+  "required": [
+   "finding",
+   "data_flow",
+   "sanitization",
+   "exploit"
+  ],
+  "type": "object"
+ },
+ "run_verifier": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "finding": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "finding",
+   "depth"
+  ],
+  "type": "object"
+ },
+ "run_xss_hunter": {
+  "properties": {
+   "depth": {
+    "type": "string"
+   },
+   "max_files_without_signal": {
+    "type": "integer"
+   },
+   "recon_context": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "repo_path": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "repo_path",
+   "recon_context",
+   "depth"
+  ],
+  "type": "object"
+ }
+}
