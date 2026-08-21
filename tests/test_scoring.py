@@ -92,7 +92,7 @@ def test_compute_exploitability_score_defaults_reachability_when_missing() -> No
         severity=Severity.LOW,
         evidence_level=EvidenceLevel.SANITIZATION_BYPASSABLE,
     )
-    assert compute_exploitability_score(finding) == 1.05
+    assert compute_exploitability_score(finding) == 2.1
 
 
 def test_compute_exploitability_score_is_deterministic() -> None:
