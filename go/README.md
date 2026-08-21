@@ -189,7 +189,7 @@ mirrors the Python node's corresponding artifact):
 | --- | --- | --- |
 | Code (`internal/config`, `src/sec_af/config.py`) | `minimax/minimax-m2.5` | Bare slug; the fallback when nothing is set. |
 | Docker image (`go/Dockerfile`, root `Dockerfile`) | `openrouter/minimax/minimax-m2.5` | Same model, `openrouter/`-prefixed for the harness router. |
-| Compose, `.env.example`, `agentfield-package.yaml` | `openrouter/moonshotai/kimi-k2.5` | A different model — the one an installed or composed node runs. |
+| Compose, `.env.example`, `agentfield-package.yaml` | `deepseek/deepseek-v4-flash-0731` | A different model — the one an installed or composed node runs. |
 
 `SEC_AF_MODEL` / `SEC_AF_AI_MODEL` win over `HARNESS_MODEL` / `AI_MODEL`, and
 either env var wins over every default above.

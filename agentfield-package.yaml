@@ -51,10 +51,10 @@ user_environment:
       description: Optional path to the AForge binary (defaults to aforge on PATH)
     - name: HARNESS_MODEL
       description: Model the harness uses
-      default: openrouter/moonshotai/kimi-k2.5
+      default: deepseek/deepseek-v4-flash-0731
     - name: AI_MODEL
       description: Model for direct AI calls
-      default: openrouter/moonshotai/kimi-k2.5
+      default: deepseek/deepseek-v4-flash-0731
     - name: SEC_AF_WORKSPACES_DIR
       description: Directory where repos to scan are cloned (falls back to ~/.sec-af/workspaces if not writable)
       default: /workspaces
