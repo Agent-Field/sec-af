@@ -493,8 +493,8 @@ jobs:
 |---|---|---|---|
 | `AGENTFIELD_SERVER` | Yes | `http://localhost:8080` | Control plane URL |
 | `OPENROUTER_API_KEY` | Yes | - | LLM provider credential |
-| `HARNESS_MODEL` | No | `moonshotai/kimi-k2.5` | Model for deep `.harness()` analysis |
-| `AI_MODEL` | No | `moonshotai/kimi-k2.5` | Model for fast `.ai()` gates and verdicts |
+| `HARNESS_MODEL` | No | `deepseek/deepseek-v4-flash-0731` | Model for deep `.harness()` analysis |
+| `AI_MODEL` | No | `deepseek/deepseek-v4-flash-0731` | Model for fast `.ai()` gates and verdicts |
 | `SEC_AF_MAX_TURNS` | No | `50` | Max harness turns per call |
 | `AGENTFIELD_API_KEY` | No | unset | API key for secured environments |
 | `SEC_AF_WORKSPACES_DIR` | No | `/workspaces` | Directory for cloned repos (falls back to `~/.sec-af/workspaces` if not writable) |

@@ -53,8 +53,8 @@ services:
       - AGENT_CALLBACK_URL=http://sec-af-go:8013
       - HARNESS_PROVIDER=${HARNESS_PROVIDER:-aforge}
       - AGENTFIELD_AFORGE_COMMAND=${AGENTFIELD_AFORGE_COMMAND:-exec}
-      - HARNESS_MODEL=${HARNESS_MODEL:-openrouter/moonshotai/kimi-k2.5}
-      - AI_MODEL=${AI_MODEL:-openrouter/moonshotai/kimi-k2.5}
+      - HARNESS_MODEL=${HARNESS_MODEL:-deepseek/deepseek-v4-flash-0731}
+      - AI_MODEL=${AI_MODEL:-deepseek/deepseek-v4-flash-0731}
       # SEC_AF_AFORGE_BIN is deliberately NOT forwarded, exactly as the Python
       # sec-af service does not forward it (docker-compose.yml). Compose loads
       # the repo-root .env for BOTH stacks and .env.example documents
