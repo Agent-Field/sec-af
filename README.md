@@ -547,9 +547,27 @@ ruff check src tests
 
 ---
 
+## New from AgentField: CodeAF
+
+<a href="https://agentfield.ai/github/codeaf/?utm_source=github-readme&utm_campaign=sec-af-readme&utm_id=sec-af-readme-codeaf-repo">
+  <img src="https://raw.githubusercontent.com/Agent-Field/CodeAF/dev/assets/readme/benchmark-deepswe.webp" alt="First on DeepSWE: senior-dev, CodeAF's developer subharness, solved the most tasks (54.9%) at the lowest cost per solved task (1x). Every other harness solved less and paid more per solve: mini-swe-agent 1.9x, codex 2.1x, pi 2.4x, claude-code 3.4x, omp, kilo and opencode about 4.5x, muse-code 11.3x, deepseek-harness 26.6x." width="100%">
+</a>
+
+**[CodeAF](https://agentfield.ai/github/codeaf/?utm_source=github-readme&utm_campaign=sec-af-readme&utm_id=sec-af-readme-codeaf-repo)** is our new open-source coding harness,
+built for open models: frontier-grade coding at a fraction of the cost. It ranked
+**#1 on DeepSWE** out of ten coding harnesses on the same model (DeepSeek V4 Flash),
+ahead of Claude Code, Codex and OpenCode, at the lowest cost per solved issue.
+One Go binary, Apache 2.0.
+
+SEC-AF also ships inside CodeAF as its `sec` subharness.
+
+[Try CodeAF →](https://agentfield.ai/github/codeaf/?utm_source=github-readme&utm_campaign=sec-af-readme&utm_id=sec-af-readme-codeaf-repo) · [See the benchmark →](https://agentfield.ai/github/codeaf/?utm_source=github-readme&utm_campaign=sec-af-readme&utm_id=sec-af-readme-codeaf-benchmark#benchmarks)
+
+---
+
 ### Also built on AgentField
 
-> **[SWE-AF](https://github.com/Agent-Field/af-swe-claude)** — Autonomous engineering team. One API call ships planned, coded, tested, reviewed code. Scored 95/100.
+> **[SWE-AF](https://github.com/Agent-Field/SWE-AF)** — Autonomous engineering team. One API call ships planned, coded, tested, reviewed code. Scored 95/100.
 >
 > **[Contract-AF](https://github.com/Agent-Field/contract-af)** — Legal contract risk analyzer. Agents spawn agents at runtime. Adversarial review catches what solo LLMs miss.
 
