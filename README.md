@@ -567,7 +567,7 @@ SEC-AF also ships inside CodeAF as its `sec` subharness.
 
 ### Also built on AgentField
 
-> **[SWE-AF](https://github.com/Agent-Field/af-swe-claude)** — Autonomous engineering team. One API call ships planned, coded, tested, reviewed code. Scored 95/100.
+> **[SWE-AF](https://github.com/Agent-Field/SWE-AF)** — Autonomous engineering team. One API call ships planned, coded, tested, reviewed code. Scored 95/100.
 >
 > **[Contract-AF](https://github.com/Agent-Field/contract-af)** — Legal contract risk analyzer. Agents spawn agents at runtime. Adversarial review catches what solo LLMs miss.
 
