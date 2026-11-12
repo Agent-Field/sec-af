@@ -101,17 +101,19 @@ func CoerceVerifierFinding(finding map[string]any) (schemas.RawFinding, error) {
 // the one prove reasoner that does not build a model first, because
 // agents/prove/dep_reachability.py renders the dict into its prompt directly.
 func RunDepReachability(ctx context.Context, app appx.App, in FindingDepthInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Dependency reachability analyzer starting", "prove", "dep-reachability")
 	result, err := proveagent.RunDepReachability(ctx, app, in.RepoPath, in.Finding, in.Depth)
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunVerifier ports `run_verifier(repo_path, finding, depth)`
 // (reasoners/prove.py:60) — the reasoner prove_phase fans out over.
 func RunVerifier(ctx context.Context, app appx.App, in FindingDepthInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Verifier starting", "prove", "verifier")
 	finding, err := CoerceVerifierFinding(in.Finding)
 	if err != nil {
@@ -121,7 +123,7 @@ func RunVerifier(ctx context.Context, app appx.App, in FindingDepthInput) (map[s
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunTracer ports `run_tracer(repo_path, finding, depth)`
@@ -131,6 +133,7 @@ func RunVerifier(ctx context.Context, app appx.App, in FindingDepthInput) (map[s
 // _coerce_verifier_finding — a FindingForVerifier projection sent to this
 // reasoner raises rather than being adapted.
 func RunTracer(ctx context.Context, app appx.App, in FindingDepthInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Tracer starting", "prove", "tracer")
 	finding, err := bindRawFinding(in.Finding)
 	if err != nil {
@@ -140,13 +143,14 @@ func RunTracer(ctx context.Context, app appx.App, in FindingDepthInput) (map[str
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunSanitizationAnalyzer ports
 // `run_sanitization_analyzer(repo_path, finding, data_flow, depth)`
 // (reasoners/prove.py:77).
 func RunSanitizationAnalyzer(ctx context.Context, app appx.App, in SanitizationInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Sanitization analyzer starting", "prove", "sanitization")
 	finding, err := bindRawFinding(in.Finding)
 	if err != nil {
@@ -160,13 +164,14 @@ func RunSanitizationAnalyzer(ctx context.Context, app appx.App, in SanitizationI
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunExploitHypothesizer ports
 // `run_exploit_hypothesizer(repo_path, finding, data_flow, sanitization, depth)`
 // (reasoners/prove.py:91).
 func RunExploitHypothesizer(ctx context.Context, app appx.App, in ExploitInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Exploit hypothesizer starting", "prove", "exploit")
 	finding, err := bindRawFinding(in.Finding)
 	if err != nil {
@@ -184,7 +189,7 @@ func RunExploitHypothesizer(ctx context.Context, app appx.App, in ExploitInput) 
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunVerdictAgent ports
@@ -194,6 +199,7 @@ func RunExploitHypothesizer(ctx context.Context, app appx.App, in ExploitInput) 
 // Python parity: the reasoner has no repo_path parameter and passes the literal
 // "." to the agent, which never reads it.
 func RunVerdictAgent(ctx context.Context, app appx.App, in VerdictInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Verdict agent starting", "prove", "verdict")
 	finding, err := bindRawFinding(in.Finding)
 	if err != nil {
@@ -215,7 +221,7 @@ func RunVerdictAgent(ctx context.Context, app appx.App, in VerdictInput) (map[st
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunRemediation ports `run_remediation(repo_path, finding)`
@@ -233,6 +239,7 @@ func RunVerdictAgent(ctx context.Context, app appx.App, in VerdictInput) (map[st
 // It is a no-op round trip; GenerateRemediation returns the typed value here,
 // so ToMap is the whole of it.
 func RunRemediation(ctx context.Context, app appx.App, in RemediationInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Remediation agent starting", "prove", "remediation")
 	finding, err := phases.BindVerifiedFinding(in.Finding)
 	if err != nil {
@@ -242,7 +249,7 @@ func RunRemediation(ctx context.Context, app appx.App, in RemediationInput) (map
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunRemediationAgent ports
@@ -250,6 +257,7 @@ func RunRemediation(ctx context.Context, app appx.App, in RemediationInput) (map
 // (reasoners/prove.py:145). `finding` is a RawFinding here, unlike
 // run_remediation's VerifiedFinding.
 func RunRemediationAgent(ctx context.Context, app appx.App, in RemediationAgentInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Remediation agent starting", "prove", "remediation")
 	finding, err := bindRawFinding(in.Finding)
 	if err != nil {
@@ -259,13 +267,14 @@ func RunRemediationAgent(ctx context.Context, app appx.App, in RemediationAgentI
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunDastVerifier ports
 // `run_dast_verifier(repo_path, finding, exploit_payload, depth)`
 // (reasoners/prove.py:158).
 func RunDastVerifier(ctx context.Context, app appx.App, in DastVerifierInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "DAST verifier starting", "prove", "dast")
 	finding, err := bindRawFinding(in.Finding)
 	if err != nil {
@@ -275,17 +284,18 @@ func RunDastVerifier(ctx context.Context, app appx.App, in DastVerifierInput) (m
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunCrossServiceAnalyzer ports
 // `run_cross_service_analyzer(repo_path, services, findings_summary, depth)`
 // (reasoners/prove.py:169).
 func RunCrossServiceAnalyzer(ctx context.Context, app appx.App, in CrossServiceInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Cross-service analyzer starting", "prove", "cross-service")
 	result, err := proveagent.RunCrossServiceAnalyzer(ctx, app, in.RepoPath, in.Services, in.FindingsSummary, in.Depth)
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }

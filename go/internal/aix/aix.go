@@ -30,6 +30,7 @@ import (
 
 	"github.com/Agent-Field/agentfield/sdk/go/ai"
 
+	"github.com/Agent-Field/sec-af/go/internal/afx"
 	"github.com/Agent-Field/sec-af/go/internal/appx"
 	"github.com/Agent-Field/sec-af/go/internal/harnessx"
 )
@@ -88,6 +89,9 @@ func StructuredOpts[T any](ctx context.Context, app appx.AIer, system, user stri
 			// detect_multimodal_response, which the `except ValueError` retry
 			// loop does not catch either — so, as here, no retry.
 			return v, fmt.Errorf("aix.Structured[%s]: nil response", typeName)
+		}
+		if resp.Usage != nil {
+			afx.RecordCost(ctx, resp.Usage.Cost)
 		}
 		parsed, perr := parseStructured[T](resp.Text())
 		if perr == nil {

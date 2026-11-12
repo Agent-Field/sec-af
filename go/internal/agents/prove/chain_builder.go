@@ -12,6 +12,7 @@ import (
 
 	"github.com/Agent-Field/agentfield/sdk/go/harness"
 
+	"github.com/Agent-Field/sec-af/go/internal/afx"
 	"github.com/Agent-Field/sec-af/go/internal/appx"
 	"github.com/Agent-Field/sec-af/go/internal/prompts"
 	"github.com/Agent-Field/sec-af/go/internal/pyfmt"
@@ -381,6 +382,9 @@ func RunChainBuilder(
 	var payload *chainAnalysisPayload
 	res, err := app.Harness(ctx, prompt, nil, nil, harness.Options{Cwd: repoPath})
 	if err == nil {
+		if res != nil {
+			afx.RecordCost(ctx, res.CostUSD)
+		}
 		payload = parseChainPayload(res)
 	}
 	if payload == nil {

@@ -100,6 +100,7 @@ func runHunter(
 	reconContext map[string]any,
 	run hunterFunc,
 ) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	recon, err := reconModel(reconContext)
 	if err != nil {
 		return nil, err
@@ -108,7 +109,7 @@ func runHunter(
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // hunterMaxFilesForNoDepthHunter is the value the five depth-less hunters
@@ -258,6 +259,7 @@ func RunAPISecurityHunter(ctx context.Context, app appx.App, in HunterInput) (ma
 // full recon dump to this reasoner (only the HUNTERS get the pruned
 // projection), so the strict bind is the correct one.
 func RunDeduplicator(ctx context.Context, app appx.App, in DeduplicatorInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Deduplicator starting", "hunt", "dedup")
 
 	findings := make([]schemas.RawFinding, 0, len(in.Findings))
@@ -278,5 +280,5 @@ func RunDeduplicator(ctx context.Context, app appx.App, in DeduplicatorInput) (m
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }

@@ -43,10 +43,13 @@ import (
 	"testing"
 
 	"github.com/Agent-Field/agentfield/sdk/go/agent"
+	"github.com/Agent-Field/agentfield/sdk/go/ai"
+	"github.com/Agent-Field/agentfield/sdk/go/harness"
 
 	"github.com/Agent-Field/sec-af/go/internal/appx"
 	"github.com/Agent-Field/sec-af/go/internal/orch"
 	"github.com/Agent-Field/sec-af/go/internal/phases"
+	"github.com/Agent-Field/sec-af/go/internal/reasoners"
 	"github.com/Agent-Field/sec-af/go/internal/schemas"
 )
 
@@ -1082,6 +1085,185 @@ func TestAuditHandlerRunsTheSDKInputValidation(t *testing.T) {
 			if strings.HasPrefix(msg, "Audit pipeline failed") {
 				t.Error("input validation runs before the pipeline; no failure note")
 			}
+		}
+	})
+}
+
+func TestAuditCostRollupAndBudget(t *testing.T) {
+	t.Run("rolls scripted phase costs into result cost_usd and cost_breakdown", func(t *testing.T) {
+		repo := t.TempDir()
+		base := phasePayloads([]string{"injection"}, 2, 0)
+		fake := &appx.Fake{CallFn: func(ctx context.Context, target string, in map[string]any) (map[string]any, error) {
+			out, err := base(ctx, target, in)
+			if err != nil {
+				return nil, err
+			}
+			switch {
+			case strings.HasSuffix(target, ".recon_phase"):
+				out["cost_usd"] = 0.0125
+			case strings.HasSuffix(target, ".hunt_phase"):
+				out["usage"] = map[string]any{"total_cost_usd": 0.025}
+			case strings.HasSuffix(target, ".prove_phase"):
+				out["cost_usd"] = 0.01
+			case strings.HasSuffix(target, ".remediation_phase"):
+				out["cost_usd"] = 0.0075
+			}
+			return out, nil
+		}}
+		n := newAuditNode(t, repo, fake)
+
+		got, err := n.auditHandler(context.Background(), map[string]any{"repo_url": repo})
+		if err != nil {
+			t.Fatalf("auditHandler: %v", err)
+		}
+		result, ok := got.(schemas.SecurityAuditResult)
+		if !ok {
+			t.Fatalf("handler returned %T, want schemas.SecurityAuditResult", got)
+		}
+		if result.CostUsd != 0.055 {
+			t.Errorf("cost_usd = %v, want 0.055", result.CostUsd)
+		}
+		wantBreakdown := map[string]float64{
+			"recon": 0.0125,
+			"hunt":  0.025,
+			"prove": 0.0175,
+		}
+		if !reflect.DeepEqual(result.CostBreakdown, wantBreakdown) {
+			t.Errorf("cost_breakdown = %v, want %v", result.CostBreakdown, wantBreakdown)
+		}
+	})
+
+	t.Run("rolls live reasoner harness and AI costs through phases into audit report", func(t *testing.T) {
+		repo := t.TempDir()
+		harnessCost := 0.01
+		aiCost := 0.005
+
+		var fake *appx.Fake
+		fake = &appx.Fake{
+			HarnessFn: func(_ context.Context, _ string, _ map[string]any, dest any, _ harness.Options) (*harness.Result, error) {
+				if err := json.Unmarshal([]byte(`{}`), dest); err != nil {
+					return nil, err
+				}
+				return &harness.Result{Parsed: dest, CostUSD: &harnessCost}, nil
+			},
+			AIFn: func(_ context.Context, _ string, _ ...ai.Option) (*ai.Response, error) {
+				return &ai.Response{
+					Choices: []ai.Choice{{Message: ai.Message{Role: "assistant", Content: []ai.ContentPart{{Type: "text", Text: `{"additional_cwes":["CWE-79"]}`}}}}},
+					Usage:   &ai.Usage{Cost: &aiCost},
+				}, nil
+			},
+		}
+		fake.CallFn = func(ctx context.Context, target string, in map[string]any) (map[string]any, error) {
+			inRaw, err := json.Marshal(in)
+			if err != nil {
+				return nil, err
+			}
+			var wireIn map[string]any
+			if err := json.Unmarshal(inRaw, &wireIn); err != nil {
+				return nil, err
+			}
+			in = wireIn
+			var res map[string]any
+			switch {
+			case strings.HasSuffix(target, ".recon_phase"):
+				res, err = phases.ReconPhase(ctx, fake, "sec-af", repo, "quick")
+			case strings.HasSuffix(target, ".hunt_phase"):
+				rc, _ := in["recon_context"].(map[string]any)
+				res, err = phases.HuntPhase(ctx, fake, "sec-af", repo, rc, "quick", nil, 2, 30)
+			case strings.HasSuffix(target, ".prove_phase"):
+				hr, _ := in["hunt_result"].(map[string]any)
+				res, err = phases.ProvePhase(ctx, fake, "sec-af", repo, hr, "quick", nil, 2)
+			case strings.HasSuffix(target, ".remediation_phase"):
+				res, err = phases.RemediationPhase(ctx, fake, "sec-af", repo, nil, 2)
+			case strings.HasSuffix(target, ".run_architecture_mapper"):
+				res, err = reasoners.RunArchitectureMapper(ctx, fake, reasoners.RepoPathInput{RepoPath: repo})
+			case strings.HasSuffix(target, ".run_dependency_auditor"):
+				res, err = reasoners.RunDependencyAuditor(ctx, fake, reasoners.RepoPathInput{RepoPath: repo})
+			case strings.HasSuffix(target, ".run_config_scanner"):
+				res, err = reasoners.RunConfigScanner(ctx, fake, reasoners.RepoPathInput{RepoPath: repo})
+			case strings.HasSuffix(target, "_hunter"):
+				rc, _ := in["recon_context"].(map[string]any)
+				res, err = reasoners.RunInjectionHunter(ctx, fake, reasoners.HunterInput{
+					RepoPath:              repo,
+					ReconContext:          rc,
+					Depth:                 "quick",
+					MaxFilesWithoutSignal: 30,
+				})
+			default:
+				return nil, errors.New("unexpected call target " + target)
+			}
+			if err != nil {
+				return nil, err
+			}
+			raw, err := json.Marshal(res)
+			if err != nil {
+				return nil, err
+			}
+			var wire map[string]any
+			if err := json.Unmarshal(raw, &wire); err != nil {
+				return nil, err
+			}
+			return wire, nil
+		}
+
+		n := newAuditNode(t, repo, fake)
+		got, err := n.auditHandler(context.Background(), map[string]any{
+			"repo_url": repo,
+			"depth":    "quick",
+		})
+		if err != nil {
+			t.Fatalf("auditHandler: %v", err)
+		}
+		result := got.(schemas.SecurityAuditResult)
+		// Quick recon: 3 mappers * $0.01 = $0.03.
+		// Quick hunt: 1 CWE expansion AI call ($0.005) + 6 quick/default hunters * $0.01 = $0.065.
+		if result.CostBreakdown["recon"] != 0.03 {
+			t.Errorf("recon cost = %v, want 0.03", result.CostBreakdown["recon"])
+		}
+		if result.CostBreakdown["hunt"] != 0.065 {
+			t.Errorf("hunt cost = %v, want 0.065", result.CostBreakdown["hunt"])
+		}
+		if result.CostUsd != 0.095 {
+			t.Errorf("cost_usd = %v, want 0.095", result.CostUsd)
+		}
+	})
+
+	t.Run("enforces max_cost_usd between phases by halting remaining phases and latching budget_exhausted", func(t *testing.T) {
+		repo := t.TempDir()
+		base := phasePayloads([]string{"injection"}, 2, 0)
+		fake := &appx.Fake{CallFn: func(ctx context.Context, target string, in map[string]any) (map[string]any, error) {
+			out, err := base(ctx, target, in)
+			if err != nil {
+				return nil, err
+			}
+			out["cost_usd"] = 0.25
+			return out, nil
+		}}
+		n := newAuditNode(t, repo, fake)
+
+		got, err := n.auditHandler(context.Background(), map[string]any{
+			"repo_url":     repo,
+			"max_cost_usd": 0.40,
+		})
+		if err != nil {
+			t.Fatalf("auditHandler: %v", err)
+		}
+		result := got.(schemas.SecurityAuditResult)
+		if result.CostUsd != 0.5 {
+			t.Errorf("cost_usd = %v, want 0.5 (recon 0.25 + hunt 0.25)", result.CostUsd)
+		}
+		wantTargets := []string{"sec-af.recon_phase", "sec-af.hunt_phase"}
+		if !reflect.DeepEqual(fake.CallTargets(), wantTargets) {
+			t.Errorf("calls = %v, want %v (prove and remediation halted after budget reached)", fake.CallTargets(), wantTargets)
+		}
+		foundBudgetNote := false
+		for _, msg := range fake.NoteMessages() {
+			if strings.HasPrefix(msg, "Budget exhausted; unverified findings:") {
+				foundBudgetNote = true
+			}
+		}
+		if !foundBudgetNote {
+			t.Errorf("expected budget exhausted note in %v", fake.NoteMessages())
 		}
 	})
 }

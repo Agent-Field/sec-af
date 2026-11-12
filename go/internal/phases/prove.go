@@ -192,6 +192,7 @@ func ProvePhase(
 	maxProvers *int,
 	maxConcurrentProvers int,
 ) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "PROVE phase starting", "phase", "prove")
 
 	hunt, err := BindHuntResult(huntResult)
@@ -262,6 +263,7 @@ func ProvePhase(
 		finding := selected[idx]
 
 		if outcome.err != nil {
+			afx.RecordCostValue(ctx, afx.ConsumeCost(outcome.raw, nil))
 			trackDrop(ctx, app, dropSummary, finding.Title, nil, "verifier_error")
 			verified = append(verified, proveagent.Fallback(
 				finding, outcome.err.Error(), proveagent.StrPtr("verifier_error"), nil))
@@ -273,6 +275,7 @@ func ProvePhase(
 		if unwrapErr == nil {
 			payload, unwrapErr = afx.AsMap(unwrapped, "run_verifier")
 		}
+		afx.RecordCostValue(ctx, afx.ConsumeCost(outcome.raw, payload))
 		if unwrapErr != nil {
 			trackDrop(ctx, app, dropSummary, finding.Title, nil, "schema_parse_failure")
 			verified = append(verified, proveagent.Fallback(
@@ -322,11 +325,13 @@ func ProvePhase(
 		notVerified = 0
 	}
 
-	return map[string]any{
+	out := map[string]any{
 		"verified":       verifiedDumps,
 		"total_selected": len(selected),
 		"total_findings": len(hunt.Findings),
 		"not_verified":   notVerified,
 		"drop_summary":   dropSummary,
-	}, nil
+	}
+	afx.AttachCost(out, acc.Total())
+	return out, nil
 }

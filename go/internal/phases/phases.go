@@ -86,7 +86,12 @@ func callMap(ctx context.Context, app appx.Caller, nodeID, name string, input ma
 	if err != nil {
 		return nil, err
 	}
-	return afx.AsMap(payload, name)
+	m, err := afx.AsMap(payload, name)
+	if err != nil {
+		return nil, err
+	}
+	afx.RecordCostValue(ctx, afx.ConsumeCost(raw, m))
+	return m, nil
 }
 
 // callBindWith is callMap followed by `Model.model_validate(payload)`, with the
@@ -253,5 +258,8 @@ func ExpandCWEsForHunt(ctx context.Context, app appx.AIer, reconSummary string, 
 // expand_cwes_for_hunt in process — so it contributes no DAG node. It returns
 // no error for the same reason ExpandCWEsForHunt does not.
 func RunCWEExpansion(ctx context.Context, app appx.AIer, reconSummary string, strategies []string) map[string]any {
-	return map[string]any{"additional_cwes": ExpandCWEsForHunt(ctx, app, reconSummary, strategies)}
+	ctx, acc := afx.WithCostAccumulator(ctx)
+	out := map[string]any{"additional_cwes": ExpandCWEsForHunt(ctx, app, reconSummary, strategies)}
+	afx.AttachCost(out, acc.Total())
+	return out
 }

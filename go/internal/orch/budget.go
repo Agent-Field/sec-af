@@ -129,6 +129,28 @@ func (o *AuditOrchestrator) markBudgetExhausted() {
 	o.mu.Unlock()
 }
 
+// RegisterCost records costUSD against phase and total_cost_usd.
+func (o *AuditOrchestrator) RegisterCost(phase string, costUSD *float64) {
+	o.registerCost(phase, costUSD)
+}
+
+// BudgetLimitReached reports whether the audit's total cost budget
+// (MaxCostUSD) or duration budget (MaxDurationSeconds) has been reached, and
+// latches budgetExhausted when either limit trips.
+func (o *AuditOrchestrator) BudgetLimitReached() bool {
+	if err := o.checkTimeBudget(); err != nil {
+		return true
+	}
+	o.mu.Lock()
+	total := o.totalCostUSD
+	o.mu.Unlock()
+	if o.MaxCostUSD != nil && total >= *o.MaxCostUSD {
+		o.markBudgetExhausted()
+		return true
+	}
+	return false
+}
+
 // registerCost ports `_register_cost(phase, cost_usd)`:
 //
 //	if cost_usd is None or cost_usd < 0: return
