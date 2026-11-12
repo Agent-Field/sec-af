@@ -58,6 +58,7 @@ func RemediationPhase(
 	verifiedFindings []map[string]any,
 	maxConcurrentRemediations int,
 ) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "REMEDIATION phase starting", "phase", "remediation")
 
 	findings := make([]schemas.VerifiedFinding, 0, len(verifiedFindings))
@@ -141,7 +142,12 @@ func RemediationPhase(
 	app.Note(ctx,
 		"REMEDIATION phase complete: "+strconv.Itoa(generated)+"/"+strconv.Itoa(len(needs))+" generated",
 		"phase", "remediation", "done")
-	return remediationResult(findings)
+	out, err := remediationResult(findings)
+	if err != nil {
+		return nil, err
+	}
+	afx.AttachCost(out, acc.Total())
+	return out, nil
 }
 
 // remediationResult builds `{"verified": [f.model_dump(exclude_none=True) for f in findings]}`,

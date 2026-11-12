@@ -251,6 +251,7 @@ func HuntPhase(
 	maxConcurrentHunters int,
 	earlyStopFileThreshold int,
 ) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "HUNT phase starting", "phase", "hunt")
 
 	recon, err := BindReconResult(reconContext)
@@ -316,7 +317,12 @@ func HuntPhase(
 	dedup.TotalRaw = totalRaw
 
 	app.Note(ctx, "HUNT phase complete", "phase", "hunt", "done")
-	return afx.ToMap(dedup)
+	out, err := afx.ToMap(dedup)
+	if err != nil {
+		return nil, err
+	}
+	afx.AttachCost(out, acc.Total())
+	return out, nil
 }
 
 // selectStrategies ports the `if ai_gate is not None:` block of hunt_phase.

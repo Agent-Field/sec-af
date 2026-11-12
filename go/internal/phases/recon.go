@@ -59,6 +59,7 @@ import (
 // caller immediately and leaves the rest detached; the value returned is the
 // same, and the caller's next act on error is to propagate it.
 func ReconPhase(ctx context.Context, app appx.App, nodeID, repoPath, depth string) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "RECON phase starting", "phase", "recon")
 
 	var (
@@ -144,7 +145,12 @@ func ReconPhase(ctx context.Context, app appx.App, nodeID, repoPath, depth strin
 	}
 
 	app.Note(ctx, "RECON phase complete", "phase", "recon", "done")
-	return afx.ToMap(recon)
+	out, err := afx.ToMap(recon)
+	if err != nil {
+		return nil, err
+	}
+	afx.AttachCost(out, acc.Total())
+	return out, nil
 }
 
 // moduleLanguages ports

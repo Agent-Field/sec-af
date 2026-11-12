@@ -7,6 +7,7 @@ import (
 
 	"github.com/Agent-Field/agentfield/sdk/go/harness"
 
+	"github.com/Agent-Field/sec-af/go/internal/afx"
 	"github.com/Agent-Field/sec-af/go/internal/appx"
 	"github.com/Agent-Field/sec-af/go/internal/pyfmt"
 )
@@ -34,6 +35,9 @@ func Run[T any](ctx context.Context, app appx.Harnesser, prompt string, opts har
 	res, err := app.Harness(ctx, prompt, schema, dest, opts)
 	if err != nil {
 		return dest, res, err
+	}
+	if res != nil {
+		afx.RecordCost(ctx, res.CostUSD)
 	}
 	return dest, res, nil
 }

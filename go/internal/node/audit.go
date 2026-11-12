@@ -329,13 +329,14 @@ func (n *Node) runAudit(
 	started := nowMonotonic()
 
 	// --- recon_phase --------------------------------------------------------
-	reconDict, err := callMap(ctx, app, nodeID, reasoners.NameReconPhase, map[string]any{
+	reconDict, reconCost, err := callPhaseMap(ctx, app, nodeID, reasoners.NameReconPhase, map[string]any{
 		"repo_path": repoPath,
 		"depth":     req.Depth,
 	})
 	if err != nil {
 		return schemas.SecurityAuditResult{}, err
 	}
+	orchestrator.RegisterCost(orch.PhaseRecon, &reconCost)
 	recon, err := phases.BindReconResult(reconDict)
 	if err != nil {
 		return schemas.SecurityAuditResult{}, err
@@ -344,13 +345,30 @@ func (n *Node) runAudit(
 	if err := orchestrator.WriteCheckpoint(orch.PhaseRecon, recon); err != nil {
 		return schemas.SecurityAuditResult{}, err
 	}
+	if orchestrator.BudgetLimitReached() {
+		hunt := schemas.NewHuntResult()
+		verified := []schemas.VerifiedFinding{}
+		if err := orchestrator.WriteCheckpoint(orch.PhaseHunt, hunt); err != nil {
+			return schemas.SecurityAuditResult{}, err
+		}
+		if err := orchestrator.WriteCheckpoint(orch.PhaseProve, verified); err != nil {
+			return schemas.SecurityAuditResult{}, err
+		}
+		orchestrator.SetAgentInvocations(1)
+		result, err := orchestrator.GenerateOutput(ctx, recon, hunt, verified)
+		if err != nil {
+			return schemas.SecurityAuditResult{}, err
+		}
+		app.Note(ctx, "SEC-AF audit complete", "audit", "complete")
+		return result, nil
+	}
 
 	// --- hunt_phase ---------------------------------------------------------
 	// Python parity: the kwarg is `recon_context=recon_dict` — the RAW payload
 	// map returned by recon_phase, NOT recon.model_dump(). The two differ:
 	// recon_duration_seconds was just stamped on the MODEL and is still 0.0 in
 	// the dict that goes over the wire.
-	huntDict, err := callMap(ctx, app, nodeID, reasoners.NameHuntPhase, map[string]any{
+	huntDict, huntCost, err := callPhaseMap(ctx, app, nodeID, reasoners.NameHuntPhase, map[string]any{
 		"repo_path":     repoPath,
 		"recon_context": reconDict,
 		"depth":         req.Depth,
@@ -358,6 +376,7 @@ func (n *Node) runAudit(
 	if err != nil {
 		return schemas.SecurityAuditResult{}, err
 	}
+	orchestrator.RegisterCost(orch.PhaseHunt, &huntCost)
 	hunt, err := phases.BindHuntResult(huntDict)
 	if err != nil {
 		return schemas.SecurityAuditResult{}, err
@@ -368,6 +387,21 @@ func (n *Node) runAudit(
 	if err := orchestrator.WriteCheckpoint(orch.PhaseHunt, hunt); err != nil {
 		return schemas.SecurityAuditResult{}, err
 	}
+	if orchestrator.BudgetLimitReached() {
+		verified := []schemas.VerifiedFinding{}
+		orchestrator.FindingsNotVerified = len(hunt.Findings)
+		orchestrator.ProveDropSummary = orch.NewDropSummary()
+		if err := orchestrator.WriteCheckpoint(orch.PhaseProve, verified); err != nil {
+			return schemas.SecurityAuditResult{}, err
+		}
+		orchestrator.SetAgentInvocations(len(hunt.StrategiesRun) + 2)
+		result, err := orchestrator.GenerateOutput(ctx, recon, hunt, verified)
+		if err != nil {
+			return schemas.SecurityAuditResult{}, err
+		}
+		app.Note(ctx, "SEC-AF audit complete", "audit", "complete")
+		return result, nil
+	}
 
 	// --- prove_phase --------------------------------------------------------
 	// Python parity: here the kwarg IS `hunt.model_dump()` (the model, with the
@@ -376,7 +410,7 @@ func (n *Node) runAudit(
 	if err != nil {
 		return schemas.SecurityAuditResult{}, err
 	}
-	proveDict, err := callMap(ctx, app, nodeID, reasoners.NameProvePhase, map[string]any{
+	proveDict, proveCost, err := callPhaseMap(ctx, app, nodeID, reasoners.NameProvePhase, map[string]any{
 		"repo_path":   repoPath,
 		"hunt_result": huntDump,
 		"depth":       req.Depth,
@@ -385,6 +419,7 @@ func (n *Node) runAudit(
 	if err != nil {
 		return schemas.SecurityAuditResult{}, err
 	}
+	orchestrator.RegisterCost(orch.PhaseProve, &proveCost)
 
 	// Python: `prove_dict["verified"]` — a SUBSCRIPT, so a payload without the
 	// key raises KeyError (an Exception, not a ValueError => 500).
@@ -421,28 +456,32 @@ func (n *Node) runAudit(
 	}
 
 	// --- remediation_phase --------------------------------------------------
-	verifiedDumps := make([]any, 0, len(verified))
-	for i := range verified {
-		dump, dumpErr := afx.ToMap(verified[i])
-		if dumpErr != nil {
-			return schemas.SecurityAuditResult{}, dumpErr
+	if !orchestrator.BudgetLimitReached() {
+		verifiedDumps := make([]any, 0, len(verified))
+		for i := range verified {
+			dump, dumpErr := afx.ToMap(verified[i])
+			if dumpErr != nil {
+				return schemas.SecurityAuditResult{}, dumpErr
+			}
+			verifiedDumps = append(verifiedDumps, dump)
 		}
-		verifiedDumps = append(verifiedDumps, dump)
-	}
-	remediationDict, err := callMap(ctx, app, nodeID, reasoners.NameRemediationPhase, map[string]any{
-		"repo_path":         repoPath,
-		"verified_findings": verifiedDumps,
-	})
-	if err != nil {
-		return schemas.SecurityAuditResult{}, err
-	}
-	remediatedRaw, ok := remediationDict["verified"]
-	if !ok {
-		return schemas.SecurityAuditResult{}, &missingKeyError{Key: "verified", Source: reasoners.NameRemediationPhase}
-	}
-	verified, err = bindVerifiedList(remediatedRaw)
-	if err != nil {
-		return schemas.SecurityAuditResult{}, err
+		remediationDict, remediationCost, err := callPhaseMap(ctx, app, nodeID, reasoners.NameRemediationPhase, map[string]any{
+			"repo_path":         repoPath,
+			"verified_findings": verifiedDumps,
+		})
+		if err != nil {
+			return schemas.SecurityAuditResult{}, err
+		}
+		orchestrator.RegisterCost(orch.PhaseProve, &remediationCost)
+		remediatedRaw, ok := remediationDict["verified"]
+		if !ok {
+			return schemas.SecurityAuditResult{}, &missingKeyError{Key: "verified", Source: reasoners.NameRemediationPhase}
+		}
+		verified, err = bindVerifiedList(remediatedRaw)
+		if err != nil {
+			return schemas.SecurityAuditResult{}, err
+		}
+		_ = orchestrator.BudgetLimitReached()
 	}
 
 	// Python: total_selected + len(hunt.strategies_run) + 3. The "+3" counts the
@@ -467,15 +506,25 @@ func (n *Node) runAudit(
 // app.py declares its own byte-identical copies of _unwrap/_as_dict alongside
 // reasoners/phases.py's; afx owns the single Go implementation.
 func callMap(ctx context.Context, app appx.Caller, nodeID, name string, input map[string]any) (map[string]any, error) {
+	m, _, err := callPhaseMap(ctx, app, nodeID, name, input)
+	return m, err
+}
+
+func callPhaseMap(ctx context.Context, app appx.Caller, nodeID, name string, input map[string]any) (map[string]any, float64, error) {
 	raw, err := app.Call(ctx, nodeID+"."+name, input)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	payload, err := afx.Unwrap(raw, name)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return afx.AsMap(payload, name)
+	m, err := afx.AsMap(payload, name)
+	if err != nil {
+		return nil, 0, err
+	}
+	cost := afx.ConsumeCost(raw, m)
+	return m, cost, nil
 }
 
 // bindVerifiedList is `[VerifiedFinding.model_validate(v) for v in payload]`

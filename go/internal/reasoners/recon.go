@@ -18,37 +18,51 @@ import (
 // The note fires BEFORE the agent function, so a failing mapper still leaves
 // its "starting" note in the execution log; that ordering is reproduced.
 
+func toMapWithCost(v any, acc *afx.CostAccumulator) (map[string]any, error) {
+	out, err := afx.ToMap(v)
+	if err != nil {
+		return nil, err
+	}
+	if acc != nil {
+		afx.AttachCost(out, acc.Total())
+	}
+	return out, nil
+}
+
 // RunArchitectureMapper ports `run_architecture_mapper(repo_path)`
 // (reasoners/recon.py:16).
 func RunArchitectureMapper(ctx context.Context, app appx.App, in RepoPathInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Architecture mapper starting", "recon", "architecture")
 	result, err := reconagent.RunArchitectureMapper(ctx, app, in.RepoPath)
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunDependencyAuditor ports `run_dependency_auditor(repo_path)`
 // (reasoners/recon.py:24).
 func RunDependencyAuditor(ctx context.Context, app appx.App, in RepoPathInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Dependency auditor starting", "recon", "dependencies")
 	result, err := reconagent.RunDependencyAuditor(ctx, app, in.RepoPath)
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunConfigScanner ports `run_config_scanner(repo_path)`
 // (reasoners/recon.py:32).
 func RunConfigScanner(ctx context.Context, app appx.App, in RepoPathInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Config scanner starting", "recon", "config")
 	result, err := reconagent.RunConfigScanner(ctx, app, in.RepoPath)
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunDataFlowMapper ports `run_data_flow_mapper(repo_path, architecture)`
@@ -66,6 +80,7 @@ func RunConfigScanner(ctx context.Context, app appx.App, in RepoPathInput) (map[
 // reasoner is registered on the router and a control-plane caller can send that
 // payload directly.
 func RunDataFlowMapper(ctx context.Context, app appx.App, in ArchitectureInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Data flow mapper starting", "recon", "data-flow")
 	architecture, err := bindArchitectureMap(in.Architecture)
 	if err != nil {
@@ -75,7 +90,7 @@ func RunDataFlowMapper(ctx context.Context, app appx.App, in ArchitectureInput) 
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
 
 // RunSecurityContextProfiler ports
@@ -83,6 +98,7 @@ func RunDataFlowMapper(ctx context.Context, app appx.App, in ArchitectureInput) 
 // (reasoners/recon.py:49). Same `ArchitectureMap(**architecture)` bind, same
 // nested validation — see RunDataFlowMapper.
 func RunSecurityContextProfiler(ctx context.Context, app appx.App, in ArchitectureInput) (map[string]any, error) {
+	ctx, acc := afx.WithCostAccumulator(ctx)
 	app.Note(ctx, "Security context profiler starting", "recon", "security-context")
 	architecture, err := bindArchitectureMap(in.Architecture)
 	if err != nil {
@@ -92,5 +108,5 @@ func RunSecurityContextProfiler(ctx context.Context, app appx.App, in Architectu
 	if err != nil {
 		return nil, err
 	}
-	return afx.ToMap(result)
+	return toMapWithCost(result, acc)
 }
