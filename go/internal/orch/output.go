@@ -3,8 +3,11 @@ package orch
 import (
 	"context"
 	"errors"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/Agent-Field/sec-af/go/internal/compliance"
 	"github.com/Agent-Field/sec-af/go/internal/gates"
@@ -225,18 +228,57 @@ func (o *AuditOrchestrator) GenerateOutput(
 	_ = output.GenerateJSON(result, true)
 	_ = output.GenerateReport(result)
 
-	// 7. per-framework compliance reports — see ErrComplianceReportArity.
+	// 7. per-framework compliance reports.
 	if len(o.Input.ComplianceFrameworks) > 0 {
 		if err := mkdirCheckpointDir(o.CheckpointDir); err != nil {
 			return result, err
 		}
-		// Python raises on the FIRST loop iteration, so no report file is ever
-		// written. The built result is handed back alongside the error purely so
-		// a Go caller can inspect it; Python has no return value on this path.
-		return result, ErrComplianceReportArity
+		generatedAt := nowUTC()
+		for _, framework := range o.Input.ComplianceFrameworks {
+			report := output.GenerateComplianceReportAt(scopeResultToFramework(result, framework), generatedAt)
+			reportPath := filepath.Join(o.CheckpointDir, "compliance-"+framework+".md")
+			if err := os.WriteFile(reportPath, []byte(report), checkpointFilePerm); err != nil {
+				return result, err
+			}
+		}
 	}
 
 	return result, nil
+}
+
+func normalizeComplianceFramework(framework string) string {
+	trimmed := strings.TrimFunc(framework, func(r rune) bool {
+		return (r >= 0x1C && r <= 0x1F) || unicode.IsSpace(r)
+	})
+	return strings.ReplaceAll(strings.ToLower(trimmed), "_", "-")
+}
+
+func scopeResultToFramework(result schemas.SecurityAuditResult, framework string) schemas.SecurityAuditResult {
+	target := normalizeComplianceFramework(framework)
+	scoped := result
+
+	scopedGaps := make([]schemas.ComplianceGap, 0, len(result.ComplianceGaps))
+	for _, gap := range result.ComplianceGaps {
+		if normalizeComplianceFramework(gap.Framework) == target {
+			scopedGaps = append(scopedGaps, gap)
+		}
+	}
+	scoped.ComplianceGaps = scopedGaps
+
+	scopedFindings := make([]schemas.VerifiedFinding, len(result.Findings))
+	for i, finding := range result.Findings {
+		f := finding
+		mappings := make([]schemas.ComplianceMapping, 0, len(finding.Compliance))
+		for _, m := range finding.Compliance {
+			if normalizeComplianceFramework(m.Framework) == target {
+				mappings = append(mappings, m)
+			}
+		}
+		f.Compliance = mappings
+		scopedFindings[i] = f
+	}
+	scoped.Findings = scopedFindings
+	return scoped
 }
 
 // complianceGate adapts the orchestrator's AIGateWrapper to the narrow seam

@@ -3,10 +3,10 @@ package orch
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -379,10 +379,10 @@ func TestGenerateOutput_BudgetNote(t *testing.T) {
 	})
 }
 
-// TestGenerateOutput_ComplianceFrameworksHitThePythonBug reproduces
-// orchestrator.py:463's TypeError — see ErrComplianceReportArity. The
-// checkpoint directory IS created first, and no compliance-<framework>.md file
-// is ever written.
+// TestGenerateOutput_ComplianceFrameworksHitThePythonBug verifies that a
+// non-empty compliance_frameworks list succeeds, enriches findings with the
+// requested frameworks, and writes one compliance-<framework>.md report per
+// requested framework under the checkpoint directory.
 func TestGenerateOutput_ComplianceFrameworksHitThePythonBug(t *testing.T) {
 	compliance.ClearAICache()
 	o, _ := newTestOrchestrator(t, func(in *schemas.AuditInput) {
@@ -391,22 +391,44 @@ func TestGenerateOutput_ComplianceFrameworksHitThePythonBug(t *testing.T) {
 
 	result, err := o.GenerateOutput(context.Background(), schemas.NewReconResult(), schemas.NewHuntResult(),
 		[]schemas.VerifiedFinding{verifiedWith(t, "a", schemas.VerdictConfirmed, schemas.SeverityHigh, "CWE-89")})
-	if !errors.Is(err, ErrComplianceReportArity) {
-		t.Fatalf("err = %v, want ErrComplianceReportArity", err)
+	if err != nil {
+		t.Fatalf("GenerateOutput: %v", err)
 	}
-	// The result is still built (Python gets that far too, it just cannot
-	// return it).
 	if result.Sarif == "" {
-		t.Error("the SARIF artifact is produced before the failure")
+		t.Error("the SARIF artifact must be produced")
 	}
 	if _, statErr := os.Stat(o.CheckpointDir); statErr != nil {
-		t.Errorf("the checkpoint dir must be created before the failure: %v", statErr)
+		t.Errorf("the checkpoint dir must be created: %v", statErr)
 	}
-	for _, framework := range []string{"SOC2", "PCI-DSS"} {
-		path := filepath.Join(o.CheckpointDir, "compliance-"+framework+".md")
-		if _, statErr := os.Stat(path); statErr == nil {
-			t.Errorf("%s must NOT be written — Python raises on the first iteration", path)
+	wantMappings := compliance.GetComplianceMappings("CWE-89", []string{"SOC2", "PCI-DSS"})
+	if !reflect.DeepEqual(result.Findings[0].Compliance, wantMappings) {
+		t.Errorf("compliance = %v, want %v", result.Findings[0].Compliance, wantMappings)
+	}
+
+	soc2Body, err := os.ReadFile(filepath.Join(o.CheckpointDir, "compliance-SOC2.md"))
+	if err != nil {
+		t.Fatalf("read compliance-SOC2.md: %v", err)
+	}
+	for _, want := range []string{"# SEC-AF Compliance Report", "### SOC2", "SOC2 CC6:", "CWE-89"} {
+		if !strings.Contains(string(soc2Body), want) {
+			t.Errorf("compliance-SOC2.md missing %q:\n%s", want, string(soc2Body))
 		}
+	}
+	if strings.Contains(string(soc2Body), "### PCI-DSS") {
+		t.Errorf("compliance-SOC2.md must not include PCI-DSS section:\n%s", string(soc2Body))
+	}
+
+	pciBody, err := os.ReadFile(filepath.Join(o.CheckpointDir, "compliance-PCI-DSS.md"))
+	if err != nil {
+		t.Fatalf("read compliance-PCI-DSS.md: %v", err)
+	}
+	for _, want := range []string{"# SEC-AF Compliance Report", "### PCI-DSS", "PCI-DSS Req 6.2.4:", "CWE-89"} {
+		if !strings.Contains(string(pciBody), want) {
+			t.Errorf("compliance-PCI-DSS.md missing %q:\n%s", want, string(pciBody))
+		}
+	}
+	if strings.Contains(string(pciBody), "### SOC2") {
+		t.Errorf("compliance-PCI-DSS.md must not include SOC2 section:\n%s", string(pciBody))
 	}
 }
 
@@ -430,6 +452,20 @@ func TestGenerateOutput_ComplianceFrameworksSelectTheMappings(t *testing.T) {
 	want := compliance.GetComplianceMappings("CWE-89", nil)
 	if !reflect.DeepEqual(unfiltered, want) {
 		t.Errorf("compliance = %v, want the unfiltered table %v", unfiltered, want)
+	}
+
+	// Non-empty list -> only the requested framework's mappings and report.
+	filteredOrch, _ := newTestOrchestrator(t, func(in *schemas.AuditInput) {
+		in.ComplianceFrameworks = []string{"SOC2"}
+	})
+	filteredRes, err := filteredOrch.GenerateOutput(context.Background(), schemas.NewReconResult(), schemas.NewHuntResult(),
+		[]schemas.VerifiedFinding{verifiedWith(t, "a", schemas.VerdictConfirmed, schemas.SeverityHigh, "CWE-89")})
+	if err != nil {
+		t.Fatalf("GenerateOutput with SOC2: %v", err)
+	}
+	wantSOC2 := compliance.GetComplianceMappings("CWE-89", []string{"SOC2"})
+	if !reflect.DeepEqual(filteredRes.Findings[0].Compliance, wantSOC2) {
+		t.Errorf("filtered compliance = %v, want %v", filteredRes.Findings[0].Compliance, wantSOC2)
 	}
 }
 
